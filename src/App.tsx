@@ -4,7 +4,7 @@ import { ConfigProvider } from "antd";
 import ruRU from "antd/lib/locale/ru_RU";
 
 import { Summary, UserTimeboard } from "./pages";
-import Login from "./pages/Login";
+import Login from "./pages/Login/Login";
 
 import "./App.css";
 import { UserProvider } from "./context/UserContext";

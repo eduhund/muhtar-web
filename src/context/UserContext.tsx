@@ -25,6 +25,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const token = localStorage.getItem("userAccessToken");
     if (!token) {
+      setUser(null);
       redirectToLogin();
     }
   }, []);
