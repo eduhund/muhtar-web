@@ -3,6 +3,7 @@ import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
 
 import "./Login.scss";
+import { authAPI } from "../../api";
 
 type FieldType = {
   email?: string;
@@ -18,9 +19,12 @@ const Login = () => {
     }
   }, []);
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-  };
+  async function onFinish(values: { email: string; password: string }) {
+    const { email, password } = values;
+    if (!email || !password) return;
+    const response = await authAPI.login(email, password);
+    console.log("Success:", response);
+  }
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo

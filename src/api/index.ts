@@ -22,12 +22,9 @@ class AuthAPI extends API {
     super(controller);
   }
 
-  async login(username: string, password: string) {
-    if (!this.token) {
-      throw new Error("Token is not set");
-    }
-    return this.controller.post(`${this.prefix}/login`, this.token, {
-      username,
+  async login(email: string, password: string) {
+    return this.controller.post(`${this.prefix}/login`, null, {
+      email,
       password,
     });
   }

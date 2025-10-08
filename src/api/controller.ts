@@ -30,15 +30,18 @@ export default class APIController {
 
   async post(
     endpoint: string,
-    token: string,
+    token: string | null,
     body: { [key: string]: unknown }
   ): Promise<Response> {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      Object.assign(headers, { Authorization: `Bearer ${token}` });
+    }
     return this.apiFetch(`${this.baseUri}/${endpoint}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(body),
     });
   }
