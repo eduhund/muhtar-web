@@ -34,11 +34,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      <img
-        width={128}
-        height={128}
-        src="/public/assets/img/muhtar_logo.png"
-      ></img>
+      <img width={128} height={128} src="/assets/img/muhtar_logo.png"></img>
       <Form
         className="login-form"
         name="basicLogin"
