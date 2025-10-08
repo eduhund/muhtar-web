@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
 
@@ -19,7 +19,7 @@ const Login = () => {
     }
   }, []);
 
-  async function onFinish(values: { email: string; password: string }) {
+  async function onFinish(values: FieldType) {
     const { email, password } = values;
     if (!email || !password) return;
     const response = await authAPI.login(email, password);

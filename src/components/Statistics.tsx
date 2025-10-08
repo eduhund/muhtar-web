@@ -20,6 +20,7 @@ function durationsByUser(arr: any[]) {
   return Array.from(map.values());
 }
 
+/*
 function durationsByProject(arr: any[]) {
   const map = new Map();
 
@@ -33,8 +34,10 @@ function durationsByProject(arr: any[]) {
 
   return Array.from(map.values());
 }
+*/
 
 function TotalProjectTime({ data }: any) {
+  /*
   const preparedData = data.map(
     ({ duration, userName }: { duration: number; userName: string }) => ({
       stage: "",
@@ -42,6 +45,7 @@ function TotalProjectTime({ data }: any) {
       userName,
     })
   );
+
   const config = {
     title: false,
     width: 276,
@@ -54,6 +58,7 @@ function TotalProjectTime({ data }: any) {
     stack: true,
     legend: false,
   };
+  */
 
   const totalDuration =
     Math.floor(
@@ -80,7 +85,7 @@ function TotalProjectTime({ data }: any) {
     </div>
   );
 }
-
+/*
 function TotalUserTime({ data }: any) {
   const preparedData = data.map(
     ({ duration, projectName }: { duration: number; projectName: string }) => ({
@@ -103,6 +108,7 @@ function TotalUserTime({ data }: any) {
   };
   //return <Bar {...config} />;
 }
+  */
 
 function ProjectBudget({ data }: any) {
   const timePerWorker = durationsByUser(data);
@@ -134,7 +140,8 @@ function ProjectBudget({ data }: any) {
 }
 
 function UserBudget({ data }: any) {
-  const timePerProject = durationsByProject(data);
+  console.log(data);
+  //const timePerProject = durationsByProject(data);
   return (
     <div>
       {

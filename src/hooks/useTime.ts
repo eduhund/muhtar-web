@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useTime() {
-  const [data, setData] = useState([]) as any;
+  const [data] = useState([]) as any;
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
