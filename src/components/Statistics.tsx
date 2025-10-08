@@ -1,4 +1,4 @@
-import { Bar } from "@ant-design/plots";
+//import { Bar } from "@ant-design/plots";
 import { hoursPlural } from "../utils/words";
 import { Typography } from "antd";
 import { beautifyCurrency } from "../utils/numbers";
@@ -74,7 +74,9 @@ function TotalProjectTime({ data }: any) {
         <span>{`${totalDuration} ${hoursPlural(totalDuration)}`}</span> /{" "}
         <span>{beautifyCurrency(totaCost)}</span>
       </Title>
-      <Bar {...config} />
+      {
+        //<Bar {...config} />
+      }
     </div>
   );
 }
@@ -99,7 +101,7 @@ function TotalUserTime({ data }: any) {
     stack: true,
     legend: false,
   };
-  return <Bar {...config} />;
+  //return <Bar {...config} />;
 }
 
 function ProjectBudget({ data }: any) {
@@ -135,7 +137,9 @@ function UserBudget({ data }: any) {
   const timePerProject = durationsByProject(data);
   return (
     <div>
-      <TotalUserTime data={timePerProject} />
+      {
+        //<TotalUserTime data={timePerProject} />
+      }
     </div>
   );
 }

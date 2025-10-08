@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getAll } from "../api/index";
 
 export function useTime() {
   const [data, setData] = useState([]) as any;
@@ -7,6 +6,7 @@ export function useTime() {
 
   useEffect(() => {
     setLoading(true);
+    /*
     getAll().then((data) => {
       const preparedData = data.map((item: any, i: number) => ({
         key: i,
@@ -15,6 +15,7 @@ export function useTime() {
       setData(preparedData);
       setLoading(false);
     });
+    */
   }, []);
 
   return { data, isLoading: loading };
