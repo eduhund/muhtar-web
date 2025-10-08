@@ -1,0 +1,105 @@
+#timetable {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+
+#timetable_filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 320px;
+}
+
+#timetable > .timetable {
+  width: 100%;
+  min-width: 600px;
+}
+
+#totalHint {
+  position: fixed;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #ffffff;
+  filter: drop-shadow(0px 9px 28px rgba(0, 0, 0, 0.05))
+    drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.12))
+    drop-shadow(0px 6px 16px rgba(0, 0, 0, 0.08));
+}
+
+.sidebar {
+  height: 100vh;
+  position: sticky;
+  top: 20px;
+
+  overflow: auto;
+}
+
+.statistics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  flex-grow: 1;
+  overflow: auto;
+
+  margin-bottom: 24px;
+}
+
+.total-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding: 12px 12px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+}
+
+.total-time h5 {
+  margin: 0;
+}
+
+.worker-timelist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  overflow: auto;
+}
+
+.worker-time {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+}
+
+.worker-time._no-cost {
+  background-color: #f1d8d8;
+}
+
+.worker-time h5 {
+  margin: 0;
+}
+
+.worker-time-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.worker-time-details * {
+  margin: 0;
+
+  font-size: 14px;
+}
