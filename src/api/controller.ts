@@ -4,19 +4,19 @@ export default class APIController {
     this.baseUri = baseUri;
   }
 
-  private async apiFetch(uri: string, options: RequestInit) {
+  private async apiFetch<T>(uri: string, options: RequestInit) {
     const responce = await fetch(uri, options);
     if (!responce.ok) {
       throw new Error(`API request failed with status ${responce.status}`);
     }
-    return await responce.json();
+    return (await responce.json()) as T;
   }
 
-  async get(
+  async get<T>(
     endpoint: string,
     token: string,
-    query: { [key: string]: string }
-  ): Promise<Response> {
+    query?: { [key: string]: string }
+  ): Promise<T> {
     const queryString = new URLSearchParams(query).toString();
     const path = `${endpoint}?${queryString}`;
     return this.apiFetch(`${this.baseUri}/${path}`, {
@@ -28,11 +28,11 @@ export default class APIController {
     });
   }
 
-  async post(
+  async post<T>(
     endpoint: string,
     token: string | null,
-    body: { [key: string]: unknown }
-  ): Promise<Response> {
+    body?: { [key: string]: unknown }
+  ): Promise<T> {
     const headers = {
       "Content-Type": "application/json",
     };

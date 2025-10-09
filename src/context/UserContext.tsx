@@ -5,6 +5,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { userAPI } from "../api";
 
 export interface User {
   id: string;
@@ -14,28 +15,37 @@ export interface User {
 
 interface UserContextType {
   user: User | null;
+  isLoading: boolean;
   setUser: (user: User | null) => void;
+}
+
+function redirectToLogin() {
+  window.location.replace("/login");
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  async function fetchUser() {
     const token = localStorage.getItem("userAccessToken");
     if (!token) {
       setUser(null);
       redirectToLogin();
+    } else {
+      const userData = await userAPI.getMe();
+      setUser(userData?.user);
     }
-  }, []);
-
-  function redirectToLogin() {
-    window.location.replace("/login");
   }
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, isLoading, setUser }}>
       {children}
     </UserContext.Provider>
   );

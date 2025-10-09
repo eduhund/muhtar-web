@@ -2,9 +2,22 @@ import APIController from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
 
+interface GetMe {
+  user: {
+    id: string;
+    name: string;
+    email?: string;
+    activeTeamId: string | null;
+  };
+  team: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 const apiController = new APIController(BASE_URI);
 
-class API {
+class privateAPI {
   controller: APIController;
   token: string | null = null;
   constructor(controller: APIController) {
@@ -16,10 +29,11 @@ class API {
   }
 }
 
-class AuthAPI extends API {
+class AuthAPI {
   private prefix = "auth";
+  private controller: APIController;
   constructor(controller: APIController) {
-    super(controller);
+    this.controller = controller;
   }
 
   async login(email: string, password: string) {
@@ -30,10 +44,17 @@ class AuthAPI extends API {
   }
 }
 
-class UserAPI extends API {
+class UserAPI extends privateAPI {
   private prefix = "user";
   constructor(controller: APIController) {
     super(controller);
+  }
+
+  async getMe() {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.get<GetMe>(`${this.prefix}/me`, this.token);
   }
 
   async changeTeam(teamId: string) {
