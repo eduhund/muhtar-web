@@ -7,7 +7,7 @@ import { Summary, UserTimeboard } from "./pages";
 import Login from "./pages/Login/Login";
 
 import "./App.css";
-import { UserProvider } from "./context/UserContext";
+import { UserProvider } from "./providers/UserProvider";
 
 const App = () => {
   return (
