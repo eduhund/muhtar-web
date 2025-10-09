@@ -1,22 +1,66 @@
+type ApiResponse<T> = {
+  OK: boolean;
+  data?: T;
+  error?: {
+    code?: string | number;
+    message?: string;
+    details?: unknown;
+  };
+};
+
 export default class APIController {
   baseUri: string;
   constructor(baseUri: string) {
     this.baseUri = baseUri;
   }
 
-  private async apiFetch<T>(uri: string, options: RequestInit) {
+  private async apiFetch<T>(
+    uri: string,
+    options: RequestInit
+  ): Promise<ApiResponse<T>> {
     const responce = await fetch(uri, options);
-    if (!responce.ok) {
-      throw new Error(`API request failed with status ${responce.status}`);
+    let payload: ApiResponse<T> = { OK: false };
+    try {
+      payload = await responce.json();
+    } catch {
+      console.error(
+        `API response is not valid JSON. Status: ${responce.status}`
+      );
+      return {
+        OK: false,
+        error: {
+          code: responce.status,
+          message: "Invalid JSON response",
+        },
+      };
     }
-    return (await responce.json()) as T;
+
+    if (!responce.ok || payload?.OK === false) {
+      const code = payload?.error?.code || responce.status;
+      const message =
+        payload?.error?.message ||
+        `API request failed with status ${responce.status}`;
+      console.error(message);
+      return {
+        OK: false,
+        error: {
+          code,
+          message,
+        },
+      };
+    }
+
+    return {
+      OK: true,
+      data: payload.data,
+    };
   }
 
   async get<T>(
     endpoint: string,
     token: string,
     query?: { [key: string]: string }
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     const queryString = new URLSearchParams(query).toString();
     const path = `${endpoint}?${queryString}`;
     return this.apiFetch(`${this.baseUri}/${path}`, {
@@ -32,7 +76,7 @@ export default class APIController {
     endpoint: string,
     token: string | null,
     body?: { [key: string]: unknown }
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     const headers = {
       "Content-Type": "application/json",
     };

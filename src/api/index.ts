@@ -2,23 +2,17 @@ import APIController from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
 
-interface GetMe {
+type LoginResponseDataType = {
   user: {
     id: string;
     name: string;
-    email?: string;
-    activeTeamId: string | null;
+    email: string;
   };
-  team: {
-    id: string;
-    name: string;
-  } | null;
   tokens: {
     userAccessToken: string;
-    membershipAccessToken?: string;
-    teamAccessToken?: string;
+    userRefreshToken: string;
   };
-}
+};
 
 const apiController = new APIController(BASE_URI);
 
@@ -41,11 +35,18 @@ class AuthAPI {
     this.controller = controller;
   }
 
-  async login(email: string, password: string): Promise<GetMe> {
-    return this.controller.post(`${this.prefix}/login`, null, {
-      email,
-      password,
-    });
+  async login(
+    email: string,
+    password: string
+  ): Promise<{ OK: boolean; data?: LoginResponseDataType; error?: unknown }> {
+    return this.controller.post<LoginResponseDataType>(
+      `${this.prefix}/login`,
+      null,
+      {
+        email,
+        password,
+      }
+    );
   }
 }
 
@@ -59,7 +60,7 @@ class UserAPI extends privateAPI {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.get<GetMe>(`${this.prefix}/me`, this.token);
+    return this.controller.get(`${this.prefix}/me`, this.token);
   }
 
   async changeTeam(teamId: string) {
