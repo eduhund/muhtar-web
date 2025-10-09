@@ -10,17 +10,14 @@ import { useEffect, useState } from "react";
 import { useMembership } from "../../hooks/useMembership";
 
 export function Summary() {
-  const [timeList, setTimeList] = useState<any>(null);
+  const [timeList, setTimeList] = useState<any>([]);
 
   const { getTime, isLoading } = useMembership();
 
   useEffect(() => {
-    getTime({ from: "2025-10-01", to: "2025-10-09" }).then(
-      ({ data = null }) => {
-        console.log(data);
-        setTimeList(data);
-      }
-    );
+    getTime({ from: "2025-10-01", to: "2025-10-09" }).then(({ data = [] }) => {
+      setTimeList(data);
+    });
   }, []);
 
   const { rowSelection, onRowClick } = useSelect(timeList);
