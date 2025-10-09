@@ -23,7 +23,7 @@ class privateAPI {
     this.controller = controller;
   }
 
-  setToken(token: string) {
+  setToken(token: string | null) {
     this.token = token;
   }
 }
@@ -73,5 +73,20 @@ class UserAPI extends privateAPI {
   }
 }
 
+class MembershipAPI extends privateAPI {
+  private prefix = "membership";
+  constructor(controller: APIController) {
+    super(controller);
+  }
+
+  async getTime(query: { [key: string]: string }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.get(`${this.prefix}/getTime`, this.token, query);
+  }
+}
+
 export const authAPI = new AuthAPI(apiController);
 export const userAPI = new UserAPI(apiController);
+export const membershipAPI = new MembershipAPI(apiController);
