@@ -1,12 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import { userAPI } from "../api";
-import { userStorage } from "../utils/storage";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface User {
   id: string;
@@ -17,10 +9,6 @@ export interface User {
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
-}
-
-function redirectToLogin() {
-  window.location.replace("/login");
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -35,29 +23,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useUser = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
+export function useUser() {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user, setUser } = context;
 
-  async function fetchUser() {
-    if (!userStorage.hasAccessToken()) {
-      setUser(null);
-      redirectToLogin();
-    } else {
-      const userData = await userAPI.getMe();
-      setUser(userData?.user);
-      setIsLoading(false);
-    }
+  function updateUser(newUser: User | null) {
+    setUser(newUser);
   }
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return { user, isLoading };
-};
+  return { user, updateUser };
+}
