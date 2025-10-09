@@ -27,3 +27,15 @@ export const userStorage = (() => {
     hasAccessToken: () => StorageAdapter.hasItem(`${prefix}accessToken`),
   };
 })();
+
+export const memberrshipStorage = (() => {
+  const prefix = "membership_";
+
+  return {
+    getAccessToken: () => StorageAdapter.getItem(`${prefix}accessToken`),
+    setAccessToken: (token: string) =>
+      StorageAdapter.setItem(`${prefix}accessToken`, token),
+    removeAccessToken: () => StorageAdapter.removeItem(`${prefix}accessToken`),
+    hasAccessToken: () => StorageAdapter.hasItem(`${prefix}accessToken`),
+  };
+})();

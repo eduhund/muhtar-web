@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { authAPI } from "../api";
-import { userStorage } from "../utils/storage";
+import { memberrshipStorage, userStorage } from "../utils/storage";
 
 export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,7 +9,8 @@ export function useLogin() {
     setIsLoading(true);
     const { OK, data, error } = await authAPI.login(email, password);
     if (data) {
-      userStorage.setAccessToken(data.tokens.userAccessToken);
+      userStorage.setAccessToken(data.tokens.user);
+      memberrshipStorage.setAccessToken(data.tokens.membership);
       setIsLoading(false);
     }
 

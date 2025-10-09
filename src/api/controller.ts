@@ -1,4 +1,4 @@
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   OK: boolean;
   data?: T;
   error?: {

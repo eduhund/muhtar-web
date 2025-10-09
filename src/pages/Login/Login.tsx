@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { FormProps } from "antd";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 
 import { useLogin } from "../../hooks/useLogin";
 
@@ -12,7 +12,10 @@ type FieldType = {
   remember?: string;
 };
 
+const { Text } = Typography;
+
 const Login = () => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { login } = useLogin();
 
   useEffect(() => {
@@ -25,8 +28,12 @@ const Login = () => {
   async function onFinish(values: FieldType) {
     const { email, password } = values;
     if (!email || !password) return;
-    const response = await login(email, password);
-    console.log("Success:", response);
+    const { data, error } = await login(email, password);
+    if (data) {
+      console.log("Login successful:", data);
+    } else {
+      setErrorMessage(error?.description || "Login failed");
+    }
   }
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -37,42 +44,44 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      <img width={128} height={128} src="/assets/img/muhtar_logo.png"></img>
-      <Form
-        className="login-form"
-        name="basicLogin"
-        layout="inline"
-        size="large"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="on"
-        requiredMark={false}
-      >
-        <Form.Item<FieldType>
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+      <div className="login-form-container">
+        <Form
+          className="login-form"
+          name="basicLogin"
+          layout="vertical"
+          size="large"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          onFieldsChange={() => setErrorMessage(null)}
+          autoComplete="on"
+          requiredMark={false}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+            style={{ marginBottom: 12, marginTop: -4 }}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item label={null} style={{ marginBottom: 8 }}>
+            <Button type="primary" htmlType="submit" className="login-button">
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
+        {errorMessage && <Text type="danger">{errorMessage}</Text>}
+      </div>
     </div>
   );
 };

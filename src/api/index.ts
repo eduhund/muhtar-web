@@ -1,4 +1,4 @@
-import APIController from "./controller";
+import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
 
@@ -9,8 +9,8 @@ type LoginResponseDataType = {
     email: string;
   };
   tokens: {
-    userAccessToken: string;
-    userRefreshToken: string;
+    user: string;
+    membership: string;
   };
 };
 
@@ -38,7 +38,7 @@ class AuthAPI {
   async login(
     email: string,
     password: string
-  ): Promise<{ OK: boolean; data?: LoginResponseDataType; error?: unknown }> {
+  ): Promise<ApiResponse<LoginResponseDataType>> {
     return this.controller.post<LoginResponseDataType>(
       `${this.prefix}/login`,
       null,
