@@ -14,7 +14,7 @@ export const columns: TableProps<DataType>["columns"] = [
     dataIndex: "date",
     key: "date",
     width: 160,
-    render: (date: any) => {
+    render: (date: Date) => {
       const dateObj = new Date(date);
 
       const dateString = dateObj.toLocaleDateString("ru-RU", {
@@ -39,14 +39,14 @@ export const columns: TableProps<DataType>["columns"] = [
     dataIndex: "userName",
     key: "userName",
     width: 180,
-    render: (_: any, { membership }: DataType) => membership.name,
+    render: (_: unknown, { membership }: DataType) => membership.name,
   },
   {
     title: "Where",
     dataIndex: "projectName",
     key: "projectName",
     width: 200,
-    render: (_: any, { project }: DataType) => project.name,
+    render: (_: unknown, { project }: DataType) => project.name,
   },
   {
     title: "How long",
