@@ -2,42 +2,32 @@ import { Table } from "antd";
 
 import { columns } from "../../components/columns";
 
-import { Filters } from "../../components/Filters";
 import { TotalHint } from "./TotalHint";
-import { useFilters } from "../../hooks/useFilters";
 import { useSelect } from "../../hooks/useSelect";
-import { useTime } from "../../hooks/useTime";
 
 import "./Summary.css";
-import { ProjectBudget, UserBudget } from "../../components/Statistics";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import { useMembership } from "../../hooks/useMembership";
 
 export function Summary() {
-  const { data, isLoading } = useTime();
+  const [timeList, setTimeList] = useState<any>(null);
 
-  const { filters, setFilters, resetFilters, filteredData } = useFilters(data);
-  const { rowSelection, onRowClick } = useSelect(filteredData);
-  const isSingleProject = useMemo(
-    () => filters?.projectName?.length === 1 && !filters?.userName?.length,
-    [filters]
-  );
-  const isSingleUser = useMemo(
-    () => filters?.userName?.length === 1 && !filters?.projectName?.length,
-    [filters]
-  );
+  const { getTime, isLoading } = useMembership();
+
+  useEffect(() => {
+    getTime({ from: "2025-10-01", to: "2025-10-09" }).then(
+      ({ data = null }) => {
+        console.log(data);
+        setTimeList(data);
+      }
+    );
+  }, []);
+
+  const { rowSelection, onRowClick } = useSelect(timeList);
 
   return (
     <div className="container">
-      <div className="sidebar">
-        <Filters
-          data={data}
-          filters={filters}
-          setFilters={setFilters}
-          resetFilters={resetFilters}
-        />
-        {isSingleProject && <ProjectBudget data={filteredData} />}
-        {isSingleUser && <UserBudget data={filteredData} />}
-      </div>
+      <div className="sidebar"></div>
       <div id="timetable">
         <Table
           className="timetable"
@@ -46,7 +36,7 @@ export function Summary() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={filteredData}
+          dataSource={timeList}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}
@@ -56,9 +46,9 @@ export function Summary() {
       </div>
 
       <TotalHint
-        data={data}
-        filteredData={filteredData}
-        filters={filters}
+        data={timeList}
+        filteredData={timeList}
+        filters={{}}
         selection={rowSelection}
       />
     </div>

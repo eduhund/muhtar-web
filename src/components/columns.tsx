@@ -2,18 +2,18 @@ import type { TableProps } from "antd";
 
 interface DataType {
   key: string;
-  userName: string;
-  projectName: string;
-  subproject: string;
+  membership: { id: string; name: string };
+  project: { id: string; name: string };
   duration: number;
   comment: string;
 }
 
 export const columns: TableProps<DataType>["columns"] = [
   {
-    title: "Когда",
+    title: "When",
     dataIndex: "date",
     key: "date",
+    width: 160,
     render: (date: any) => {
       const dateObj = new Date(date);
 
@@ -33,38 +33,30 @@ export const columns: TableProps<DataType>["columns"] = [
         </>
       );
     },
-    width: 140,
   },
   {
-    title: "Кто",
+    title: "Who",
     dataIndex: "userName",
     key: "userName",
     width: 180,
+    render: (_: any, { membership }: DataType) => membership.name,
   },
   {
-    title: "Где",
+    title: "Where",
     dataIndex: "projectName",
     key: "projectName",
     width: 200,
-    render: (_: any, { projectName, subproject }: DataType) => (
-      <>
-        {projectName}
-        {subproject && (
-          <span style={{ color: "rgba(0, 0, 0, 0.45)" }}>
-            {` | ${subproject}`}
-          </span>
-        )}
-      </>
-    ),
+    render: (_: any, { project }: DataType) => project.name,
   },
   {
-    title: "Сколько",
+    title: "How long",
     dataIndex: "duration",
     key: "duration",
     width: 80,
+    render: (duration: number) => duration / 60,
   },
   {
-    title: "Что",
+    title: "What",
     dataIndex: "comment",
     key: "comment",
   },

@@ -3,11 +3,12 @@ import { Route, Routes } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import ruRU from "antd/lib/locale/ru_RU";
 
-import { Summary, UserTimeboard } from "./pages";
+import { Summary } from "./pages";
 import Login from "./pages/Login/Login";
 
 import "./App.css";
 import { UserProvider } from "./providers/UserProvider";
+import { MembershipProvider } from "./providers/MembershipProvider";
 
 const App = () => {
   return (
@@ -18,10 +19,11 @@ const App = () => {
           path="/*"
           element={
             <UserProvider>
-              <Routes>
-                <Route path="/" element={<Summary />} />
-                <Route path="/users/:userId" element={<UserTimeboard />} />
-              </Routes>
+              <MembershipProvider>
+                <Routes>
+                  <Route path="/" element={<Summary />} />
+                </Routes>
+              </MembershipProvider>
             </UserProvider>
           }
         />
