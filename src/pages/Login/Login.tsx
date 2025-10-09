@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
 
+import { useLogin } from "../../hooks/useLogin";
+
 import "./Login.scss";
-import { authAPI } from "../../api";
 
 type FieldType = {
   email?: string;
@@ -12,6 +13,8 @@ type FieldType = {
 };
 
 const Login = () => {
+  const { login } = useLogin();
+
   useEffect(() => {
     const token = localStorage.getItem("userAccessToken");
     if (token) {
@@ -22,7 +25,7 @@ const Login = () => {
   async function onFinish(values: FieldType) {
     const { email, password } = values;
     if (!email || !password) return;
-    const response = await authAPI.login(email, password);
+    const response = await login(email, password);
     console.log("Success:", response);
   }
 

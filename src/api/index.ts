@@ -41,7 +41,7 @@ class AuthAPI {
     this.controller = controller;
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<GetMe> {
     return this.controller.post(`${this.prefix}/login`, null, {
       email,
       password,

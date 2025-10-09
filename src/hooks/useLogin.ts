@@ -1,29 +1,26 @@
 import { useState } from "react";
-import { userAPI } from "../api";
+import { authAPI } from "../api";
 import { useUser } from "../hooks/useUser";
 import { userStorage } from "../utils/storage";
-
-function redirectToLogin() {
-  window.location.replace("/login");
-}
 
 export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { user, updateUser } = useUser();
 
-  async function login() {
+  async function login(email: string, password: string) {
     if (user) {
       throw new Error("User is already logged in");
     }
-    const userData = await userAPI.getMe();
+    setIsLoading(true);
+    const userData = await authAPI.login(email, password);
     if (!userData?.user) {
-      redirectToLogin();
-      return;
+      throw new Error("Login failed");
     }
     userStorage.setAccessToken(userData.tokens.userAccessToken);
     updateUser(userData?.user);
     setIsLoading(false);
+    return userData;
   }
 
   return { login, isLoading };
