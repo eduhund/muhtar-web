@@ -8,11 +8,11 @@ export function useLogin() {
   async function login(email: string, password: string) {
     setIsLoading(true);
     const { OK, data, error } = await authAPI.login(email, password);
-    if (!OK || !data) {
-      throw new Error("Login failed");
+    if (data) {
+      userStorage.setAccessToken(data.tokens.userAccessToken);
+      setIsLoading(false);
     }
-    userStorage.setAccessToken(data.tokens.userAccessToken);
-    setIsLoading(false);
+
     return { OK, data, error };
   }
 

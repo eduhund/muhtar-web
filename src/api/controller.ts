@@ -3,8 +3,7 @@ type ApiResponse<T> = {
   data?: T;
   error?: {
     code?: string | number;
-    message?: string;
-    details?: unknown;
+    description?: string;
   };
 };
 
@@ -30,22 +29,22 @@ export default class APIController {
         OK: false,
         error: {
           code: responce.status,
-          message: "Invalid JSON response",
+          description: "Invalid JSON response",
         },
       };
     }
 
     if (!responce.ok || payload?.OK === false) {
       const code = payload?.error?.code || responce.status;
-      const message =
-        payload?.error?.message ||
+      const description =
+        payload?.error?.description ||
         `API request failed with status ${responce.status}`;
-      console.error(message);
+      console.error(description);
       return {
         OK: false,
         error: {
           code,
-          message,
+          description,
         },
       };
     }
