@@ -13,6 +13,11 @@ interface GetMe {
     id: string;
     name: string;
   } | null;
+  tokens: {
+    userAccessToken: string;
+    membershipAccessToken?: string;
+    teamAccessToken?: string;
+  };
 }
 
 const apiController = new APIController(BASE_URI);

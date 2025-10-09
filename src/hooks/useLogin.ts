@@ -1,31 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { userAPI } from "../api";
+import { useUser } from "../hooks/useUser";
 import { userStorage } from "../utils/storage";
-import { useUser } from "../context/UserContext";
 
 function redirectToLogin() {
   window.location.replace("/login");
 }
 
 export function useLogin() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { user, updateUser } = useUser();
 
-  async function fetchUser() {
-    if (!userStorage.hasAccessToken()) {
-      updateUser(null);
-      redirectToLogin();
-    } else {
-      const userData = await userAPI.getMe();
-      updateUser(userData?.user);
-      setIsLoading(false);
+  async function login() {
+    if (user) {
+      throw new Error("User is already logged in");
     }
+    const userData = await userAPI.getMe();
+    if (!userData?.user) {
+      redirectToLogin();
+      return;
+    }
+    userStorage.setAccessToken(userData.tokens.userAccessToken);
+    updateUser(userData?.user);
+    setIsLoading(false);
   }
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return { user, isLoading };
+  return { login, isLoading };
 }
