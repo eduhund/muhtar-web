@@ -5,6 +5,7 @@ import { Button, Form, Input, Typography } from "antd";
 import { useLogin } from "../../hooks/useLogin";
 
 import "./Login.scss";
+import { userStorage } from "../../utils/storage";
 
 type FieldType = {
   email?: string;
@@ -19,7 +20,7 @@ const Login = () => {
   const { login } = useLogin();
 
   useEffect(() => {
-    const token = localStorage.getItem("userAccessToken");
+    const token = userStorage.getAccessToken();
     if (token) {
       window.location.replace("/");
     }
@@ -30,7 +31,7 @@ const Login = () => {
     if (!email || !password) return;
     const { data, error } = await login(email, password);
     if (data) {
-      console.log("Login successful:", data);
+      window.location.replace("/");
     } else {
       setErrorMessage(error?.description || "Login failed");
     }
