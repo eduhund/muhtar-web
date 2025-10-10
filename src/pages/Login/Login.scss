@@ -71,12 +71,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 24px;
+  gap: 24px;
+  padding: 32px;
   max-width: 480px;
   min-width: 320px;
   border: 1px solid rgba($color: #ffffff, $alpha: 0.2);
-  border-radius: 32px;
+  border-radius: 40px;
   background-color: rgba($color: #ffffff, $alpha: 0.8);
   backdrop-filter: blur(8px);
   margin: 0 auto;
@@ -90,9 +90,4 @@
 
 .login-button {
   width: 100%;
-}
-
-.error-message {
-  color: #ff0000;
-  font-size: 14px;
 }

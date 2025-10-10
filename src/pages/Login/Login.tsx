@@ -57,6 +57,7 @@ const Login = () => {
           className="login-form"
           name="basicLogin"
           layout="vertical"
+          size="large"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -67,7 +68,7 @@ const Login = () => {
           <Form.Item<FieldType>
             name="email"
             rules={[{ required: true, message: "Please input your email!" }]}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 32 }}
           >
             <Input placeholder="Email" />
           </Form.Item>
@@ -75,7 +76,7 @@ const Login = () => {
           <Form.Item<FieldType>
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 32 }}
           >
             <Input.Password placeholder="Password" />
           </Form.Item>
