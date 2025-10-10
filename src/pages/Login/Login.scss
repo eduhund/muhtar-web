@@ -1,52 +1,98 @@
 @import "../../vars/colors.scss";
 
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   width: 100vw;
   height: 100vh;
   padding: 32px;
   box-sizing: border-box;
+  background-color: #ff9e78;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-logo-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(50vh - 96px);
+}
+
+.login-logo {
+  width: 96px;
+  height: 96px;
   background-color: $muhtar-primary;
+  border-radius: 50%;
+  box-shadow: 0 0 192px 256px rgba($color: $muhtar-primary, $alpha: 1);
+  object-fit: cover;
+  animation: pulse 10s infinite ease-in-out;
+}
 
-  .login-form-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 24px;
-    max-width: 480px;
-    min-width: 320px;
-    border: 1px solid rgba($color: #ffffff, $alpha: 0.2);
-    border-radius: 32px;
-    background-color: rgba($color: #ffffff, $alpha: 0.8);
-    backdrop-filter: blur(8px);
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: -132px;
-      left: calc(50% - 64px);
-      width: 128px;
-      height: 128px;
-      background-image: url("/assets/img/muhtar_logo.png");
-      background-size: cover;
-      background-position: center;
-    }
-
-    .login-form {
-      width: 100%;
-
-      .login-button {
-        width: 100%;
-      }
-    }
-
-    .error-message {
-      color: #ff0000;
-      font-size: 14px;
-    }
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 168px 232px rgba($color: $muhtar-primary, $alpha: 1);
   }
+  10% {
+    box-shadow: 16px -12px 180px 250px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  20% {
+    box-shadow: -24px 8px 210px 280px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  30% {
+    box-shadow: 16px 24px 226px 232px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  40% {
+    box-shadow: -24px -16px 200px 270px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  50% {
+    box-shadow: 0 0 168px 280px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  60% {
+    box-shadow: -12px 24px 220px 232px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  70% {
+    box-shadow: 0 12px 200px 270px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  80% {
+    box-shadow: 12px 12px 210px 250px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  90% {
+    box-shadow: -12px 24px 180px 232px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+  100% {
+    box-shadow: 0 0 168px 232px rgba($color: $muhtar-primary, $alpha: 1);
+  }
+}
+
+.login-form-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  max-width: 480px;
+  min-width: 320px;
+  border: 1px solid rgba($color: #ffffff, $alpha: 0.2);
+  border-radius: 32px;
+  background-color: rgba($color: #ffffff, $alpha: 0.8);
+  backdrop-filter: blur(8px);
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.login-form {
+  width: 100%;
+  z-index: 1;
+}
+
+.login-button {
+  width: 100%;
+}
+
+.error-message {
+  color: #ff0000;
+  font-size: 14px;
 }

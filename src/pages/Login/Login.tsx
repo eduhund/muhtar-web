@@ -45,12 +45,18 @@ const Login = () => {
 
   return (
     <div className="login-page">
+      <div className="login-logo-wrapper">
+        <img
+          src="/assets/img/muhtar_logo.png"
+          alt="Muhtar Logo"
+          className="login-logo"
+        />
+      </div>
       <div className="login-form-container">
         <Form
           className="login-form"
           name="basicLogin"
           layout="vertical"
-          size="large"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -59,23 +65,22 @@ const Login = () => {
           requiredMark={false}
         >
           <Form.Item<FieldType>
-            label="Email"
             name="email"
             rules={[{ required: true, message: "Please input your email!" }]}
-            style={{ marginBottom: 12, marginTop: -4 }}
+            style={{ marginBottom: 16 }}
           >
-            <Input />
+            <Input placeholder="Email" />
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
+            style={{ marginBottom: 16 }}
           >
-            <Input.Password />
+            <Input.Password placeholder="Password" />
           </Form.Item>
 
-          <Form.Item label={null} style={{ marginBottom: 8 }}>
+          <Form.Item label={null} style={{ marginBottom: 0 }}>
             <Button type="primary" htmlType="submit" className="login-button">
               Login
             </Button>
