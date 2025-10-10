@@ -12,7 +12,10 @@ import { MembershipProvider } from "./providers/MembershipProvider";
 
 const App = () => {
   return (
-    <ConfigProvider locale={ruRU}>
+    <ConfigProvider
+      locale={ruRU}
+      theme={{ token: { colorPrimary: "#f04f23" } }}
+    >
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
