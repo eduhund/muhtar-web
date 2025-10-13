@@ -24,5 +24,12 @@ export function useMembership() {
     return data;
   }
 
-  return { membership, isLoading, updateMembership, getTime };
+  async function getTimetable(query: { [key: string]: string }) {
+    setIsLoading(true);
+    const data = await membershipAPI.getTimetable(query);
+    setIsLoading(false);
+    return data;
+  }
+
+  return { membership, isLoading, updateMembership, getTime, getTimetable };
 }

@@ -12,14 +12,20 @@ import { useMembership } from "../../hooks/useMembership";
 export function Summary() {
   const [timeList, setTimeList] = useState<any>([]);
 
-  const { getTime, isLoading } = useMembership();
+  const { getTimetable, isLoading } = useMembership();
 
   async function fetchTime() {
-    const { data }: any = await getTime({
+    const { data }: any = await getTimetable({
       from: "2025-10-01",
       to: "2025-10-09",
     });
-    setTimeList(data.reverse());
+    setTimeList(
+      data
+        .map((item: any) => {
+          return { key: item.ts, ...item };
+        })
+        .reverse()
+    );
   }
 
   useEffect(() => {
