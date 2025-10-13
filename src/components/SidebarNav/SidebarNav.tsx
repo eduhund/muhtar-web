@@ -1,5 +1,5 @@
 import { Avatar, Button, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useUser } from "../../hooks/useUser";
 
 const { Title, Text } = Typography;
@@ -23,7 +23,12 @@ export function SidebarNav() {
           Sobakapav
         </Title>
       </div>
-      <Button size="large" type="primary" disabled>
+      <Button
+        size="large"
+        type="primary"
+        icon={<PlusCircleOutlined />}
+        iconPosition="start"
+      >
         Track the Time
       </Button>
       <div className="SidebarNav-widgets">Widgets</div>
