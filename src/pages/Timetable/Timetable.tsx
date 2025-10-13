@@ -13,8 +13,7 @@ const { Title } = Typography;
 
 export function Timetable() {
   const { timetable, isLoading } = useTimetable();
-  const { filters, setFilter, resetFilters, filteredList } =
-    useTimetableFilters(timetable || []);
+  const timetableFilters = useTimetableFilters(timetable || []);
 
   const { rowSelection, onRowClick } = useSelect(timetable);
 
@@ -24,14 +23,7 @@ export function Timetable() {
         <div className="Timetable-header-title">
           <Title level={1}>Timetable</Title>
         </div>
-        {timetable?.length && (
-          <Filters
-            data={timetable}
-            filters={filters}
-            setFilter={setFilter}
-            resetFilters={resetFilters}
-          />
-        )}
+        {timetable?.length && <Filters timetableFilters={timetableFilters} />}
       </div>
       <div id="timetable">
         <Table
@@ -41,9 +33,11 @@ export function Timetable() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={(filteredList || []).map((item: TimetableItem) => {
-            return { key: item.id, ...item };
-          })}
+          dataSource={(timetableFilters.filteredList || []).map(
+            (item: TimetableItem) => {
+              return { key: item.id, ...item };
+            }
+          )}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}

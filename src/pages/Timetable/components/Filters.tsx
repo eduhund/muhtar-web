@@ -6,9 +6,10 @@ import { defaultListSort } from "../../../utils/helpers";
 
 const { RangePicker } = DatePicker;
 
-function DateFilter({ filters, onChange }: any) {
+function DateFilter({ timetableFilters }: any) {
+  const { filters, setFilter } = timetableFilters;
   function handleChange(date: any) {
-    onChange("date", date);
+    setFilter("date", date);
   }
 
   const dateFormat = "DD MMMM YYYY";
@@ -25,25 +26,10 @@ function DateFilter({ filters, onChange }: any) {
   );
 }
 
-function MembershipFilter({ data, filters, onChange }: any) {
-  const membershipList = useMemo(() => {
-    const seen = new Set<string>();
-    const result: { value: string; label: string }[] = [];
-    data.forEach((item: any) => {
-      if (
-        item.project.id &&
-        item.membership.name &&
-        !seen.has(item.membership.id)
-      ) {
-        seen.add(item.membership.id);
-        result.push({ value: item.membership.id, label: item.membership.name });
-      }
-    });
-    return result;
-  }, [data]);
-
+function MembershipFilter({ timetableFilters }: any) {
+  const { filters, filteredMembershipList, setFilter } = timetableFilters;
   function handleChange(value: any) {
-    onChange("memberships", value);
+    setFilter("memberships", value);
   }
 
   const value = filters ? filters["memberships"] || [] : null;
@@ -51,8 +37,9 @@ function MembershipFilter({ data, filters, onChange }: any) {
   return (
     <Select
       placeholder="All"
-      options={membershipList}
+      options={filteredMembershipList}
       value={value}
+      fieldNames={{ label: "name", value: "id" }}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
@@ -63,21 +50,11 @@ function MembershipFilter({ data, filters, onChange }: any) {
   );
 }
 
-function ProjectFilter({ data, filters, onChange }: any) {
-  const projectList = useMemo(() => {
-    const seen = new Set<string>();
-    const result: { value: string; label: string }[] = [];
-    data.forEach((item: any) => {
-      if (item.project.id && item.project.name && !seen.has(item.project.id)) {
-        seen.add(item.project.id);
-        result.push({ value: item.project.id, label: item.project.name });
-      }
-    });
-    return result;
-  }, [data]);
+function ProjectFilter({ timetableFilters }: any) {
+  const { filters, filteredProjectList, setFilter } = timetableFilters;
 
   function handleChange(value: any) {
-    onChange("projects", value);
+    setFilter("projects", value);
   }
 
   const value = filters ? filters["projects"] || [] : null;
@@ -85,8 +62,9 @@ function ProjectFilter({ data, filters, onChange }: any) {
   return (
     <Select
       placeholder="All"
-      options={projectList}
+      options={filteredProjectList}
       value={value}
+      fieldNames={{ label: "name", value: "id" }}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
@@ -97,23 +75,18 @@ function ProjectFilter({ data, filters, onChange }: any) {
   );
 }
 
-export function Filters({
-  data,
-  filters,
-  setFilter,
-  resetFilters,
-  scope = null,
-}: any) {
+export function Filters({ timetableFilters, scope = null }: any) {
+  const { filters, resetFilters } = timetableFilters;
   return (
     <div className="Timetable-filters">
       {(!scope || scope.includes("date")) && (
-        <DateFilter filters={filters} onChange={setFilter} />
+        <DateFilter timetableFilters={timetableFilters} />
       )}
       {(!scope || scope.includes("user")) && (
-        <MembershipFilter data={data} filters={filters} onChange={setFilter} />
+        <MembershipFilter timetableFilters={timetableFilters} />
       )}
       {(!scope || scope.includes("project")) && (
-        <ProjectFilter data={data} filters={filters} onChange={setFilter} />
+        <ProjectFilter timetableFilters={timetableFilters} />
       )}
       <Button type="link" disabled={!filters} onClick={resetFilters}>
         Reset

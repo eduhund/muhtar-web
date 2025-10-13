@@ -46,6 +46,34 @@ export function useTimetableFilters(data: Timetable) {
     });
   }, [data, filters]);
 
+  const filteredMembershipList = useMemo(() => {
+    const seen = new Set<string>();
+    const result: { id: string; name: string }[] = [];
+    data.forEach((item: any) => {
+      if (
+        item.project.id &&
+        item.membership.name &&
+        !seen.has(item.membership.id)
+      ) {
+        seen.add(item.membership.id);
+        result.push(item.membership);
+      }
+    });
+    return result;
+  }, [data]);
+
+  const filteredProjectList = useMemo(() => {
+    const seen = new Set<string>();
+    const result: { id: string; name: string }[] = [];
+    data.forEach((item: any) => {
+      if (item.project.id && item.project.name && !seen.has(item.project.id)) {
+        seen.add(item.project.id);
+        result.push(item.project);
+      }
+    });
+    return result;
+  }, [data]);
+
   function setFilter<K extends keyof Filters>(field: K, value: Filters[K]) {
     setFilters((prev) => {
       const next = { ...(prev || {}) };
@@ -65,5 +93,12 @@ export function useTimetableFilters(data: Timetable) {
     setFilters(null);
   }
 
-  return { filters, setFilter, resetFilters, filteredList };
+  return {
+    filters,
+    filteredList,
+    filteredMembershipList,
+    filteredProjectList,
+    setFilter,
+    resetFilters,
+  };
 }
