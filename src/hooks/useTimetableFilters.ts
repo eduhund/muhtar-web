@@ -49,7 +49,11 @@ export function useTimetableFilters(data: Timetable) {
   function setFilter<K extends keyof Filters>(field: K, value: Filters[K]) {
     setFilters((prev) => {
       const next = { ...(prev || {}) };
-      if (value === undefined || (Array.isArray(value) && value.length === 0)) {
+      if (
+        value === undefined ||
+        value === null ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
         delete next[field];
       } else {
         next[field] = value;
