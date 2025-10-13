@@ -14,7 +14,6 @@ export function Summary() {
 
   return (
     <div className="container">
-      <div className="sidebar"></div>
       <div id="timetable">
         <Table
           className="timetable"

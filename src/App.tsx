@@ -9,8 +9,8 @@ import "./App.scss";
 import { UserProvider } from "./providers/UserProvider";
 import { MembershipProvider } from "./providers/MembershipProvider";
 import { TimetableProvider } from "./providers/TimetableProvider";
-import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
+import { Summary } from "./pages";
 
 const App = () => {
   return (
@@ -32,7 +32,7 @@ const App = () => {
                     </div>
                     <div className="App-content">
                       <Routes>
-                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/" element={<Summary />} />
                       </Routes>
                     </div>
                   </div>

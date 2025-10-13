@@ -1,13 +1,17 @@
 import { useState, ReactNode, useEffect } from "react";
 import { Membership, MembershipContext } from "../context/MembershipContext";
 import { membershipStorage } from "../utils/storage";
+import { membershipAPI } from "../api";
 
 export function MembershipProvider({ children }: { children: ReactNode }) {
   const [membership, setMembership] = useState<Membership | null>(null);
 
-  function checkUserToken() {
+  async function checkUserToken() {
     if (!membershipStorage.hasAccessToken()) {
-      setMembership(null);
+      console.log("No membership token found");
+    } else {
+      const userToken = membershipStorage.getAccessToken();
+      membershipAPI.setToken(userToken);
     }
   }
 
