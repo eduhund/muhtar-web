@@ -92,35 +92,23 @@ function ProjectFilter({ data, filters, onChange }: any) {
   );
 }
 
-export function Filters({ data, filters, setFilters, scope = null }: any) {
-  function handleChange(column: any, value: any) {
-    setFilters((prevFilters: any) => {
-      if (value && value.length > 0) return { ...prevFilters, [column]: value };
-      else {
-        const { [column]: _, ...rest } = prevFilters;
-        return rest;
-      }
-    });
-  }
-
-  function resetFilters() {
-    setFilters({});
-  }
-
+export function Filters({
+  data,
+  filters,
+  setFilter,
+  resetFilters,
+  scope = null,
+}: any) {
   return (
     <div className="Timetable-filters">
       {(!scope || scope.includes("date")) && (
-        <DateFilter filters={filters} onChange={handleChange} />
+        <DateFilter filters={filters} onChange={setFilter} />
       )}
       {(!scope || scope.includes("user")) && (
-        <MembershipFilter
-          data={data}
-          filters={filters}
-          onChange={handleChange}
-        />
+        <MembershipFilter data={data} filters={filters} onChange={setFilter} />
       )}
       {(!scope || scope.includes("project")) && (
-        <ProjectFilter data={data} filters={filters} onChange={handleChange} />
+        <ProjectFilter data={data} filters={filters} onChange={setFilter} />
       )}
       <Button
         type="link"

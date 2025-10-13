@@ -6,36 +6,14 @@ import { useTimetable } from "../../hooks/useTimetable";
 
 import "./Timetable.scss";
 import { Filters } from "./components/Filters";
-import { useState } from "react";
-import { dateOnlyISOString } from "../../utils/date";
+import { useTimetableFilters } from "../../hooks/useTimetableFilters";
 
 const { Title } = Typography;
 
 export function Timetable() {
-  const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const { timetable, isLoading } = useTimetable();
-
-  const filteredTimetable = timetable?.filter((entry) => {
-    return Object.entries(filters).every(([key, value]) => {
-      if (!value) return true;
-      if (key === "date") {
-        const fromDate = new Date(value[0]);
-        const toDate = new Date(value[1]);
-        fromDate.setDate(fromDate.getDate() + 1);
-        toDate.setDate(toDate.getDate() + 1);
-        const fromDateString = dateOnlyISOString(new Date(fromDate)) || null;
-        const toDateString = dateOnlyISOString(new Date(toDate)) || null;
-        if (fromDateString && entry.date < fromDateString) return false;
-        if (toDateString && entry.date > toDateString) return false;
-        return true;
-      } else if (key === "memberships") {
-        return value.includes(entry.membership?.id);
-      } else if (key === "projects") {
-        return value.includes(entry.project?.id);
-      }
-      return true;
-    });
-  });
+  const { filters, setFilter, resetFilters, filteredList } =
+    useTimetableFilters(timetable || []);
 
   const { rowSelection, onRowClick } = useSelect(timetable);
 
@@ -46,7 +24,12 @@ export function Timetable() {
           <Title level={1}>Timetable</Title>
         </div>
         {timetable?.length && (
-          <Filters data={timetable} filters={filters} setFilters={setFilters} />
+          <Filters
+            data={timetable}
+            filters={filters}
+            setFilter={setFilter}
+            resetFilters={resetFilters}
+          />
         )}
       </div>
       <div id="timetable">
@@ -57,7 +40,7 @@ export function Timetable() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={filteredTimetable || []}
+          dataSource={filteredList || []}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}
