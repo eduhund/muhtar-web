@@ -49,7 +49,7 @@ export function useTimetableFilters(data: Timetable) {
   const filteredMembershipList = useMemo(() => {
     const seen = new Set<string>();
     const result: { id: string; name: string }[] = [];
-    data.forEach((item: any) => {
+    data.forEach((item: TimetableItem) => {
       if (
         item.project.id &&
         item.membership.name &&
@@ -65,7 +65,7 @@ export function useTimetableFilters(data: Timetable) {
   const filteredProjectList = useMemo(() => {
     const seen = new Set<string>();
     const result: { id: string; name: string }[] = [];
-    data.forEach((item: any) => {
+    data.forEach((item: TimetableItem) => {
       if (item.project.id && item.project.name && !seen.has(item.project.id)) {
         seen.add(item.project.id);
         result.push(item.project);
