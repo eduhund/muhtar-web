@@ -8,5 +8,5 @@ export function useUser() {
   }
   const { user, setUser } = context;
 
-  return { user };
+  return { user, setUser };
 }
