@@ -12,11 +12,12 @@ function DateFilter({ filters, onChange }: any) {
   }
 
   const dateFormat = "DD MMMM YYYY";
+  const value = filters ? filters["date"] || [] : null;
 
   return (
     <RangePicker
       placeholder={["From", "To"]}
-      value={filters["date"] || []}
+      value={value}
       format={dateFormat}
       style={{ width: "280px" }}
       onChange={handleChange}
@@ -45,11 +46,13 @@ function MembershipFilter({ data, filters, onChange }: any) {
     onChange("memberships", value);
   }
 
+  const value = filters ? filters["memberships"] || [] : null;
+
   return (
     <Select
       placeholder="All"
       options={membershipList}
-      value={filters["memberships"] || null}
+      value={value}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
@@ -77,11 +80,13 @@ function ProjectFilter({ data, filters, onChange }: any) {
     onChange("projects", value);
   }
 
+  const value = filters ? filters["projects"] || [] : null;
+
   return (
     <Select
       placeholder="All"
       options={projectList}
-      value={filters["projects"] || null}
+      value={value}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
@@ -110,11 +115,7 @@ export function Filters({
       {(!scope || scope.includes("project")) && (
         <ProjectFilter data={data} filters={filters} onChange={setFilter} />
       )}
-      <Button
-        type="link"
-        disabled={Object.keys(filters).length === 0}
-        onClick={resetFilters}
-      >
+      <Button type="link" disabled={!filters} onClick={resetFilters}>
         Reset
       </Button>
     </div>

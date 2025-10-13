@@ -9,7 +9,7 @@ type Filters = {
 };
 
 export function useTimetableFilters(data: Timetable) {
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFilters] = useState<Filters | null>(null);
 
   function filterByDate(entry: TimetableItem, date?: [Date, Date]) {
     if (!date) return true;
@@ -36,6 +36,7 @@ export function useTimetableFilters(data: Timetable) {
   }
 
   const filteredList = useMemo(() => {
+    if (!filters) return data;
     return data.filter((entry: TimetableItem) => {
       return (
         filterByDate(entry, filters.date) &&
@@ -46,10 +47,18 @@ export function useTimetableFilters(data: Timetable) {
   }, [data, filters]);
 
   function setFilter<K extends keyof Filters>(field: K, value: Filters[K]) {
-    setFilters((prev) => ({ ...prev, [field]: value }));
+    setFilters((prev) => {
+      const next = { ...(prev || {}) };
+      if (value === undefined || (Array.isArray(value) && value.length === 0)) {
+        delete next[field];
+      } else {
+        next[field] = value;
+      }
+      return Object.keys(next).length === 0 ? null : next;
+    });
   }
   function resetFilters() {
-    setFilters({});
+    setFilters(null);
   }
 
   return { filters, setFilter, resetFilters, filteredList };
