@@ -4,10 +4,10 @@ import { columns } from "../../components/columns";
 
 import { useSelect } from "../../hooks/useSelect";
 
-import "./Summary.css";
+import "./Timetable.scss";
 import { useTimetable } from "../../hooks/useTimetable";
 
-export function Summary() {
+export function Timetable() {
   const { timetable, isLoading } = useTimetable();
 
   const { rowSelection, onRowClick } = useSelect(timetable);

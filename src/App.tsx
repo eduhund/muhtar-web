@@ -10,7 +10,7 @@ import { UserProvider } from "./providers/UserProvider";
 import { MembershipProvider } from "./providers/MembershipProvider";
 import { TimetableProvider } from "./providers/TimetableProvider";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
-import { Summary } from "./pages";
+import { Timetable } from "./pages/Timetable";
 
 const App = () => {
   return (
@@ -32,7 +32,7 @@ const App = () => {
                     </div>
                     <div className="App-content">
                       <Routes>
-                        <Route path="/" element={<Summary />} />
+                        <Route path="/" element={<Timetable />} />
                       </Routes>
                     </div>
                   </div>
