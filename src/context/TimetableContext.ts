@@ -10,7 +10,9 @@ export type Timetable = TimetableItem[];
 
 export interface TimetableContextType {
   timetable: Timetable | null;
+  isLoading: boolean;
   setTimetable: (timetable: Timetable | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 export const TimetableContext = createContext<TimetableContextType | undefined>(

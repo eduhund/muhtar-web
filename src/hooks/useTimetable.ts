@@ -1,14 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Timetable, TimetableContext } from "../context/TimetableContext";
 import { membershipAPI } from "../api";
 
 export function useTimetable() {
-  const [isLoading, setIsLoading] = useState(false);
   const context = useContext(TimetableContext);
   if (!context) {
     throw new Error("useMembership must be used within a TimetableProvider");
   }
-  const { timetable, setTimetable } = context;
+  const { timetable, isLoading, setTimetable, setIsLoading } = context;
 
   async function getTime(query: { [key: string]: string }) {
     setIsLoading(true);
