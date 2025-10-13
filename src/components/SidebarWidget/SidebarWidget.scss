@@ -1,0 +1,10 @@
+.SidebarWidget {
+  padding: 8px;
+  box-sizing: border-box;
+
+  border: 1px solid rgba($color: #ffffff, $alpha: 0.4);
+  border-radius: 16px;
+  background-color: rgba($color: #ffffff, $alpha: 0.8);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px 0 rgba($color: #141414, $alpha: 0.1);
+}

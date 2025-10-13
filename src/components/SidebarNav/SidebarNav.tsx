@@ -5,6 +5,7 @@ import { useUser } from "../../hooks/useUser";
 const { Title, Text } = Typography;
 
 import "./SidebarNav.scss";
+import { SidebarWidget } from "../SidebarWidget/SidebarWidget";
 
 export function SidebarNav() {
   const { user } = useUser();
@@ -31,10 +32,12 @@ export function SidebarNav() {
       >
         Track the Time
       </Button>
-      <div className="SidebarNav-widgets">Widgets</div>
+      <div className="SidebarNav-widgets">
+        <SidebarWidget>Widgets</SidebarWidget>
+      </div>
       {user && (
         <div className="SidebarNav-user">
-          <Avatar shape="square" size={44} icon={<UserOutlined />} />
+          <Avatar shape="square" size={40} icon={<UserOutlined />} />
           <div className="SidebarNav-user-info">
             <Title
               className="SidebarNav-user-name"
