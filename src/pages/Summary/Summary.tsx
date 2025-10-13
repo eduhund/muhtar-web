@@ -2,37 +2,15 @@ import { Table } from "antd";
 
 import { columns } from "../../components/columns";
 
-import { TotalHint } from "./TotalHint";
 import { useSelect } from "../../hooks/useSelect";
 
 import "./Summary.css";
-import { useEffect, useState } from "react";
-import { useMembership } from "../../hooks/useMembership";
+import { useTimetable } from "../../hooks/useTimetable";
 
 export function Summary() {
-  const [timeList, setTimeList] = useState<any>([]);
+  const { timetable, isLoading } = useTimetable();
 
-  const { getTimetable, isLoading } = useMembership();
-
-  async function fetchTime() {
-    const { data }: any = await getTimetable({
-      from: "2025-10-01",
-      to: "2025-10-09",
-    });
-    setTimeList(
-      data
-        .map((item: any) => {
-          return { key: item.ts, ...item };
-        })
-        .reverse()
-    );
-  }
-
-  useEffect(() => {
-    fetchTime();
-  }, []);
-
-  const { rowSelection, onRowClick } = useSelect(timeList);
+  const { rowSelection, onRowClick } = useSelect(timetable);
 
   return (
     <div className="container">
@@ -45,7 +23,7 @@ export function Summary() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={timeList}
+          dataSource={timetable || []}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}
@@ -53,13 +31,6 @@ export function Summary() {
           loading={isLoading}
         />
       </div>
-
-      <TotalHint
-        data={timeList}
-        filteredData={timeList}
-        filters={{}}
-        selection={rowSelection}
-      />
     </div>
   );
 }

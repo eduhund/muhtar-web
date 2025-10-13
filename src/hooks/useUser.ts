@@ -1,7 +1,5 @@
 import { useContext } from "react";
-import { User, UserContext } from "../context/UserContext";
-import { userStorage } from "../utils/storage";
-import { userAPI } from "../api";
+import { UserContext } from "../context/UserContext";
 
 export function useUser() {
   const context = useContext(UserContext);
@@ -9,12 +7,6 @@ export function useUser() {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user, setUser } = context;
-  const userToken = userStorage.getAccessToken();
-  userAPI.setToken(userToken);
 
-  function updateUser(newUser: User | null) {
-    setUser(newUser);
-  }
-
-  return { user, updateUser };
+  return { user };
 }
