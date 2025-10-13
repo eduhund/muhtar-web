@@ -7,6 +7,7 @@ import { useTimetable } from "../../hooks/useTimetable";
 import "./Timetable.scss";
 import { Filters } from "./components/Filters";
 import { useState } from "react";
+import { dateOnlyISOString } from "../../utils/date";
 
 const { Title } = Typography;
 
@@ -17,10 +18,17 @@ export function Timetable() {
 
   const filteredTimetable = timetable?.filter((entry) => {
     return Object.entries(filters).every(([key, value]) => {
-      console.log(entry, key, value);
       if (!value) return true;
       if (key === "date") {
-        return entry.date === value;
+        const fromDate = new Date(value[0]);
+        const toDate = new Date(value[1]);
+        fromDate.setDate(fromDate.getDate() + 1);
+        toDate.setDate(toDate.getDate() + 1);
+        const fromDateString = dateOnlyISOString(new Date(fromDate)) || null;
+        const toDateString = dateOnlyISOString(new Date(toDate)) || null;
+        if (fromDateString && entry.date < fromDateString) return false;
+        if (toDateString && entry.date > toDateString) return false;
+        return true;
       } else if (key === "memberships") {
         return value.includes(entry.membership?.id);
       } else if (key === "projects") {
