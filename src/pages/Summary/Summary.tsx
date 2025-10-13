@@ -14,10 +14,16 @@ export function Summary() {
 
   const { getTime, isLoading } = useMembership();
 
-  useEffect(() => {
-    getTime({ from: "2025-10-01", to: "2025-10-09" }).then(({ data = [] }) => {
-      setTimeList(data);
+  async function fetchTime() {
+    const { data }: any = await getTime({
+      from: "2025-10-01",
+      to: "2025-10-09",
     });
+    setTimeList(data.reverse());
+  }
+
+  useEffect(() => {
+    fetchTime();
   }, []);
 
   const { rowSelection, onRowClick } = useSelect(timeList);

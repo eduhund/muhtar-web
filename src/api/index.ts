@@ -59,7 +59,7 @@ class UserAPI extends privateAPI {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.get(`${this.prefix}/me`, this.token);
+    return this.controller.get(`${this.prefix}/getMe`, this.token);
   }
 
   async changeTeam(teamId: string) {
