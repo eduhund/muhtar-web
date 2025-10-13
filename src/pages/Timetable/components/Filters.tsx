@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { DatePicker, Select, Button } from "antd";
 
 import { defaultListSort } from "../../../utils/helpers";
@@ -8,7 +6,7 @@ const { RangePicker } = DatePicker;
 
 function DateFilter({ timetableFilters }: any) {
   const { filters, setFilter } = timetableFilters;
-  function handleChange(date: any) {
+  function handleChange(date: [any, any] | null) {
     setFilter("date", date);
   }
 
@@ -28,7 +26,7 @@ function DateFilter({ timetableFilters }: any) {
 
 function MembershipFilter({ timetableFilters }: any) {
   const { filters, filteredMembershipList, setFilter } = timetableFilters;
-  function handleChange(value: any) {
+  function handleChange(value: string[]) {
     setFilter("memberships", value);
   }
 
@@ -53,7 +51,7 @@ function MembershipFilter({ timetableFilters }: any) {
 function ProjectFilter({ timetableFilters }: any) {
   const { filters, filteredProjectList, setFilter } = timetableFilters;
 
-  function handleChange(value: any) {
+  function handleChange(value: string[]) {
     setFilter("projects", value);
   }
 

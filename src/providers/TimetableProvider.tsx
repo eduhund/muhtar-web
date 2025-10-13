@@ -8,10 +8,10 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
 
   async function initTimetable() {
     setIsLoading(true);
-    const { data } = (await membershipAPI.getTimetable({
+    const { data } = await membershipAPI.getTimetable({
       from: "2025-10-01",
       to: "2025-10-10",
-    })) as any;
+    });
     if (data) {
       setTimetable(data);
     } else {

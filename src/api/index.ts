@@ -1,3 +1,4 @@
+import { Timetable } from "../context/TimetableContext";
 import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
@@ -12,6 +13,8 @@ type LoginResponseDataType = {
     membership: accessTokenType;
   };
 };
+
+type GetTimetableResponseDataType = Timetable;
 
 const apiController = new APIController(BASE_URI);
 
@@ -85,7 +88,9 @@ class MembershipAPI extends privateAPI {
     return this.controller.get(`${this.prefix}/getTime`, this.token, query);
   }
 
-  async getTimetable(query: { [key: string]: string }) {
+  async getTimetable(query: {
+    [key: string]: string;
+  }): Promise<ApiResponse<GetTimetableResponseDataType>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
