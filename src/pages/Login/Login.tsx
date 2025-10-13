@@ -47,7 +47,7 @@ const Login = () => {
     <div className="login-page">
       <div className="login-logo-wrapper">
         <img
-          src="/assets/img/muhtar_logo.png"
+          src="/assets/img/muhtar-logo_circle.png"
           alt="Muhtar Logo"
           className="login-logo"
         />

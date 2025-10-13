@@ -10,7 +10,19 @@ export function SidebarNav() {
   const { user } = useUser();
   return (
     <nav className="SidebarNav">
-      <div className="SidebarNav-header"></div>
+      <div className="SidebarNav-header">
+        <img
+          src="/assets/img/muhtar-logo_round.png"
+          width={32}
+          height={32}
+          alt="Muhtar Logo"
+          className="SidebarNav-logo"
+        />
+        <div className="SidebarNav-header-divider"></div>
+        <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
+          Sobakapav
+        </Title>
+      </div>
       <Button size="large" type="primary" disabled>
         Track the Time
       </Button>

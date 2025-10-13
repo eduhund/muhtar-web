@@ -13,6 +13,19 @@
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 24px 0 rgba($color: #141414, $alpha: 0.1);
 
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+
+    &-divider {
+      width: 1px;
+      height: 24px;
+      background-color: #ccccccdd;
+    }
+  }
+
   &-widgets {
     display: flex;
     flex-direction: column;
