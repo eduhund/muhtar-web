@@ -1,5 +1,5 @@
 export function defaultListSort(optionA: any, optionB: any): number {
-  return (optionA?.value ?? "")
+  return (optionA?.label ?? "")
     .toLowerCase()
-    .localeCompare((optionB?.value ?? "").toLowerCase());
+    .localeCompare((optionB?.label ?? "").toLowerCase());
 }

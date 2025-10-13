@@ -13,6 +13,22 @@ const { Title } = Typography;
 export function Timetable() {
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const { timetable, isLoading } = useTimetable();
+  console.log(timetable, filters);
+
+  const filteredTimetable = timetable?.filter((entry) => {
+    return Object.entries(filters).every(([key, value]) => {
+      console.log(entry, key, value);
+      if (!value) return true;
+      if (key === "date") {
+        return entry.date === value;
+      } else if (key === "memberships") {
+        return value.includes(entry.membership?.id);
+      } else if (key === "projects") {
+        return value.includes(entry.project?.id);
+      }
+      return true;
+    });
+  });
 
   const { rowSelection, onRowClick } = useSelect(timetable);
 
@@ -34,7 +50,7 @@ export function Timetable() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={timetable || []}
+          dataSource={filteredTimetable || []}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}

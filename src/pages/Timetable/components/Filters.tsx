@@ -27,7 +27,7 @@ function DateFilter({ filters, onChange }: any) {
 function MembershipFilter({ data, filters, onChange }: any) {
   const membershipList = useMemo(() => {
     const seen = new Set<string>();
-    const result: { value: string; key: string }[] = [];
+    const result: { value: string; label: string }[] = [];
     data.forEach((item: any) => {
       if (
         item.project.id &&
@@ -35,7 +35,7 @@ function MembershipFilter({ data, filters, onChange }: any) {
         !seen.has(item.membership.id)
       ) {
         seen.add(item.membership.id);
-        result.push({ value: item.membership.name, key: item.membership.id });
+        result.push({ value: item.membership.id, label: item.membership.name });
       }
     });
     return result;
@@ -49,8 +49,7 @@ function MembershipFilter({ data, filters, onChange }: any) {
     <Select
       placeholder="All"
       options={membershipList}
-      value={filters["userName"] || null}
-      optionFilterProp="value"
+      value={filters["memberships"] || null}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
@@ -64,11 +63,11 @@ function MembershipFilter({ data, filters, onChange }: any) {
 function ProjectFilter({ data, filters, onChange }: any) {
   const projectList = useMemo(() => {
     const seen = new Set<string>();
-    const result: { value: string; key: string }[] = [];
+    const result: { value: string; label: string }[] = [];
     data.forEach((item: any) => {
       if (item.project.id && item.project.name && !seen.has(item.project.id)) {
         seen.add(item.project.id);
-        result.push({ value: item.project.name, key: item.project.id });
+        result.push({ value: item.project.id, label: item.project.name });
       }
     });
     return result;
@@ -82,8 +81,7 @@ function ProjectFilter({ data, filters, onChange }: any) {
     <Select
       placeholder="All"
       options={projectList}
-      value={filters["projectName"] || null}
-      optionFilterProp="value"
+      value={filters["projects"] || null}
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
