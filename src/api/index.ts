@@ -2,15 +2,14 @@ import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
 
+type accessTokenType = {
+  accessToken: string;
+};
+
 type LoginResponseDataType = {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
   tokens: {
-    user: string;
-    membership: string;
+    user: accessTokenType;
+    membership: accessTokenType;
   };
 };
 

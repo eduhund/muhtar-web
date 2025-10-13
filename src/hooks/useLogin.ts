@@ -9,8 +9,8 @@ export function useLogin() {
     setIsLoading(true);
     const { OK, data, error } = await authAPI.login(email, password);
     if (data) {
-      userStorage.setAccessToken(data.tokens.user);
-      membershipStorage.setAccessToken(data.tokens.membership);
+      userStorage.setAccessToken(data.tokens.user.accessToken);
+      membershipStorage.setAccessToken(data.tokens.membership.accessToken);
       setIsLoading(false);
     }
 
