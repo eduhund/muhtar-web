@@ -14,7 +14,6 @@ const { Title } = Typography;
 export function Timetable() {
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const { timetable, isLoading } = useTimetable();
-  console.log(timetable, filters);
 
   const filteredTimetable = timetable?.filter((entry) => {
     return Object.entries(filters).every(([key, value]) => {

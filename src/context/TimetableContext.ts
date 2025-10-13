@@ -2,8 +2,12 @@ import { createContext } from "react";
 
 export interface TimetableItem {
   id: string;
-  name: string;
-  email?: string;
+  ts: number; // timestamp
+  project: { id: string; name: string };
+  membership: { id: string; name: string };
+  date: string; // YYYY-MM-DD
+  duration: number; // in minutes
+  comment: string;
 }
 
 export type Timetable = TimetableItem[];

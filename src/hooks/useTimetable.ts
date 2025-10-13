@@ -7,6 +7,7 @@ export function useTimetable() {
   if (!context) {
     throw new Error("useMembership must be used within a TimetableProvider");
   }
+
   const { timetable, isLoading, setTimetable, setIsLoading } = context;
 
   async function getTime(query: { [key: string]: string }) {
