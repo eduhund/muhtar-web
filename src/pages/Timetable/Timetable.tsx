@@ -7,6 +7,7 @@ import { useTimetable } from "../../hooks/useTimetable";
 import "./Timetable.scss";
 import { Filters } from "./components/Filters";
 import { useTimetableFilters } from "../../hooks/useTimetableFilters";
+import { TimetableItem } from "../../context/TimetableContext";
 
 const { Title } = Typography;
 
@@ -40,7 +41,9 @@ export function Timetable() {
             showSizeChanger: false,
             pageSize: 200,
           }}
-          dataSource={filteredList || []}
+          dataSource={(filteredList || []).map((item: TimetableItem) => {
+            return { key: item.id, ...item };
+          })}
           columns={columns}
           rowSelection={rowSelection}
           onRow={onRowClick}
