@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { DatePicker, Select, Button } from "antd";
 
-import { defaultListSort } from "../utils/helpers";
+import { defaultListSort } from "../../../utils/helpers";
 
 const { RangePicker } = DatePicker;
 
@@ -15,40 +15,47 @@ function DateFilter({ filters, onChange }: any) {
 
   return (
     <RangePicker
-      placeholder={["Начало периода", "Конец периода"]}
+      placeholder={["From", "To"]}
       value={filters["date"] || []}
       format={dateFormat}
-      style={{ width: "320px" }}
+      style={{ width: "280px" }}
       onChange={handleChange}
     />
   );
 }
 
-function EmployeeFilter({ data, filters, onChange }: any) {
-  const userList = useMemo(() => {
-    return data.reduce((acc: any, item: any) => {
-      if (!acc.some((obj: any) => obj.value === item.userName)) {
-        acc.push({ value: item.userName });
+function MembershipFilter({ data, filters, onChange }: any) {
+  const membershipList = useMemo(() => {
+    const seen = new Set<string>();
+    const result: { value: string; key: string }[] = [];
+    data.forEach((item: any) => {
+      if (
+        item.project.id &&
+        item.membership.name &&
+        !seen.has(item.membership.id)
+      ) {
+        seen.add(item.membership.id);
+        result.push({ value: item.membership.name, key: item.membership.id });
       }
-      return acc;
-    }, []);
+    });
+    return result;
   }, [data]);
 
   function handleChange(value: any) {
-    onChange("userName", value);
+    onChange("memberships", value);
   }
 
   return (
     <Select
-      placeholder="Все"
-      options={userList}
+      placeholder="All"
+      options={membershipList}
       value={filters["userName"] || null}
       optionFilterProp="value"
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
-      prefix="Сотрудники"
-      style={{ width: "320px" }}
+      prefix="Memberships"
+      style={{ width: "240px" }}
       onChange={handleChange}
     />
   );
@@ -56,42 +63,39 @@ function EmployeeFilter({ data, filters, onChange }: any) {
 
 function ProjectFilter({ data, filters, onChange }: any) {
   const projectList = useMemo(() => {
-    return data.reduce((acc: any, item: any) => {
-      if (!acc.some((obj: any) => obj.value === item.projectName)) {
-        acc.push({ value: item.projectName });
+    const seen = new Set<string>();
+    const result: { value: string; key: string }[] = [];
+    data.forEach((item: any) => {
+      if (item.project.id && item.project.name && !seen.has(item.project.id)) {
+        seen.add(item.project.id);
+        result.push({ value: item.project.name, key: item.project.id });
       }
-      return acc;
-    }, []);
+    });
+    return result;
   }, [data]);
 
   function handleChange(value: any) {
-    onChange("projectName", value);
+    onChange("projects", value);
   }
 
   return (
     <Select
-      placeholder="Все"
+      placeholder="All"
       options={projectList}
       value={filters["projectName"] || null}
       optionFilterProp="value"
       filterSort={defaultListSort}
       mode="multiple"
       allowClear
-      prefix="Проекты"
-      style={{ width: "320px" }}
+      prefix="Projects"
+      style={{ width: "240px" }}
       onChange={handleChange}
     />
   );
 }
 
-export function Filters({
-  data,
-  filters,
-  setFilters,
-  resetFilters,
-  scope = null,
-}: any) {
-  const handleChange = (column: any, value: any) => {
+export function Filters({ data, filters, setFilters, scope = null }: any) {
+  function handleChange(column: any, value: any) {
     setFilters((prevFilters: any) => {
       if (value && value.length > 0) return { ...prevFilters, [column]: value };
       else {
@@ -99,15 +103,23 @@ export function Filters({
         return rest;
       }
     });
-  };
+  }
+
+  function resetFilters() {
+    setFilters({});
+  }
 
   return (
-    <div id="timetable_filters">
+    <div className="Timetable-filters">
       {(!scope || scope.includes("date")) && (
         <DateFilter filters={filters} onChange={handleChange} />
       )}
       {(!scope || scope.includes("user")) && (
-        <EmployeeFilter data={data} filters={filters} onChange={handleChange} />
+        <MembershipFilter
+          data={data}
+          filters={filters}
+          onChange={handleChange}
+        />
       )}
       {(!scope || scope.includes("project")) && (
         <ProjectFilter data={data} filters={filters} onChange={handleChange} />
@@ -117,7 +129,7 @@ export function Filters({
         disabled={Object.keys(filters).length === 0}
         onClick={resetFilters}
       >
-        Сбросить фильтры
+        Reset
       </Button>
     </div>
   );

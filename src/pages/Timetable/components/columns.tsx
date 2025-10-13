@@ -36,8 +36,8 @@ export const columns: TableProps<DataType>["columns"] = [
   },
   {
     title: "Who",
-    dataIndex: "userName",
-    key: "userName",
+    dataIndex: "membershipName",
+    key: "membershipName",
     width: 180,
     render: (_: unknown, { membership }: DataType) => membership.name,
   },
