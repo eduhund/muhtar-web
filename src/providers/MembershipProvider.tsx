@@ -3,10 +3,18 @@ import { Membership, MembershipContext } from "../context/MembershipContext";
 import { membershipStorage } from "../utils/storage";
 import { membershipAPI } from "../api";
 
-export function MembershipProvider({ children }: { children: ReactNode }) {
-  const [membership, setMembership] = useState<Membership | null>(null);
+export function MembershipProvider({
+  children,
+  membership,
+}: {
+  children: ReactNode;
+  membership: Membership | null;
+}) {
+  const [activeMembership, setMembership] = useState<Membership | null>(
+    membership
+  );
 
-  async function checkUserToken() {
+  async function checkMembershioToken() {
     if (!membershipStorage.hasAccessToken()) {
       console.log("No membership token found");
     } else {
@@ -16,11 +24,13 @@ export function MembershipProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    checkUserToken();
+    checkMembershioToken();
   }, []);
 
   return (
-    <MembershipContext.Provider value={{ membership, setMembership }}>
+    <MembershipContext.Provider
+      value={{ membership: activeMembership, setMembership }}
+    >
       {children}
     </MembershipContext.Provider>
   );

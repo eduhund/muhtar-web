@@ -7,7 +7,6 @@ import Login from "./pages/Login/Login";
 
 import "./App.scss";
 import { UserProvider } from "./providers/UserProvider";
-import { MembershipProvider } from "./providers/MembershipProvider";
 import { TimetableProvider } from "./providers/TimetableProvider";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
 import { Timetable } from "./pages/Timetable";
@@ -24,20 +23,18 @@ const App = () => {
           path="/*"
           element={
             <UserProvider>
-              <MembershipProvider>
-                <TimetableProvider>
-                  <div className="App-container">
-                    <div className="App-sidebar">
-                      <SidebarNav />
-                    </div>
-                    <div className="App-content">
-                      <Routes>
-                        <Route path="/" element={<Timetable />} />
-                      </Routes>
-                    </div>
+              <TimetableProvider>
+                <div className="App-container">
+                  <div className="App-sidebar">
+                    <SidebarNav />
                   </div>
-                </TimetableProvider>
-              </MembershipProvider>
+                  <div className="App-content">
+                    <Routes>
+                      <Route path="/" element={<Timetable />} />
+                    </Routes>
+                  </div>
+                </div>
+              </TimetableProvider>
             </UserProvider>
           }
         />
