@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   User,
   Membership,
@@ -14,44 +14,82 @@ function redirectToLogin() {
   window.location.replace("/login");
 }
 
-export function AppProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [membership, setMembership] = useState<Membership | null>(null);
-  const [memberships, setMemberships] = useState<Membership[] | null>(null);
-  const [team, setTeam] = useState<Team | null>(null);
-  const [projects, setProjects] = useState<Project[] | null>(null);
-  const [timetable, setTimetable] = useState<Timetable | null>(null);
+type AppState = {
+  user: User | null;
+  userLoading: boolean;
+  membership: Membership | null;
+  membershipLoading: boolean;
+  memberships: Membership[] | null;
+  membershipsLoading: boolean;
+  team: Team | null;
+  teamLoading: boolean;
+  projects: Project[] | null;
+  projectsLoading: boolean;
+  timetable: Timetable | null;
+  timetableLoading: boolean;
+};
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [state, setState] = useState<AppState>({
+    user: null,
+    userLoading: false,
+    membership: null,
+    membershipLoading: false,
+    memberships: null,
+    membershipsLoading: false,
+    team: null,
+    teamLoading: false,
+    projects: null,
+    projectsLoading: false,
+    timetable: null,
+    timetableLoading: false,
+  });
 
   function logOut() {
     userStorage.clear();
     membershipStorage.clear();
-    setUser(null);
-    setMembership(null);
-    setTeam(null);
-    setProjects(null);
-    setTimetable(null);
-    setMemberships(null);
+    setState((prev) => ({
+      ...prev,
+      user: null,
+      membership: null,
+      team: null,
+      projects: null,
+      timetable: null,
+      memberships: null,
+    }));
     redirectToLogin();
   }
 
   async function initUserData() {
+    setState((prev) => ({
+      ...prev,
+      userLoading: true,
+      membershipLoading: true,
+      teamLoading: true,
+    }));
     const { data } = (await userAPI.getMe()) as any;
     if (data) {
-      setUser(data);
-      setMembership(data.activeMembership || null);
-      setTeam(data.activeMembership?.team || null);
+      setState((prev) => ({
+        ...prev,
+        user: data,
+        membership: data.activeMembership || null,
+        team: data.activeMembership?.team || null,
+        userLoading: false,
+        membershipLoading: false,
+        teamLoading: false,
+      }));
     } else {
       logOut();
     }
   }
 
   async function initTimetable() {
+    setState((prev) => ({ ...prev, timetableLoading: true }));
     const { data } = await membershipAPI.getTimetable({});
-    if (data) {
-      setTimetable(data);
-    } else {
-      setTimetable(null);
-    }
+    setState((prev) => ({
+      ...prev,
+      timetable: data || null,
+      timetableLoading: false,
+    }));
   }
 
   async function initProvider() {
@@ -71,23 +109,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     initProvider();
   }, []);
 
+  const updateState = (partialState: Partial<AppContext>) => {
+    setState((prev) => ({ ...prev, ...partialState }));
+  };
+
   return (
-    <AppContext.Provider
-      value={{
-        user,
-        membership,
-        projects,
-        memberships,
-        team,
-        timetable,
-        setUser,
-        setMembership,
-        setProjects,
-        setMemberships,
-        setTeam,
-        setTimetable,
-      }}
-    >
+    <AppContext.Provider value={{ ...state, updateState }}>
       {children}
     </AppContext.Provider>
   );

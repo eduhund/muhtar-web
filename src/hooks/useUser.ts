@@ -6,7 +6,11 @@ export function useUser() {
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
-  const { user, setUser } = context;
+  const { user, updateState } = context;
 
-  return { user, setUser };
+  function updateUser(newUser: typeof user) {
+    updateState({ user: newUser });
+  }
+
+  return { user, updateUser };
 }

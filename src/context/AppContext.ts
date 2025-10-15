@@ -83,17 +83,18 @@ export type Timetable = TimetableItem[];
 
 export interface AppContext {
   user: User | null;
+  userLoading?: boolean;
   membership?: Membership | null;
+  membershipLoading?: boolean;
   team?: Team | null;
+  teamLoading?: boolean;
   memberships?: Membership[] | null;
+  membershipsLoading?: boolean;
   projects?: Project[] | null;
+  projectsLoading?: boolean;
   timetable?: Timetable | null;
-  setUser: (user: User | null) => void;
-  setMembership: (membership: Membership | null) => void;
-  setProjects: (projects: Project[] | null) => void;
-  setMemberships: (memberships: Membership[] | null) => void;
-  setTeam: (team: Team | null) => void;
-  setTimetable: (timetable: Timetable | null) => void;
+  timetableLoading?: boolean;
+  updateState: (state: Partial<AppContext>) => void;
 }
 
 export const AppContext = createContext<AppContext | undefined>(undefined);

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Timetable, AppContext } from "../context/AppContext";
+import { AppContext } from "../context/AppContext";
 import { membershipAPI } from "../api";
 
 export function useTimetable() {
@@ -8,19 +8,12 @@ export function useTimetable() {
     throw new Error("useMembership must be used within a TimetableProvider");
   }
 
-  const { timetable, setTimetable } = context;
+  const { timetable, timetableLoading } = context;
 
   async function getTime(query: { [key: string]: string }) {
     const data = await membershipAPI.getTime(query);
     return data;
   }
 
-  async function getTimetable(query: { [key: string]: string }) {
-    const { data } = (await membershipAPI.getTimetable(query)) as {
-      data: Timetable | null;
-    };
-    setTimetable(data || null);
-  }
-
-  return { timetable, getTime, getTimetable };
+  return { timetable, isLoading: timetableLoading, getTime };
 }
