@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
 import { dateFormat } from "../../../utils/date";
+import { useState } from "react";
 
 type FieldType = {
   date: string;
@@ -18,6 +19,8 @@ type FieldType = {
 const { TextArea } = Input;
 
 export function AddTimeWidget() {
+  const [isMinutesAdded, setIsMinutesAdded] = useState(false);
+
   async function onFinish(values: FieldType) {
     console.log("Success:", values);
   }
@@ -59,7 +62,12 @@ export function AddTimeWidget() {
         <div className="SidebarWidget-formRow">
           <Form.Item<FieldType>
             name="duration"
-            rules={[{ required: true, message: "Write at least 0.5!" }]}
+            rules={[
+              {
+                required: !isMinutesAdded,
+                message: "Write at least 1 or minutes!",
+              },
+            ]}
           >
             <InputNumber
               placeholder="0"
@@ -71,7 +79,7 @@ export function AddTimeWidget() {
           </Form.Item>
           <Form.Item<FieldType>
             name="duration_minutes"
-            rules={[{ required: true, message: "Write at least 1!" }]}
+            rules={[{ required: isMinutesAdded, message: "Write at least 1!" }]}
           >
             <InputNumber
               placeholder="0"
@@ -80,6 +88,7 @@ export function AddTimeWidget() {
               max={59}
               step={15}
               style={{ width: 139 }}
+              onChange={(value) => setIsMinutesAdded(!!value && value > 0)}
             />
           </Form.Item>
         </div>
