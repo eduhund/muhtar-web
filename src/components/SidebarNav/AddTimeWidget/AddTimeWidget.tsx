@@ -1,16 +1,14 @@
-import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import type { FormProps } from "antd";
 import dayjs from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
 import { dateFormat } from "../../../utils/date";
-import { useState } from "react";
 
 type FieldType = {
   date: string;
   duration: string;
-  duration_minutes: string;
   project: string;
   task?: string;
   comment?: string;
@@ -19,8 +17,6 @@ type FieldType = {
 const { TextArea } = Input;
 
 export function AddTimeWidget() {
-  const [isMinutesAdded, setIsMinutesAdded] = useState(false);
-
   async function onFinish(values: FieldType) {
     console.log("Success:", values);
   }
@@ -48,50 +44,27 @@ export function AddTimeWidget() {
       >
         <Form.Item<FieldType>
           name="date"
+          initialValue={today}
           rules={[{ required: true, message: "Date can't be empty!" }]}
         >
           <DatePicker
             prefix="Date"
             placeholder="Select..."
             format={dateFormat}
-            defaultValue={today}
             maxDate={today}
+            allowClear={false}
             style={{ width: "100%" }}
           />
         </Form.Item>
-        <div className="SidebarWidget-formRow">
-          <Form.Item<FieldType>
-            name="duration"
-            rules={[
-              {
-                required: !isMinutesAdded,
-                message: "Write at least 1 or minutes!",
-              },
-            ]}
-          >
-            <InputNumber
-              placeholder="0"
-              prefix="Hours"
-              min={0}
-              step={1}
-              style={{ width: 139 }}
-            />
-          </Form.Item>
-          <Form.Item<FieldType>
-            name="duration_minutes"
-            rules={[{ required: isMinutesAdded, message: "Write at least 1!" }]}
-          >
-            <InputNumber
-              placeholder="0"
-              prefix="Minutes"
-              min={0}
-              max={59}
-              step={15}
-              style={{ width: 139 }}
-              onChange={(value) => setIsMinutesAdded(!!value && value > 0)}
-            />
-          </Form.Item>
-        </div>
+        <Form.Item<FieldType>>
+          <Select placeholder="0" prefix="Hours" style={{ width: "100%" }}>
+            {Array.from({ length: 20 }, (_, i) => (
+              <Select.Option key={(i + 1) / 2} value={(i + 1) / 2}>
+                {(i + 1) / 2}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
         <Form.Item<FieldType>
           name="project"
@@ -103,6 +76,7 @@ export function AddTimeWidget() {
             value={{}}
             fieldNames={{ label: "name", value: "id" }}
             prefix="Project"
+            allowClear={false}
             style={{ width: "100%" }}
             onChange={() => {}}
           />
@@ -115,6 +89,7 @@ export function AddTimeWidget() {
             value={{}}
             fieldNames={{ label: "name", value: "id" }}
             prefix="Task"
+            allowClear={false}
             style={{ width: "100%" }}
             onChange={() => {}}
             disabled
@@ -122,7 +97,7 @@ export function AddTimeWidget() {
         </Form.Item>
 
         <Form.Item<FieldType> name="comment">
-          <TextArea rows={4} placeholder="What were you doing?" />
+          <TextArea rows={3} placeholder="What were you doing?" />
         </Form.Item>
 
         <Form.Item label={null} style={{ marginBottom: 0 }}>
