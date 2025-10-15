@@ -1,5 +1,5 @@
-import { Avatar, Button, Typography } from "antd";
-import { PlusCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Typography } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { useUser } from "../../hooks/useUser";
 
 import { AddTimeWidget } from "./AddTimeWidget/AddTimeWidget";
@@ -25,14 +25,6 @@ export function SidebarNav() {
           Sobakapav
         </Title>
       </div>
-      <Button
-        size="large"
-        type="primary"
-        icon={<PlusCircleOutlined />}
-        iconPosition="start"
-      >
-        Track the Time
-      </Button>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
       </div>

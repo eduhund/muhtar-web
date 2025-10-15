@@ -1,6 +1,7 @@
 import { DatePicker, Select, Button } from "antd";
 
 import { defaultListSort } from "../../../utils/helpers";
+import { dateFormat } from "../../../utils/date";
 
 const { RangePicker } = DatePicker;
 
@@ -10,7 +11,6 @@ function DateFilter({ timetableFilters }: any) {
     setFilter("date", date);
   }
 
-  const dateFormat = "DD MMMM YYYY";
   const value = filters ? filters["date"] || [] : null;
 
   return (

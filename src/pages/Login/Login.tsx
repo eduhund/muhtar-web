@@ -3,9 +3,9 @@ import type { FormProps } from "antd";
 import { Button, Form, Input, Typography } from "antd";
 
 import { useLogin } from "../../hooks/useLogin";
+import { userStorage } from "../../utils/storage";
 
 import "./Login.scss";
-import { userStorage } from "../../utils/storage";
 
 type FieldType = {
   email?: string;
