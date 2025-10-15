@@ -66,6 +66,7 @@ export interface Team {
 export interface Project {
   id: string;
   name: string;
+  customer: string | null;
   isArchived: boolean;
 }
 

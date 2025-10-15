@@ -92,6 +92,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
+  async function initProjects() {
+    setState((prev) => ({ ...prev, projectsLoading: true }));
+    const { data } = await membershipAPI.getProjects();
+    setState((prev) => ({
+      ...prev,
+      projects: (data as Project[]) || null,
+      projectsLoading: false,
+    }));
+  }
+
   async function initProvider() {
     if (!userStorage.hasAccessToken()) {
       logOut();
@@ -101,8 +111,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userAPI.setToken(userToken);
       membershipAPI.setToken(membershipToken);
     }
-    await initUserData();
-    await initTimetable();
+    initUserData();
+    initTimetable();
+    initProjects();
   }
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
 import { dateFormat } from "../../../utils/date";
+import { useProjects } from "../../../hooks/useProjects";
 
 type FieldType = {
   date: string;
@@ -17,6 +18,14 @@ type FieldType = {
 const { TextArea } = Input;
 
 export function AddTimeWidget() {
+  const { projects, isLoading } = useProjects();
+
+  const selectorItems = projects?.map((project) => ({
+    label: project.customer
+      ? `${project.customer} / ${project.name}`
+      : project.name,
+    value: project.id,
+  }));
   async function onFinish(values: FieldType) {
     console.log("Success:", values);
   }
@@ -57,7 +66,12 @@ export function AddTimeWidget() {
           />
         </Form.Item>
         <Form.Item<FieldType>>
-          <Select placeholder="0" prefix="Hours" style={{ width: "100%" }}>
+          <Select
+            showSearch
+            placeholder="0"
+            prefix="Hours"
+            style={{ width: "100%" }}
+          >
             {Array.from({ length: 20 }, (_, i) => (
               <Select.Option key={(i + 1) / 2} value={(i + 1) / 2}>
                 {(i + 1) / 2}
@@ -71,19 +85,24 @@ export function AddTimeWidget() {
           rules={[{ required: true, message: "Please select a project!" }]}
         >
           <Select
+            showSearch
             placeholder="Select..."
-            options={[]}
+            options={selectorItems || []}
             value={{}}
-            fieldNames={{ label: "name", value: "id" }}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
             prefix="Project"
             allowClear={false}
             style={{ width: "100%" }}
+            loading={isLoading}
             onChange={() => {}}
           />
         </Form.Item>
 
         <Form.Item<FieldType> name="task">
           <Select
+            showSearch
             placeholder="Select..."
             options={[]}
             value={{}}
