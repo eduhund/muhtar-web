@@ -54,6 +54,7 @@ export interface Membership {
     isActive: boolean;
   };
   connecttions: ConnectionList;
+  team?: { id: string; name: string } | null;
 }
 
 export interface Team {

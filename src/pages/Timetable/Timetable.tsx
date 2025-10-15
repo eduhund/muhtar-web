@@ -7,7 +7,7 @@ import { useTimetable } from "../../hooks/useTimetable";
 import "./Timetable.scss";
 import { Filters } from "./components/Filters";
 import { useTimetableFilters } from "../../hooks/useTimetableFilters";
-import { TimetableItem } from "../../context/TimetableContext";
+import { TimetableItem } from "../../context/AppContext";
 
 const { Title } = Typography;
 
