@@ -13,19 +13,21 @@ export function MembershipProvider({
   const [activeMembership, setMembership] = useState<Membership | null>(
     membership
   );
+  const [isReady, setIsReady] = useState(false);
 
   async function checkMembershioToken() {
-    if (!membershipStorage.hasAccessToken()) {
-      console.log("No membership token found");
-    } else {
-      const userToken = membershipStorage.getAccessToken();
-      membershipAPI.setToken(userToken);
+    const token = membershipStorage.getAccessToken();
+    if (token) {
+      membershipAPI.setToken(token);
     }
+    setIsReady(true);
   }
 
   useEffect(() => {
     checkMembershioToken();
   }, []);
+
+  if (!isReady) return null;
 
   return (
     <MembershipContext.Provider
