@@ -32,6 +32,13 @@ export const userStorage = (() => {
       userAPI.setToken(null);
     },
     hasAccessToken: () => StorageAdapter.hasItem(`${prefix}accessToken`),
+    clear: () => {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith(prefix)) {
+          StorageAdapter.removeItem(key);
+        }
+      });
+    },
   };
 })();
 
@@ -49,5 +56,12 @@ export const membershipStorage = (() => {
       membershipAPI.setToken(null);
     },
     hasAccessToken: () => StorageAdapter.hasItem(`${prefix}accessToken`),
+    clear: () => {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith(prefix)) {
+          StorageAdapter.removeItem(key);
+        }
+      });
+    },
   };
 })();

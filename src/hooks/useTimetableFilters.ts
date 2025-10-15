@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Timetable, TimetableItem } from "../context/TimetableContext";
+import { Timetable, TimetableItem } from "../context/AppContext";
 import { dateOnlyISOString } from "../utils/date";
 
 type Filters = {

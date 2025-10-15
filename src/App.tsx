@@ -6,10 +6,9 @@ import enUS from "antd/lib/locale/en_US";
 import Login from "./pages/Login/Login";
 
 import "./App.scss";
-import { UserProvider } from "./providers/UserProvider";
-import { TimetableProvider } from "./providers/TimetableProvider";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
 import { Timetable } from "./pages/Timetable";
+import { AppProvider } from "./providers/AppProvider";
 
 const App = () => {
   return (
@@ -22,20 +21,18 @@ const App = () => {
         <Route
           path="/*"
           element={
-            <UserProvider>
-              <TimetableProvider>
-                <div className="App-container">
-                  <div className="App-sidebar">
-                    <SidebarNav />
-                  </div>
-                  <div className="App-content">
-                    <Routes>
-                      <Route path="/" element={<Timetable />} />
-                    </Routes>
-                  </div>
+            <AppProvider>
+              <div className="App-container">
+                <div className="App-sidebar">
+                  <SidebarNav />
                 </div>
-              </TimetableProvider>
-            </UserProvider>
+                <div className="App-content">
+                  <Routes>
+                    <Route path="/" element={<Timetable />} />
+                  </Routes>
+                </div>
+              </div>
+            </AppProvider>
           }
         />
       </Routes>

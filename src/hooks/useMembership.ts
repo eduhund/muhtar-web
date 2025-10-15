@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import { Membership, MembershipContext } from "../context/MembershipContext";
+import { Membership, AppContext } from "../context/AppContext";
 import { membershipAPI } from "../api";
 import { membershipStorage } from "../utils/storage";
 
 export function useMembership() {
   const [isLoading, setIsLoading] = useState(false);
-  const context = useContext(MembershipContext);
+  const context = useContext(AppContext);
   if (!context) {
     throw new Error("useMembership must be used within a MembershipProvider");
   }
