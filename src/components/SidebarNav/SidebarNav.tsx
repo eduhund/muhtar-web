@@ -32,7 +32,7 @@ export function SidebarNav() {
       </div>
       {user && (
         <div className="SidebarNav-user">
-          <Avatar shape="square" size={40} icon={<UserOutlined />} />
+          <Avatar shape="circle" size={40} icon={<UserOutlined />} />
           <div className="SidebarNav-user-info">
             <Title
               className="SidebarNav-user-name"
