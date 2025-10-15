@@ -2,10 +2,11 @@ import { Avatar, Button, Typography } from "antd";
 import { PlusCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useUser } from "../../hooks/useUser";
 
-const { Title, Text } = Typography;
+import { AddTimeWidget } from "./AddTimeWidget/AddTimeWidget";
 
 import "./SidebarNav.scss";
-import { SidebarWidget } from "../SidebarWidget/SidebarWidget";
+
+const { Title, Text } = Typography;
 
 export function SidebarNav() {
   const { user } = useUser();
@@ -33,7 +34,7 @@ export function SidebarNav() {
         Track the Time
       </Button>
       <div className="SidebarNav-widgets">
-        <SidebarWidget>Widgets</SidebarWidget>
+        <AddTimeWidget />
       </div>
       {user && (
         <div className="SidebarNav-user">

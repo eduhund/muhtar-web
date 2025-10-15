@@ -1,5 +1,4 @@
 .SidebarWidget {
-  padding: 8px;
   box-sizing: border-box;
 
   border: 1px solid rgba($color: #ffffff, $alpha: 0.4);
@@ -7,4 +6,30 @@
   background-color: rgba($color: #ffffff, $alpha: 0.8);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px 0 rgba($color: #141414, $alpha: 0.1);
+
+  &-header {
+    display: flex;
+
+    align-items: center;
+    gap: 8px;
+
+    padding: 12px 16px;
+  }
+
+  &-title {
+    display: flex;
+
+    flex-grow: 1;
+    align-items: center;
+    gap: 8px;
+
+    h4 {
+      margin: 0;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 }
