@@ -3,7 +3,9 @@ import { createContext } from "react";
 export interface Membership {
   id: string;
   name: string;
-  email?: string;
+  team: {
+    name: string;
+  };
 }
 
 export interface MembershipContextType {

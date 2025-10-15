@@ -5,11 +5,13 @@ import { useUser } from "../../hooks/useUser";
 import { AddTimeWidget } from "./AddTimeWidget/AddTimeWidget";
 
 import "./SidebarNav.scss";
+import { useMembership } from "../../hooks/useMembership";
 
 const { Title, Text } = Typography;
 
 export function SidebarNav() {
   const { user } = useUser();
+  const { membership } = useMembership();
   return (
     <nav className="SidebarNav">
       <div className="SidebarNav-header">
@@ -22,7 +24,7 @@ export function SidebarNav() {
         />
         <div className="SidebarNav-header-divider"></div>
         <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
-          Sobakapav
+          {membership?.team?.name || "Unnamed team"}
         </Title>
       </div>
       <div className="SidebarNav-widgets">
