@@ -8,6 +8,8 @@ import "./Timetable.scss";
 import { Filters } from "./components/Filters";
 import { useTimetableFilters } from "../../hooks/useTimetableFilters";
 import { TimetableItem } from "../../context/AppContext";
+import { TotalHint } from "./TotalHint";
+import { time } from "console";
 
 const { Title } = Typography;
 
@@ -43,6 +45,12 @@ export function Timetable() {
           onRow={onRowClick}
           size="small"
           loading={isLoading}
+        />
+        <TotalHint
+          data={timetable || []}
+          filteredData={timetableFilters.filteredList || []}
+          filters={timetableFilters.filters || {}}
+          selection={rowSelection}
         />
       </div>
     </div>

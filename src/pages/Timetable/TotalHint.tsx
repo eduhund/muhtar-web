@@ -12,15 +12,16 @@ export function TotalHint({ data, filteredData, filters, selection }: any) {
       return null;
     } else if (selectedRowKeys.length > 0) {
       return selectedRowKeys.reduce((prev: any, curr: any) => {
-        return prev + data[curr]?.duration || 0;
+        const selectedItem = data.find((item: any) => item.id === curr);
+        return prev + selectedItem.duration / 60 || 0;
       }, 0);
     } else {
       return filteredData.reduce(
-        (prev: any, curr: any) => prev + curr.duration,
+        (prev: any, curr: any) => prev + curr.duration / 60,
         0
       );
     }
-  }, [filters, selectedRowKeys]);
+  }, [data, filteredData, filters, selectedRowKeys]);
 
   const hasSelected = selectedRowKeys.length > 0;
   const hasFiltered = Object.keys(filters).length > 0;
@@ -35,14 +36,18 @@ export function TotalHint({ data, filteredData, filters, selection }: any) {
     <div id="totalHint">
       {hasSelected ? (
         <>
-          {`Выбрано ${selectedRowKeys.length} записей. Затрачено ${total} часов`}
+          {`Selected ${selectedRowKeys.length} item${
+            selectedRowKeys.length !== 1 ? "s" : ""
+          }. Spent ${total} hour${total !== 1 ? "s" : ""}`}
           <Button type="link" onClick={resetSelectionHandler}>
-            Сбросить выделение
+            Reset
           </Button>
         </>
       ) : (
         hasFiltered &&
-        `Отфильтровано ${filteredData.length} записей. Затрачено ${total} часов`
+        `Filtered ${filteredData.length} item${
+          filteredData.length !== 1 ? "s" : ""
+        }. Spent ${total} hour${total !== 1 ? "s" : ""}`
       )}
     </div>
   );
