@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
-import { dateFormat, dateOnlyISOString } from "../../../utils/date";
+import { dateFormat } from "../../../utils/date";
 import { useProjects } from "../../../hooks/useProjects";
 import { useState } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
