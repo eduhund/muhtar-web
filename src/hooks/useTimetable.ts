@@ -8,16 +8,17 @@ function insertIntoTimetable(
 ): TimetableItem[] {
   if (!list || list.length === 0) return [item];
   const date = item.date;
-  // Find the same date
   const start = list.findIndex((e) => e.date === date);
-  if (start === -1) return [...list, item];
+  if (start === -1) {
+    const idx = list.findIndex((e) => e.date < date);
+    if (idx === -1) return [...list, item];
+    return [...list.slice(0, idx), item, ...list.slice(idx)];
+  }
   let end = start;
   while (end < list.length && list[end].date === date) end++;
-  // Find the index to insert
   let idx = start;
   const newTs = Number(item.ts ?? 0);
   while (idx < end && Number(list[idx].ts ?? 0) >= newTs) idx++;
-  // Build the new list
   return [...list.slice(0, idx), item, ...list.slice(idx)];
 }
 
@@ -37,7 +38,8 @@ export function useTimetable() {
   async function addTime(entry: AddTimeEntry) {
     const { data } = await membershipAPI.addTime(entry);
     if (data && timetable) {
-      updateState({ timetable: insertIntoTimetable(timetable, data) });
+      const newtimetable = insertIntoTimetable(timetable, data);
+      updateState({ timetable: newtimetable });
     }
     return data;
   }
