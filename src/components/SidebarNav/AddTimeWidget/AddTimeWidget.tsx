@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import type { FormProps } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
@@ -11,7 +11,7 @@ import { useTimetable } from "../../../hooks/useTimetable";
 import { useMembership } from "../../../hooks/useMembership";
 
 type FieldType = {
-  date: string;
+  date: Dayjs;
   duration: string;
   project: string;
   task?: string;
@@ -26,18 +26,23 @@ export function AddTimeWidget() {
   const { projects, isLoading } = useProjects();
   const { addTime } = useTimetable();
 
-  const selectorItems = projects?.map((project) => ({
-    label: project.customer
-      ? `${project.customer} / ${project.name}`
-      : project.name,
-    value: project.id,
-  }));
+  const selectorItems = (projects || [])
+    .map((project) => {
+      if (!project) return;
+      return {
+        label: project.customer
+          ? `${project.customer} / ${project.name}`
+          : project.name,
+        value: project.id,
+      };
+    })
+    .filter((item) => item !== undefined);
+
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
     const { date, duration, project, task = null, comment = "" } = values;
-    const dateString = dateOnlyISOString(new Date(date));
     await addTime({
-      date: dateString,
+      date: date.format("YYYY-MM-DD"),
       duration,
       membershipId: membership?.id || "",
       projectId: project,
@@ -104,7 +109,7 @@ export function AddTimeWidget() {
           <Select
             showSearch
             placeholder="Select..."
-            options={selectorItems || []}
+            options={selectorItems}
             value={{}}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
