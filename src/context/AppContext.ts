@@ -69,6 +69,7 @@ export interface Project {
   name: string;
   customer: string | null;
   isArchived: boolean;
+  memberships: { membershipId: string; accessRole: string; workRole: string }[];
 }
 
 export interface TimetableItem {
