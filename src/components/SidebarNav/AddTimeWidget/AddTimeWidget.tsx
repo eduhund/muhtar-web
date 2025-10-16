@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
-import { dateFormat } from "../../../utils/date";
+import { dateFormat, dateOnlyISOString } from "../../../utils/date";
 import { useProjects } from "../../../hooks/useProjects";
 
 type FieldType = {
@@ -27,7 +27,15 @@ export function AddTimeWidget() {
     value: project.id,
   }));
   async function onFinish(values: FieldType) {
-    console.log("Success:", values);
+    const { date, duration, project, task = null, comment } = values;
+    const dateString = dateOnlyISOString(new Date(date));
+    console.log("Success:", {
+      date: dateString,
+      duration,
+      projectId: project,
+      taskId: task,
+      comment,
+    });
   }
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (

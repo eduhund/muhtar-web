@@ -1,4 +1,4 @@
-import { Timetable } from "../context/AppContext";
+import { Timetable, TimetableItem } from "../context/AppContext";
 import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
@@ -99,6 +99,15 @@ class MembershipAPI extends privateAPI {
       this.token,
       query
     );
+  }
+
+  async addTime(entry: {
+    [key: string]: string;
+  }): Promise<ApiResponse<TimetableItem>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/addTime`, this.token, entry);
   }
 
   async getProjects(query: { [key: string]: string } = {}) {
