@@ -65,7 +65,7 @@ export function AddTimeWidget() {
             style={{ width: "100%" }}
           />
         </Form.Item>
-        <Form.Item<FieldType>>
+        <Form.Item<FieldType> name="duration">
           <Select
             showSearch
             placeholder="0"
@@ -73,7 +73,7 @@ export function AddTimeWidget() {
             style={{ width: "100%" }}
           >
             {Array.from({ length: 20 }, (_, i) => (
-              <Select.Option key={(i + 1) / 2} value={(i + 1) / 2}>
+              <Select.Option key={(i + 1) / 2} value={((i + 1) / 2) * 60}>
                 {(i + 1) / 2}
               </Select.Option>
             ))}
