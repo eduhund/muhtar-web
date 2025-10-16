@@ -110,7 +110,6 @@ export function AddTimeWidget() {
             showSearch
             placeholder="Select..."
             options={selectorItems}
-            value={{}}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
