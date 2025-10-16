@@ -75,7 +75,7 @@ export interface Project {
 export interface TimetableItem {
   id: string;
   ts: number; // timestamp
-  project: { id: string; name: string };
+  project: { id: string; name: string; customer: string | null };
   membership: { id: string; name: string };
   date: string; // YYYY-MM-DD
   duration: number; // in minutes

@@ -3,7 +3,7 @@ import type { TableProps } from "antd";
 interface DataType {
   key: string;
   membership: { id: string; name: string };
-  project: { id: string; name: string };
+  project: { id: string; name: string; customer: string | null };
   duration: number;
   comment: string;
 }
@@ -46,7 +46,8 @@ export const columns: TableProps<DataType>["columns"] = [
     dataIndex: "projectName",
     key: "projectName",
     width: 200,
-    render: (_: unknown, { project }: DataType) => project.name,
+    render: (_: unknown, { project }: DataType) =>
+      project.customer ? `${project.customer} / ${project.name}` : project.name,
   },
   {
     title: "How long",
