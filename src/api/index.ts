@@ -16,6 +16,15 @@ type LoginResponseDataType = {
 
 type GetTimetableResponseDataType = Timetable;
 
+export type AddTimeEntry = {
+  date: string;
+  duration: string;
+  membershipId: string;
+  projectId: string;
+  taskId?: string | null;
+  comment?: string;
+};
+
 const apiController = new APIController(BASE_URI);
 
 class privateAPI {
@@ -101,9 +110,7 @@ class MembershipAPI extends privateAPI {
     );
   }
 
-  async addTime(entry: {
-    [key: string]: string;
-  }): Promise<ApiResponse<TimetableItem>> {
+  async addTime(entry: AddTimeEntry): Promise<ApiResponse<TimetableItem>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }

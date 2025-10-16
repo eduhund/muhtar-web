@@ -6,6 +6,9 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
 import { dateFormat, dateOnlyISOString } from "../../../utils/date";
 import { useProjects } from "../../../hooks/useProjects";
+import { useState } from "react";
+import { useTimetable } from "../../../hooks/useTimetable";
+import { useMembership } from "../../../hooks/useMembership";
 
 type FieldType = {
   date: string;
@@ -18,7 +21,10 @@ type FieldType = {
 const { TextArea } = Input;
 
 export function AddTimeWidget() {
+  const [isAddingTime, setIsAddingTime] = useState(false);
+  const { membership } = useMembership();
   const { projects, isLoading } = useProjects();
+  const { addTime } = useTimetable();
 
   const selectorItems = projects?.map((project) => ({
     label: project.customer
@@ -27,15 +33,18 @@ export function AddTimeWidget() {
     value: project.id,
   }));
   async function onFinish(values: FieldType) {
-    const { date, duration, project, task = null, comment } = values;
+    setIsAddingTime(true);
+    const { date, duration, project, task = null, comment = "" } = values;
     const dateString = dateOnlyISOString(new Date(date));
-    console.log("Success:", {
+    await addTime({
       date: dateString,
       duration,
+      membershipId: membership?.id || "",
       projectId: project,
       taskId: task,
       comment,
     });
+    setIsAddingTime(false);
   }
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -128,7 +137,12 @@ export function AddTimeWidget() {
         </Form.Item>
 
         <Form.Item label={null} style={{ marginBottom: 0 }}>
-          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isAddingTime}
+            style={{ width: "100%" }}
+          >
             Add Time
           </Button>
         </Form.Item>

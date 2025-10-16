@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AppContext, TimetableItem } from "../context/AppContext";
-import { membershipAPI } from "../api";
+import { AddTimeEntry, membershipAPI } from "../api";
 
 function insertIntoTimetable(
   list: TimetableItem[],
@@ -34,7 +34,7 @@ export function useTimetable() {
     return data;
   }
 
-  async function addTime(entry: { [key: string]: string }) {
+  async function addTime(entry: AddTimeEntry) {
     const { data } = await membershipAPI.addTime(entry);
     if (data && timetable) {
       updateState({ timetable: insertIntoTimetable(timetable, data) });
