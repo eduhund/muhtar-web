@@ -92,6 +92,11 @@ export function AddTimeWidget() {
             showSearch
             placeholder="0"
             prefix="Hours"
+            filterOption={(input, option) =>
+              String(option?.key ?? "")
+                .toLowerCase()
+                .includes(String(input).toLowerCase())
+            }
             style={{ width: "100%" }}
           >
             {Array.from({ length: 20 }, (_, i) => (
