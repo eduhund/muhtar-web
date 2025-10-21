@@ -6,7 +6,7 @@ export function WorkersWidget() {
     <SidebarWidget
       title="Workers"
       icon={<TeamOutlined />}
-      showArrow={true}
+      url="/workers"
     ></SidebarWidget>
   );
 }

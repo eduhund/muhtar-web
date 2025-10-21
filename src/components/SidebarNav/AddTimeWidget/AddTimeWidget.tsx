@@ -61,11 +61,7 @@ export function AddTimeWidget() {
   const today = dayjs(new Date());
 
   return (
-    <SidebarWidget
-      title="Track the time"
-      icon={<PlusCircleOutlined />}
-      showArrow={false}
-    >
+    <SidebarWidget title="Track the time" icon={<PlusCircleOutlined />}>
       <Form
         name="trackTime"
         layout="vertical"
