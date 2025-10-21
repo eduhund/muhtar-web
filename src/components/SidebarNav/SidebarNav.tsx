@@ -6,6 +6,7 @@ import { AddTimeWidget } from "./AddTimeWidget/AddTimeWidget";
 
 import "./SidebarNav.scss";
 import { useMembership } from "../../hooks/useMembership";
+import { WorkersWidget } from "./WorkersWidget/WorkersWidget";
 
 const { Title, Text } = Typography;
 
@@ -29,6 +30,7 @@ export function SidebarNav() {
       </div>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
+        <WorkersWidget />
       </div>
       {user && (
         <div className="SidebarNav-user">
