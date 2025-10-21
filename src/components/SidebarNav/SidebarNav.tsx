@@ -13,6 +13,7 @@ const { Title, Text } = Typography;
 
 export function SidebarNav() {
   const { user } = useUser();
+  const { membership } = useMembership();
   const { team } = useTeam();
   return (
     <nav className="SidebarNav">
@@ -31,7 +32,7 @@ export function SidebarNav() {
       </div>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
-        <WorkersWidget />
+        {membership?.accessRole === "admin" && <WorkersWidget />}
       </div>
       {user && (
         <div className="SidebarNav-user">
