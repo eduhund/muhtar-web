@@ -15,6 +15,9 @@ export function SidebarNav() {
   const { user } = useUser();
   const { membership } = useMembership();
   const { team } = useTeam();
+
+  const isManagerType =
+    membership?.accessRole === "admin" || membership?.accessRole === "manager";
   return (
     <nav className="SidebarNav">
       <div className="SidebarNav-header">
@@ -32,7 +35,7 @@ export function SidebarNav() {
       </div>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
-        {membership?.accessRole === "admin" && <WorkersWidget />}
+        {isManagerType && <WorkersWidget />}
       </div>
       {user && (
         <div className="SidebarNav-user">

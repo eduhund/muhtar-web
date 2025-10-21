@@ -8,7 +8,7 @@ type ConnectionList = {
   [key: string]: Connection;
 };
 
-type AccessRole = "admin" | "user" | "guest";
+type AccessRole = "admin" | "manager" | "member" | "guest";
 
 type ContractType = "staff" | "freelance";
 

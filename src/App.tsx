@@ -9,6 +9,7 @@ import "./App.scss";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
 import { Timetable } from "./pages/Timetable";
 import { AppProvider } from "./providers/AppProvider";
+import { Workers } from "./pages/Workers/Workers";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
                 <div className="App-content">
                   <Routes>
                     <Route path="/" element={<Timetable />} />
+                    <Route path="/workers" element={<Workers />} />
                   </Routes>
                 </div>
               </div>

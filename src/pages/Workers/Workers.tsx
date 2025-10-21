@@ -4,7 +4,7 @@ import { useMemberships } from "../../hooks/useMemberships";
 
 const { Title } = Typography;
 
-export function Timetable() {
+export function Workers() {
   const { memberships } = useMemberships();
 
   return (
