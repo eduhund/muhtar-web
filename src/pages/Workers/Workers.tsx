@@ -85,8 +85,6 @@ export function Workers() {
     return <Navigate to="/" replace />;
   }
 
-  console.log("Memberships:", memberships);
-
   const staff = memberships?.filter(
     (membership) =>
       membership?.contract?.type === "staff" && membership.status === "active"
