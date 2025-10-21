@@ -1,13 +1,12 @@
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
-import { membershipAPI } from "../api";
 
-export function useProjects() {
+export function useMemberships() {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error("useMembership must be used within a MembershipProvider");
   }
-  const { projects, projectsLoading } = context;
+  const { memberships, membershipsLoading } = context;
 
-  return { projects, isLoading: projectsLoading };
+  return { memberships, isLoading: membershipsLoading };
 }

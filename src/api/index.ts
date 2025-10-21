@@ -123,6 +123,17 @@ class MembershipAPI extends privateAPI {
     }
     return this.controller.get(`${this.prefix}/getProjects`, this.token, query);
   }
+
+  async getMemberships(query: { [key: string]: string } = {}) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.get(
+      `${this.prefix}/getMeberships`,
+      this.token,
+      query
+    );
+  }
 }
 
 export const authAPI = new AuthAPI(apiController);
