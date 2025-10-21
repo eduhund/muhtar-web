@@ -70,7 +70,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (data) {
       setState((prev) => ({
         ...prev,
-        user: data,
+        user: {
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        },
         membership: data.activeMembership || null,
         team: data.activeTeam || null,
         userLoading: false,
