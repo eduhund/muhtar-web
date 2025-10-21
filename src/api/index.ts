@@ -129,7 +129,7 @@ class MembershipAPI extends privateAPI {
       throw new Error("Token is not set");
     }
     return this.controller.get(
-      `${this.prefix}/getMeberships`,
+      `${this.prefix}/getMemberships`,
       this.token,
       query
     );

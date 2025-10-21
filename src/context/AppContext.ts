@@ -46,6 +46,7 @@ export interface User {
 
 export interface Membership {
   id: string;
+  name: string;
   status: "invited" | "pending" | "active" | "archived";
   accessRole: AccessRole;
   contract: {

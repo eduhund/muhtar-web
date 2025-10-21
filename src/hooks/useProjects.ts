@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
-import { membershipAPI } from "../api";
 
 export function useProjects() {
   const context = useContext(AppContext);
