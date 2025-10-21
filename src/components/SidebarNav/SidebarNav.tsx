@@ -7,12 +7,13 @@ import { AddTimeWidget } from "./AddTimeWidget/AddTimeWidget";
 import "./SidebarNav.scss";
 import { useMembership } from "../../hooks/useMembership";
 import { WorkersWidget } from "./WorkersWidget/WorkersWidget";
+import { useTeam } from "../../hooks/useTeam";
 
 const { Title, Text } = Typography;
 
 export function SidebarNav() {
   const { user } = useUser();
-  const { membership } = useMembership();
+  const { team } = useTeam();
   return (
     <nav className="SidebarNav">
       <div className="SidebarNav-header">
@@ -25,7 +26,7 @@ export function SidebarNav() {
         />
         <div className="SidebarNav-header-divider"></div>
         <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
-          {membership?.team?.name || "Unnamed team"}
+          {team?.name || "Unnamed team"}
         </Title>
       </div>
       <div className="SidebarNav-widgets">

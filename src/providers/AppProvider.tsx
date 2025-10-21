@@ -72,7 +72,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         user: data,
         membership: data.activeMembership || null,
-        team: data.activeMembership?.team || null,
+        team: data.activeTeam || null,
         userLoading: false,
         membershipLoading: false,
         teamLoading: false,
