@@ -21,6 +21,10 @@
   padding: 12px 0;
   border-bottom: 1px solid #eeeeee;
 
+  &:hover {
+    background-color: #fafafa;
+  }
+
   &-headline {
     flex-grow: 1;
     > h4,
