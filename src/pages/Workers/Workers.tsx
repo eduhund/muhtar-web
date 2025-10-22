@@ -1,4 +1,4 @@
-import { Col, Row, Statistic, Typography } from "antd";
+import { Statistic, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
