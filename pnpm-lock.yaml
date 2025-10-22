@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@ant-design/charts':
-        specifier: ^2.6.4
+        specifier: ^2.6.5
         version: 2.6.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(workerize-loader@2.0.2(webpack@5.102.1))
       '@ant-design/icons':
         specifier: ^6.1.0
@@ -17,6 +17,9 @@ importers:
       antd:
         specifier: ^5.27.4
         version: 5.27.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      dayjs:
+        specifier: ^1.11.18
+        version: 1.11.18
       dotenv:
         specifier: ^16.4.5
         version: 16.6.1

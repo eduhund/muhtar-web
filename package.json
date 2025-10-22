@@ -12,9 +12,10 @@
   "author": "Roman Nebel",
   "license": "MIT",
   "dependencies": {
-    "@ant-design/charts": "^2.6.4",
+    "@ant-design/charts": "^2.6.5",
     "@ant-design/icons": "^6.1.0",
     "antd": "^5.27.4",
+    "dayjs": "^1.11.18",
     "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
