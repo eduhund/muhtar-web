@@ -1,17 +1,19 @@
-import { Typography } from "antd";
+import { Card, Flex, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
-dayjs.extend(isoWeek);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
-
 import { useMemberships } from "../../hooks/useMemberships";
 import { Membership, TimetableItem } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMembership } from "../../hooks/useMembership";
 import { Navigate } from "react-router-dom";
+
+import "./Workers.scss";
+
+dayjs.extend(isoWeek);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const { Title, Paragraph } = Typography;
 
@@ -62,15 +64,14 @@ function WorkerRow({ membership }: { membership: Membership }) {
   const totalMonthDuration =
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
   return (
-    <div className="WorkerRow">
-      <Title level={4}>{membership.name}</Title>
+    <Card className="WorkerRow" title={membership.name} style={{ width: 300 }}>
       <Paragraph>
         Hours this week: <strong>{totalWeekDuration.toFixed(0)}</strong>
       </Paragraph>
       <Paragraph>
         Hours this month: <strong>{totalMonthDuration.toFixed(0)}</strong>
       </Paragraph>
-    </div>
+    </Card>
   );
 }
 
@@ -85,45 +86,53 @@ export function Workers() {
     return <Navigate to="/" replace />;
   }
 
-  const staff = memberships?.filter(
+  const sortedMemberships = memberships?.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
+  const staff = sortedMemberships?.filter(
     (membership) =>
       membership?.contract?.type === "staff" && membership.status === "active"
   );
-  const freelancers = memberships?.filter(
+  const freelancers = sortedMemberships?.filter(
     (membership) =>
       membership?.contract?.type === "freelance" &&
       membership.status === "active"
   );
 
   return (
-    <div className="Timetable">
-      <div className="Timetable-header">
-        <div className="Timetable-header-title">
+    <div className="Workers">
+      <div className="Workers-header">
+        <div className="Workers-header-title">
           <Title level={1}>Workers</Title>
         </div>
       </div>
-      <div id="Workers-list">
+      <div className="Workers-content">
         {staff && (
-          <>
+          <div className="Workers-group">
             <Title level={2}>Core team</Title>
-            {staff.map((membership) => (
-              <WorkerRow
-                key={membership.id}
-                membership={membership}
-              ></WorkerRow>
-            ))}
-          </>
+            <Flex className="Workers-list" wrap gap="small">
+              {staff.map((membership) => (
+                <WorkerRow
+                  key={membership.id}
+                  membership={membership}
+                ></WorkerRow>
+              ))}
+            </Flex>
+          </div>
         )}
         {freelancers && freelancers.length > 0 && (
-          <>
+          <div className="Workers-group">
             <Title level={2}>Freelancers</Title>
-            {freelancers.map((membership) => (
-              <WorkerRow
-                key={membership.id}
-                membership={membership}
-              ></WorkerRow>
-            ))}
-          </>
+            <Flex className="Workers-list" wrap gap="small">
+              {freelancers.map((membership) => (
+                <WorkerRow
+                  key={membership.id}
+                  membership={membership}
+                ></WorkerRow>
+              ))}
+            </Flex>
+          </div>
         )}
       </div>
     </div>

@@ -1,0 +1,11 @@
+.Workers {
+  h2 {
+    margin: 0;
+    margin-bottom: 16px;
+  }
+  &-content {
+    padding: 16px 24px;
+    background-color: #ffffff;
+    border-radius: 16px;
+  }
+}
