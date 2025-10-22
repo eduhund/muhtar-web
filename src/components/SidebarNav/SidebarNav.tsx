@@ -8,6 +8,7 @@ import "./SidebarNav.scss";
 import { useMembership } from "../../hooks/useMembership";
 import { WorkersWidget } from "./WorkersWidget/WorkersWidget";
 import { useTeam } from "../../hooks/useTeam";
+import { Link } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -20,7 +21,7 @@ export function SidebarNav() {
     membership?.accessRole === "admin" || membership?.accessRole === "manager";
   return (
     <nav className="SidebarNav">
-      <div className="SidebarNav-header">
+      <Link to="/" className="SidebarNav-header">
         <img
           src="/assets/img/muhtar-logo_round.png"
           width={32}
@@ -32,7 +33,7 @@ export function SidebarNav() {
         <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
           {team?.name || "Unnamed team"}
         </Title>
-      </div>
+      </Link>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
         {isManagerType && <WorkersWidget />}
