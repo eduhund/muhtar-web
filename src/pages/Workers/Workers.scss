@@ -34,6 +34,14 @@
   }
 
   &-params {
-    flex-basis: 300px;
+    display: flex;
+    gap: 12px;
+
+    flex-basis: 600px;
+
+    &-chart {
+      width: 200px;
+      height: 100px;
+    }
   }
 }

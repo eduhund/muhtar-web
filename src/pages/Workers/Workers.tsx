@@ -1,4 +1,4 @@
-import { Card, Col, Flex, Row, Space, Statistic, Typography } from "antd";
+import { Col, Row, Statistic, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -8,6 +8,7 @@ import { Membership, TimetableItem } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMembership } from "../../hooks/useMembership";
 import { Navigate } from "react-router-dom";
+import { BarChart, Bar } from "recharts";
 
 import "./Workers.scss";
 import { useProjects } from "../../hooks/useProjects";
@@ -52,6 +53,20 @@ function filterByPeriod(
   });
 }
 
+function getLast5DaysSummary(
+  entries: TimetableItem[]
+): { date: string; duration: number }[] {
+  const result: { date: string; duration: number }[] = [];
+  for (let i = 0; i < 5; i++) {
+    const date = dayjs().subtract(i, "day").format("YYYY-MM-DD");
+    const duration = entries
+      .filter((e) => e.date === date)
+      .reduce((acc, e) => acc + (e.duration || 0), 0);
+    result.unshift({ date, duration });
+  }
+  return result;
+}
+
 function WorkerRow({ membership }: { membership: Membership }) {
   const { timetable } = useTimetable();
   const { projects } = useProjects();
@@ -74,6 +89,9 @@ function WorkerRow({ membership }: { membership: Membership }) {
     thisWeekEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
   const totalMonthDuration =
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
+
+  const lastFiveDaysData = getLast5DaysSummary(thisWeekEntries);
+
   return (
     <div className="WorkerRow">
       <div className="WorkerRow-headline">
@@ -85,20 +103,26 @@ function WorkerRow({ membership }: { membership: Membership }) {
           Last tracked time: <strong>{lastTrackedDate}</strong>
         </Paragraph>
       </div>
-      <Row className="WorkerRow-params" gutter={16}>
-        <Col span={12}>
-          <Statistic
-            title="Spent this week"
-            value={totalWeekDuration.toFixed(0)}
-          />
-        </Col>
-        <Col span={12}>
-          <Statistic
-            title="Spent this month"
-            value={totalMonthDuration.toFixed(0)}
-          />
-        </Col>
-      </Row>
+      <div className="WorkerRow-params">
+        <BarChart
+          style={{
+            maxWidth: "300px",
+            maxHeight: "100px",
+          }}
+          responsive
+          data={lastFiveDaysData}
+        >
+          <Bar dataKey="duration" fill="#f04f23" />
+        </BarChart>
+        <Statistic
+          title="Spent this week"
+          value={totalWeekDuration.toFixed(0)}
+        />
+        <Statistic
+          title="Spent this month"
+          value={totalMonthDuration.toFixed(0)}
+        />
+      </div>
     </div>
   );
 }
