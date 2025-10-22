@@ -16,8 +16,7 @@ dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
-const { Title } = Typography;
-const { Meta } = Card;
+const { Title, Paragraph } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
@@ -64,6 +63,11 @@ function WorkerRow({ membership }: { membership: Membership }) {
   const membershipEntries =
     timetable?.filter((item) => item.membership.id === membership.id) || [];
 
+  const lastTrackedEntry = membershipEntries.sort((a, b) => b.ts - a.ts)[0];
+  const lastTrackedDate = lastTrackedEntry?.ts
+    ? dayjs(lastTrackedEntry?.ts).format("D MMMM YYYY")
+    : "Never";
+
   const thisWeekEntries = filterByPeriod(membershipEntries, "thisWeek");
   const thisMonthEntries = filterByPeriod(membershipEntries, "thisMonth");
   const totalWeekDuration =
@@ -71,29 +75,31 @@ function WorkerRow({ membership }: { membership: Membership }) {
   const totalMonthDuration =
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
   return (
-    <Card className="WorkerRow" style={{ width: 300 }}>
-      <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-        <Meta
-          title={membership.name}
-          description={`${membershipProjectsQt} active projects`}
-        />
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Statistic
-              title="Spent this week"
-              value={totalWeekDuration.toFixed(0)}
-            />
-          </Col>
-          <Col span={12}>
-            <Statistic
-              title="Spent this month"
-              value={totalMonthDuration.toFixed(0)}
-            />
-          </Col>
-        </Row>
-      </Space>
-    </Card>
+    <div className="WorkerRow">
+      <div className="WorkerRow-headline">
+        <Title level={4}>{membership.name}</Title>
+        <Paragraph type="secondary">
+          <strong>{membershipProjectsQt}</strong> active projects
+        </Paragraph>
+        <Paragraph type="secondary">
+          Last tracked time: <strong>{lastTrackedDate}</strong>
+        </Paragraph>
+      </div>
+      <Row className="WorkerRow-params" gutter={16}>
+        <Col span={12}>
+          <Statistic
+            title="Spent this week"
+            value={totalWeekDuration.toFixed(0)}
+          />
+        </Col>
+        <Col span={12}>
+          <Statistic
+            title="Spent this month"
+            value={totalMonthDuration.toFixed(0)}
+          />
+        </Col>
+      </Row>
+    </div>
   );
 }
 
@@ -133,27 +139,27 @@ export function Workers() {
         {staff && (
           <div className="Workers-group">
             <Title level={2}>Core team</Title>
-            <Flex className="Workers-list" wrap gap="small">
+            <div className="Workers-list">
               {staff.map((membership) => (
                 <WorkerRow
                   key={membership.id}
                   membership={membership}
                 ></WorkerRow>
               ))}
-            </Flex>
+            </div>
           </div>
         )}
         {freelancers && freelancers.length > 0 && (
           <div className="Workers-group">
             <Title level={2}>Freelancers</Title>
-            <Flex className="Workers-list" wrap gap="small">
+            <div className="Workers-list">
               {freelancers.map((membership) => (
                 <WorkerRow
                   key={membership.id}
                   membership={membership}
                 ></WorkerRow>
               ))}
-            </Flex>
+            </div>
           </div>
         )}
       </div>
