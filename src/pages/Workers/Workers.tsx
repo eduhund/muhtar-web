@@ -1,4 +1,4 @@
-import { Card, Flex, Typography } from "antd";
+import { Card, Col, Flex, Row, Statistic, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -15,7 +15,7 @@ dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
@@ -65,12 +65,14 @@ function WorkerRow({ membership }: { membership: Membership }) {
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
   return (
     <Card className="WorkerRow" title={membership.name} style={{ width: 300 }}>
-      <Paragraph>
-        Hours this week: <strong>{totalWeekDuration.toFixed(0)}</strong>
-      </Paragraph>
-      <Paragraph>
-        Hours this month: <strong>{totalMonthDuration.toFixed(0)}</strong>
-      </Paragraph>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Statistic title="This Week" value={totalWeekDuration.toFixed(0)} />
+        </Col>
+        <Col span={12}>
+          <Statistic title="This Month" value={totalMonthDuration.toFixed(0)} />
+        </Col>
+      </Row>
     </Card>
   );
 }
