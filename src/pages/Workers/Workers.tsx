@@ -1,4 +1,4 @@
-import { Card, Col, Flex, Row, Statistic, Typography } from "antd";
+import { Card, Col, Flex, Row, Space, Statistic, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -10,12 +10,14 @@ import { useMembership } from "../../hooks/useMembership";
 import { Navigate } from "react-router-dom";
 
 import "./Workers.scss";
+import { useProjects } from "../../hooks/useProjects";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 const { Title } = Typography;
+const { Meta } = Card;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
@@ -53,6 +55,11 @@ function filterByPeriod(
 
 function WorkerRow({ membership }: { membership: Membership }) {
   const { timetable } = useTimetable();
+  const { projects } = useProjects();
+
+  const membershipProjectsQt = (projects || [])?.filter((project) =>
+    project?.memberships.some((m) => m.membershipId === membership.id)
+  ).length;
 
   const membershipEntries =
     timetable?.filter((item) => item.membership.id === membership.id) || [];
@@ -64,15 +71,28 @@ function WorkerRow({ membership }: { membership: Membership }) {
   const totalMonthDuration =
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
   return (
-    <Card className="WorkerRow" title={membership.name} style={{ width: 300 }}>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Statistic title="This Week" value={totalWeekDuration.toFixed(0)} />
-        </Col>
-        <Col span={12}>
-          <Statistic title="This Month" value={totalMonthDuration.toFixed(0)} />
-        </Col>
-      </Row>
+    <Card className="WorkerRow" style={{ width: 300 }}>
+      <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+        <Meta
+          title={membership.name}
+          description={`${membershipProjectsQt} active projects`}
+        />
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Statistic
+              title="Spent this week"
+              value={totalWeekDuration.toFixed(0)}
+            />
+          </Col>
+          <Col span={12}>
+            <Statistic
+              title="Spent this month"
+              value={totalMonthDuration.toFixed(0)}
+            />
+          </Col>
+        </Row>
+      </Space>
     </Card>
   );
 }
