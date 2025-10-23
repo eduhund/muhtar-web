@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select, Tooltip } from "antd";
 import type { FormProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -119,20 +119,22 @@ export function AddTimeWidget() {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="task">
-          <Select
-            showSearch
-            placeholder="Select..."
-            options={[]}
-            value={{}}
-            fieldNames={{ label: "name", value: "id" }}
-            prefix="Task"
-            allowClear={false}
-            style={{ width: "100%" }}
-            onChange={() => {}}
-            disabled
-          />
-        </Form.Item>
+        <Tooltip title="Tasks are not available yet">
+          <Form.Item<FieldType> name="task">
+            <Select
+              showSearch
+              placeholder="Select..."
+              options={[]}
+              value={{}}
+              fieldNames={{ label: "name", value: "id" }}
+              prefix="Task"
+              allowClear={false}
+              style={{ width: "100%" }}
+              onChange={() => {}}
+              disabled
+            />
+          </Form.Item>
+        </Tooltip>
 
         <Form.Item<FieldType> name="comment">
           <TextArea rows={3} placeholder="What were you doing?" />
