@@ -5,9 +5,8 @@ const { Title } = Typography;
 
 export function Projects() {
   const { projects } = useProjects();
-  console.log(projects);
 
-  const activeProjects = projects?.filter(
+  const activeProjects = (projects || [])?.filter(
     (project) => project.status === "active"
   );
 
