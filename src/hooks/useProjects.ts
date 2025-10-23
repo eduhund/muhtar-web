@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { AppContext } from "../context/AppContext";
 
 export function useProjects() {
@@ -8,5 +8,10 @@ export function useProjects() {
   }
   const { projects, projectsLoading } = context;
 
-  return { projects, isLoading: projectsLoading };
+  const activeProjects = useMemo(
+    () => (projects || [])?.filter((project) => project.status === "active"),
+    [projects]
+  );
+
+  return { projects, activeProjects, isLoading: projectsLoading };
 }

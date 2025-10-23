@@ -23,20 +23,17 @@ const { TextArea } = Input;
 export function AddTimeWidget() {
   const [isAddingTime, setIsAddingTime] = useState(false);
   const { membership } = useMembership();
-  const { projects, isLoading } = useProjects();
+  const { activeProjects, isLoading } = useProjects();
   const { addTime } = useTimetable();
 
-  const selectorItems = (projects || [])
-    .map((project) => {
-      if (!project) return;
-      return {
-        label: project.customer
-          ? `${project.customer} / ${project.name}`
-          : project.name,
-        value: project.id,
-      };
-    })
-    .filter((item) => item !== undefined);
+  const selectorItems = (activeProjects || []).map((project) => {
+    return {
+      label: project.customer
+        ? `${project.customer} / ${project.name}`
+        : project.name,
+      value: project.id,
+    };
+  });
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
