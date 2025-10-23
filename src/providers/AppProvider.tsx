@@ -65,6 +65,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userLoading: true,
       membershipLoading: true,
       teamLoading: true,
+      projectsLoading: true,
+      membershipsLoading: true,
     }));
     const { data } = (await userAPI.getMe()) as any;
     if (data) {
@@ -78,10 +80,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           lastName: data.lastName,
         },
         membership: data.activeMembership || null,
-        team: data.activeTeam || null,
+        team: {
+          id: data.activeTeam?.id,
+          name: data.activeTeam?.name,
+          connections: data.activeTeam?.connections || [],
+          isDeleted: data.activeTeam?.isDeleted || false,
+          history: data.activeTeam?.history || [],
+          workRoles: data.activeTeam?.workRoles || [],
+        },
+        memberships: data.activeTeam?.memberships || [],
+        projects: data.activeTeam?.projects || [],
         userLoading: false,
         membershipLoading: false,
         teamLoading: false,
+        projectsLoading: false,
+        membershipsLoading: false,
       }));
     } else {
       logOut();
@@ -98,26 +111,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
-  async function initProjects() {
-    setState((prev) => ({ ...prev, projectsLoading: true }));
-    const { data } = await membershipAPI.getProjects();
-    setState((prev) => ({
-      ...prev,
-      projects: (data as Project[]) || null,
-      projectsLoading: false,
-    }));
-  }
-
-  async function initMemberships() {
-    setState((prev) => ({ ...prev, projectsLoading: true }));
-    const { data } = await membershipAPI.getMemberships();
-    setState((prev) => ({
-      ...prev,
-      memberships: (data as Membership[]) || null,
-      membershipsLoading: false,
-    }));
-  }
-
   async function initProvider() {
     if (!userStorage.hasAccessToken()) {
       logOut();
@@ -129,8 +122,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
     initUserData();
     initTimetable();
-    initProjects();
-    initMemberships();
   }
 
   useEffect(() => {

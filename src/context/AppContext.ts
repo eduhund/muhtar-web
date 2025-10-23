@@ -65,7 +65,7 @@ export interface Team {
   id: string;
   name: string;
   connections: ConnectionList;
-  isArchived: boolean;
+  isDeleted: boolean;
 }
 
 export interface Project {
@@ -73,7 +73,7 @@ export interface Project {
   name: string;
   customer: string | null;
   status: "active" | "archived";
-  isArchived: boolean;
+  isDeleted: boolean;
   memberships: { membershipId: string; accessRole: string; workRole: string }[];
 }
 
