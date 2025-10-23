@@ -50,10 +50,13 @@ export interface Membership {
   status: "invited" | "pending" | "active" | "archived";
   accessRole: AccessRole;
   contract: {
+    name: string;
+    from: string; // YYYY-MM-DD
+    to: string | null; // YYYY-MM-DD | null
     type: ContractType;
     rate: Rate | null;
-    isActive: boolean;
-  };
+    status: "active" | "expired" | "terminated";
+  }[];
   connecttions: ConnectionList;
   team?: { id: string; name: string } | null;
 }

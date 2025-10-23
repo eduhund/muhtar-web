@@ -142,15 +142,18 @@ export function Workers() {
     a.name.localeCompare(b.name)
   );
 
-  const staff = sortedMemberships?.filter(
-    (membership) =>
-      membership?.contract?.type === "staff" && membership.status === "active"
-  );
-  const freelancers = sortedMemberships?.filter(
-    (membership) =>
-      membership?.contract?.type === "freelance" &&
-      membership.status === "active"
-  );
+  const staff = sortedMemberships?.filter((membership) => {
+    const contracts = membership?.contract || [];
+    const lastContract = contracts[contracts.length - 1];
+    if (!lastContract) return false;
+    return lastContract.type === "staff" && membership.status === "active";
+  });
+  const freelancers = sortedMemberships?.filter((membership) => {
+    const contracts = membership?.contract || [];
+    const lastContract = contracts[contracts.length - 1];
+    if (!lastContract) return false;
+    return lastContract.type === "freelance" && membership.status === "active";
+  });
 
   return (
     <div className="Workers">
