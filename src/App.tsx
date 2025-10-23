@@ -10,6 +10,7 @@ import { SidebarNav } from "./components/SidebarNav/SidebarNav";
 import { Timetable } from "./pages/Timetable";
 import { AppProvider } from "./providers/AppProvider";
 import { Workers } from "./pages/Workers/Workers";
+import { Projects } from "./pages/Projects/Projects";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
                 <div className="App-content">
                   <Routes>
                     <Route path="/" element={<Timetable />} />
+                    <Route path="/projects" element={<Projects />} />
                     <Route path="/workers" element={<Workers />} />
                   </Routes>
                 </div>

@@ -72,6 +72,7 @@ export interface Project {
   id: string;
   name: string;
   customer: string | null;
+  status: "active" | "archived";
   isArchived: boolean;
   memberships: { membershipId: string; accessRole: string; workRole: string }[];
 }

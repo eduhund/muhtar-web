@@ -9,6 +9,7 @@ import { useMembership } from "../../hooks/useMembership";
 import { WorkersWidget } from "./WorkersWidget/WorkersWidget";
 import { useTeam } from "../../hooks/useTeam";
 import { Link } from "react-router-dom";
+import { ProjectsWidget } from "./ProjectsWidget/ProjectsWidget";
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,7 @@ export function SidebarNav() {
       </Link>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
+        {isManagerType && <ProjectsWidget />}
         {isManagerType && <WorkersWidget />}
       </div>
       {user && (
