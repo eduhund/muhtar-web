@@ -100,6 +100,7 @@ export function AddTimeWidget() {
             projects={activeProjects}
             value={null}
             style={{ width: "100%" }}
+            isRequired={true}
             isLoading={isLoading}
             onChange={() => {}}
           />
