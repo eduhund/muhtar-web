@@ -4,9 +4,11 @@ import { Project } from "../../context/AppContext";
 type ProjectDropdownProps = {
   projects: Project[];
   onChange: (value: string[]) => void;
-  value: string[];
+  value: any;
+  placeholder?: string;
   isRequired?: boolean;
   isMultiple?: boolean;
+  isLoading?: boolean;
   style?: React.CSSProperties;
 };
 
@@ -41,8 +43,10 @@ export default function ProjectDropdown({
   projects,
   onChange,
   value,
+  placeholder,
   isRequired = false,
   isMultiple = false,
+  isLoading = false,
   style,
 }: ProjectDropdownProps) {
   const groupedOptions = projects.reduce(
@@ -84,12 +88,13 @@ export default function ProjectDropdown({
 
   return (
     <Select
-      placeholder="All"
+      placeholder={placeholder || "Select..."}
       options={options}
       value={value}
       mode={isMultiple ? "multiple" : undefined}
       allowClear={!isRequired}
-      prefix="Projects"
+      prefix={isMultiple ? "Projects" : "Project"}
+      loading={isLoading}
       filterOption={(input, option) =>
         getLabelText(option?.label).toLowerCase().includes(input.toLowerCase())
       }

@@ -63,6 +63,7 @@ function ProjectFilter({ timetableFilters }: any) {
       projects={filteredProjectList}
       onChange={handleChange}
       value={value}
+      placeholder="All"
       isMultiple={true}
       style={{ width: "240px" }}
     />

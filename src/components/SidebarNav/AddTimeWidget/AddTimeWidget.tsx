@@ -9,6 +9,7 @@ import { useProjects } from "../../../hooks/useProjects";
 import { useState } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
 import { useMembership } from "../../../hooks/useMembership";
+import ProjectDropdown from "../../ProjectDropdown/ProjectDropdown";
 
 type FieldType = {
   date: Dayjs;
@@ -25,15 +26,6 @@ export function AddTimeWidget() {
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
   const { addTime } = useTimetable();
-
-  const selectorItems = (activeProjects || []).map((project) => {
-    return {
-      label: project.customer
-        ? `${project.customer} / ${project.name}`
-        : project.name,
-      value: project.id,
-    };
-  });
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -104,17 +96,11 @@ export function AddTimeWidget() {
           name="project"
           rules={[{ required: true, message: "Please select a project!" }]}
         >
-          <Select
-            showSearch
-            placeholder="Select..."
-            options={selectorItems}
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            prefix="Project"
-            allowClear={false}
+          <ProjectDropdown
+            projects={activeProjects}
+            value={null}
             style={{ width: "100%" }}
-            loading={isLoading}
+            isLoading={isLoading}
             onChange={() => {}}
           />
         </Form.Item>
