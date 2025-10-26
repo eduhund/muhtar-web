@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Select, Tooltip } from "antd";
 import { Project } from "../../context/AppContext";
 import { defaultListSort } from "../../utils/helpers";
 
@@ -47,6 +47,15 @@ export default function ProjectDropdown({
       mode={isMultiple ? "multiple" : undefined}
       allowClear={!isRequired}
       prefix="Projects"
+      maxTagCount={value?.length === 1 ? 1 : "responsive"}
+      maxTagPlaceholder={(omittedValues) => (
+        <Tooltip
+          styles={{ root: { pointerEvents: "none" } }}
+          title={omittedValues.map(({ label }) => label).join(", ")}
+        >
+          <span>Selected: {value.length}</span>
+        </Tooltip>
+      )}
       style={style}
       onChange={onChange}
     />
