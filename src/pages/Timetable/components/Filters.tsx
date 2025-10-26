@@ -3,6 +3,7 @@ import { DatePicker, Select, Button } from "antd";
 import { defaultListSort } from "../../../utils/helpers";
 import { dateFormat } from "../../../utils/date";
 import { Project } from "../../../context/AppContext";
+import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 
 const { RangePicker } = DatePicker;
 
@@ -52,17 +53,6 @@ function MembershipFilter({ timetableFilters }: any) {
 function ProjectFilter({ timetableFilters }: any) {
   const { filters, filteredProjectList, setFilter } = timetableFilters;
 
-  const selectorItems = (filteredProjectList || [])
-    .map((project: Project) => {
-      return {
-        name: project.customer
-          ? `${project.customer} / ${project.name}`
-          : project.name,
-        id: project.id,
-      };
-    })
-    .sort((a: any, b: any) => a.name.localeCompare(b.name));
-
   function handleChange(value: string[]) {
     setFilter("projects", value);
   }
@@ -70,17 +60,12 @@ function ProjectFilter({ timetableFilters }: any) {
   const value = filters ? filters["projects"] || [] : null;
 
   return (
-    <Select
-      placeholder="All"
-      options={selectorItems}
-      value={value}
-      fieldNames={{ label: "name", value: "id" }}
-      filterSort={defaultListSort}
-      mode="multiple"
-      allowClear
-      prefix="Projects"
-      style={{ width: "240px" }}
+    <ProjectDropdown
+      projects={filteredProjectList}
       onChange={handleChange}
+      value={value}
+      isMultiple={true}
+      style={{ width: "240px" }}
     />
   );
 }
