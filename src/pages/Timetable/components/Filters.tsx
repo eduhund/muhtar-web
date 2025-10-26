@@ -2,7 +2,6 @@ import { DatePicker, Select, Button } from "antd";
 
 import { defaultListSort } from "../../../utils/helpers";
 import { dateFormat } from "../../../utils/date";
-import { Project } from "../../../context/AppContext";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 
 const { RangePicker } = DatePicker;

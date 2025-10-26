@@ -10,6 +10,21 @@ type ProjectDropdownProps = {
   style?: React.CSSProperties;
 };
 
+type ProjectGroups = {
+  [customer: string]: { value: string; label: React.ReactNode }[];
+};
+
+type GroupOptions = {
+  value: string;
+  label: React.ReactNode;
+};
+
+type GroupedOption = {
+  label: React.ReactNode;
+  title: string;
+  options: GroupOptions[];
+};
+
 export default function ProjectDropdown({
   projects,
   onChange,
@@ -18,17 +33,21 @@ export default function ProjectDropdown({
   isMultiple = false,
   style,
 }: ProjectDropdownProps) {
-  const groupedOptions = projects.reduce((groups: any, item: any) => {
-    const { id, name, customer } = item;
-    if (customer === null || customer === undefined || customer === "") {
-      item.customer = "Single projects";
-    }
-    if (!groups[customer]) {
-      groups[customer] = [];
-    }
-    groups[customer].push({ value: id, label: <span>{name}</span> });
-    return groups;
-  }, {});
+  const groupedOptions = projects.reduce(
+    (groups: ProjectGroups, item: Project) => {
+      const { id, name } = item;
+      let { customer } = item;
+      if (customer === null || customer === undefined || customer === "") {
+        customer = "Single projects";
+      }
+      if (!groups[customer]) {
+        groups[customer] = [];
+      }
+      groups[customer].push({ value: id, label: <span>{name}</span> });
+      return groups;
+    },
+    {}
+  );
 
   const options = Object.keys(groupedOptions)
     .map((customer) => ({
@@ -37,12 +56,28 @@ export default function ProjectDropdown({
       options: groupedOptions[customer],
     }))
     .sort((a, b) => a.title.localeCompare(b.title))
-    .map((group: any) => {
+    .map((group: GroupedOption) => {
       return {
         ...group,
-        options: group.options.sort((a, b) =>
-          a.label.props.children.localeCompare(b.label.props.children)
-        ),
+        options: group.options.sort((a: GroupOptions, b: GroupOptions) => {
+          const getLabelText = (label: React.ReactNode) => {
+            if (
+              typeof label === "object" &&
+              label !== null &&
+              "props" in label &&
+              (label as React.ReactElement).props?.children
+            ) {
+              return (label as React.ReactElement).props.children;
+            }
+            return label;
+          };
+          const aText = getLabelText(a.label);
+          const bText = getLabelText(b.label);
+          if (aText === bText) {
+            return a.value.localeCompare(b.value);
+          }
+          return String(aText).localeCompare(String(bText));
+        }),
       };
     });
 
