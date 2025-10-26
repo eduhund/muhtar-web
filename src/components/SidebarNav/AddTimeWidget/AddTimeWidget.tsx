@@ -1,5 +1,12 @@
-import { Button, DatePicker, Form, Input, Select, Tooltip } from "antd";
-import type { FormProps } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Select,
+  Tooltip,
+} from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -26,11 +33,26 @@ export function AddTimeWidget() {
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
   const { addTime } = useTimetable();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const showSuccessMessage = () => {
+    messageApi.open({
+      type: "success",
+      content: "Entry added successfully!",
+    });
+  };
+
+  const showErrorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: "Entry was not added!",
+    });
+  };
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
     const { date, duration, project, task = null, comment = "" } = values;
-    await addTime({
+    const newTime = await addTime({
       date: date.format("YYYY-MM-DD"),
       duration,
       membershipId: membership?.id || "",
@@ -38,24 +60,23 @@ export function AddTimeWidget() {
       taskId: task,
       comment,
     });
+    if (newTime) {
+      showSuccessMessage();
+    } else {
+      showErrorMessage();
+    }
     setIsAddingTime(false);
   }
-
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
 
   const today = dayjs(new Date());
 
   return (
     <SidebarWidget title="Track the time" icon={<PlusCircleOutlined />}>
+      {contextHolder}
       <Form
         name="trackTime"
         layout="vertical"
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         requiredMark={false}
       >
         <Form.Item<FieldType>
