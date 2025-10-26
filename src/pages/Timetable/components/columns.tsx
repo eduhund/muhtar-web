@@ -46,8 +46,16 @@ export const columns: TableProps<DataType>["columns"] = [
     dataIndex: "projectName",
     key: "projectName",
     width: 200,
-    render: (_: unknown, { project }: DataType) =>
-      project.customer ? `${project.customer} / ${project.name}` : project.name,
+    render: (_: unknown, { project }: DataType) => (
+      <>
+        {project.customer && (
+          <span style={{ color: "rgba(0, 0, 0, 0.45)" }}>
+            {project.customer}
+          </span>
+        )}
+        <div>{project.name}</div>
+      </>
+    ),
   },
   {
     title: "How long",
