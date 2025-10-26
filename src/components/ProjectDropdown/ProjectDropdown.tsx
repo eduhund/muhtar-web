@@ -25,6 +25,18 @@ type GroupedOption = {
   options: GroupOptions[];
 };
 
+function getLabelText(label: React.ReactNode) {
+  if (
+    typeof label === "object" &&
+    label !== null &&
+    "props" in label &&
+    (label as React.ReactElement).props?.children
+  ) {
+    return (label as React.ReactElement).props.children;
+  }
+  return label;
+}
+
 export default function ProjectDropdown({
   projects,
   onChange,
@@ -60,17 +72,6 @@ export default function ProjectDropdown({
       return {
         ...group,
         options: group.options.sort((a: GroupOptions, b: GroupOptions) => {
-          const getLabelText = (label: React.ReactNode) => {
-            if (
-              typeof label === "object" &&
-              label !== null &&
-              "props" in label &&
-              (label as React.ReactElement).props?.children
-            ) {
-              return (label as React.ReactElement).props.children;
-            }
-            return label;
-          };
           const aText = getLabelText(a.label);
           const bText = getLabelText(b.label);
           if (aText === bText) {
@@ -89,6 +90,9 @@ export default function ProjectDropdown({
       mode={isMultiple ? "multiple" : undefined}
       allowClear={!isRequired}
       prefix="Projects"
+      filterOption={(input, option) =>
+        getLabelText(option?.label).toLowerCase().includes(input.toLowerCase())
+      }
       maxTagCount={value?.length === 1 ? 1 : "responsive"}
       maxTagPlaceholder={(omittedValues) => (
         <Tooltip
