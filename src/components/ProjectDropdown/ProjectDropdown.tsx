@@ -1,6 +1,5 @@
 import { Select, Tooltip } from "antd";
 import { Project } from "../../context/AppContext";
-import { defaultListSort } from "../../utils/helpers";
 
 type ProjectDropdownProps = {
   projects: Project[];
@@ -11,11 +10,6 @@ type ProjectDropdownProps = {
   style?: React.CSSProperties;
 };
 
-type ProjectSelectorItem = {
-  name: string;
-  id: string;
-};
-
 export default function ProjectDropdown({
   projects,
   onChange,
@@ -24,26 +18,39 @@ export default function ProjectDropdown({
   isMultiple = false,
   style,
 }: ProjectDropdownProps) {
-  const selectorItems = (projects || [])
-    .map((project: Project) => {
+  const groupedOptions = projects.reduce((groups: any, item: any) => {
+    const { id, name, customer } = item;
+    if (customer === null || customer === undefined || customer === "") {
+      item.customer = "Single projects";
+    }
+    if (!groups[customer]) {
+      groups[customer] = [];
+    }
+    groups[customer].push({ value: id, label: <span>{name}</span> });
+    return groups;
+  }, {});
+
+  const options = Object.keys(groupedOptions)
+    .map((customer) => ({
+      label: <span>{customer}</span>,
+      title: customer,
+      options: groupedOptions[customer],
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map((group: any) => {
       return {
-        name: project.customer
-          ? `${project.customer} / ${project.name}`
-          : project.name,
-        id: project.id,
+        ...group,
+        options: group.options.sort((a, b) =>
+          a.label.props.children.localeCompare(b.label.props.children)
+        ),
       };
-    })
-    .sort((a: ProjectSelectorItem, b: ProjectSelectorItem) =>
-      a.name.localeCompare(b.name)
-    );
+    });
 
   return (
     <Select
       placeholder="All"
-      options={selectorItems}
+      options={options}
       value={value}
-      fieldNames={{ label: "name", value: "id" }}
-      filterSort={defaultListSort}
       mode={isMultiple ? "multiple" : undefined}
       allowClear={!isRequired}
       prefix="Projects"
