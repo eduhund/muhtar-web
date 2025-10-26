@@ -46,3 +46,8 @@
     overflow-y: auto;
   }
 }
+
+td.ant-table-cell {
+  vertical-align: top;
+  text-align: left;
+}
