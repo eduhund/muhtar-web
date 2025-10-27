@@ -13,7 +13,7 @@ type PageProps = {
 
 export default function Page({
   title,
-  className,
+  className = "",
   actions,
   children,
 }: PageProps) {

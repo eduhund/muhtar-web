@@ -13,6 +13,8 @@ import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 import "./Workers.scss";
 import { useProjects } from "../../hooks/useProjects";
 import Page from "../../components/Page/Page";
+import SideList from "../../components/SideList/SideList";
+import { useState } from "react";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -72,7 +74,15 @@ function getLast5DaysSummary(
   return formattedResult;
 }
 
-function WorkerRow({ membership }: { membership: Membership }) {
+function WorkerRow({
+  membership,
+  isSelected,
+  onClick,
+}: {
+  membership: Membership;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
   const { timetable } = useTimetable();
   const { projects } = useProjects();
 
@@ -141,39 +151,31 @@ function WorkerRow({ membership }: { membership: Membership }) {
   };
 
   return (
-    <div className="WorkerRow">
+    <div
+      className={"SideList-item WorkerRow" + (isSelected ? " _selected" : "")}
+      onClick={onClick}
+    >
       <div className="WorkerRow-headline">
-        <Title level={4}>{membership.name}</Title>
+        <Title level={5}>{membership.name}</Title>
         <Paragraph type="secondary">
-          <strong>{membershipProjectsQt}</strong> active projects
-        </Paragraph>
-        <Paragraph type="secondary">
-          Last tracked time: <strong>{lastTrackedDate}</strong>
+          {membership.contract[0]?.type || "No contract"}
         </Paragraph>
       </div>
       <div className="WorkerRow-params">
-        <TinyBarChart />
-        <Statistic
-          title="Spent this week"
-          value={totalWeekDuration.toFixed(0)}
-        />
-        <Statistic
-          title="Spent this month"
-          value={totalMonthDuration.toFixed(0)}
-        />
+        <Statistic title="This week" value={totalWeekDuration.toFixed(0)} />
+        <Statistic title="This month" value={totalMonthDuration.toFixed(0)} />
       </div>
     </div>
   );
 }
 
 export function Workers() {
+  const [selectedMembership, setSelectedMembership] =
+    useState<Membership | null>(null);
   const { membership } = useMembership();
   const { memberships } = useMemberships();
 
-  if (
-    membership &&
-    (membership.accessRole === "member" || membership.accessRole === "guest")
-  ) {
+  if (membership?.accessRole !== "admin") {
     return <Navigate to="/" replace />;
   }
 
@@ -181,47 +183,45 @@ export function Workers() {
     a.name.localeCompare(b.name)
   );
 
-  const staff = sortedMemberships?.filter((membership) => {
-    const contracts = membership?.contract || [];
-    const lastContract = contracts[contracts.length - 1];
-    if (!lastContract) return false;
-    return lastContract.type === "staff" && membership.status === "active";
-  });
-  const freelancers = sortedMemberships?.filter((membership) => {
-    const contracts = membership?.contract || [];
-    const lastContract = contracts[contracts.length - 1];
-    if (!lastContract) return false;
-    return lastContract.type === "freelance" && membership.status === "active";
-  });
-
   return (
-    <Page className="Workers" title="Workers">
-      {staff && (
-        <div className="Workers-group">
-          <Title level={2}>Core team</Title>
-          <div className="Workers-list">
-            {staff.map((membership) => (
-              <WorkerRow
-                key={membership.id}
-                membership={membership}
-              ></WorkerRow>
-            ))}
-          </div>
+    <Page title="Workers">
+      <div className="Workers">
+        <SideList>
+          {sortedMemberships && (
+            <div className="Workers-group">
+              <div className="Workers-list">
+                {sortedMemberships.map((membership) => (
+                  <WorkerRow
+                    key={membership.id}
+                    membership={membership}
+                    isSelected={membership.id === selectedMembership?.id}
+                    onClick={() => setSelectedMembership(membership)}
+                  ></WorkerRow>
+                ))}
+              </div>
+            </div>
+          )}
+        </SideList>
+        <div className="Workers-content">
+          {selectedMembership ? (
+            <div>
+              <Title level={2}>{selectedMembership.name}</Title>
+              <Paragraph>
+                Detailed statistics for {selectedMembership.name} will be
+                available soon.
+              </Paragraph>
+            </div>
+          ) : (
+            <div>
+              <Title level={2}>Select a worker</Title>
+              <Paragraph>
+                Please select a worker from the list to view detailed
+                statistics.
+              </Paragraph>
+            </div>
+          )}
         </div>
-      )}
-      {freelancers && freelancers.length > 0 && (
-        <div className="Workers-group">
-          <Title level={2}>Freelancers</Title>
-          <div className="Workers-list">
-            {freelancers.map((membership) => (
-              <WorkerRow
-                key={membership.id}
-                membership={membership}
-              ></WorkerRow>
-            ))}
-          </div>
-        </div>
-      )}
+      </div>
     </Page>
   );
 }

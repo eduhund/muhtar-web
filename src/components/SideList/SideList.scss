@@ -1,0 +1,25 @@
+.SideList {
+  width: 380px;
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #dee2e6;
+  padding: 4px;
+
+  overflow: auto;
+
+  &-item {
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+
+    transition: background-color 0.12s;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &._selected {
+      background-color: #ffdcc9;
+    }
+  }
+}
