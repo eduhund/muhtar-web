@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import { useProjects } from "../../hooks/useProjects";
-import PageHeader from "../../components/PageHeader/PageHeader";
+import Page from "../../components/Page/Page";
 
 const { Title } = Typography;
 
@@ -12,8 +12,7 @@ export function Projects() {
   );
 
   return (
-    <div className="Projects">
-      <PageHeader title="Projects" />
+    <Page className="Projects" title="Projects">
       <div className="Workers-content">
         {activeProjects?.map((project) => (
           <div key={project.id} className="Project-row">
@@ -22,6 +21,6 @@ export function Projects() {
           </div>
         ))}
       </div>
-    </div>
+    </Page>
   );
 }

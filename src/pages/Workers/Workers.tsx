@@ -12,7 +12,7 @@ import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 
 import "./Workers.scss";
 import { useProjects } from "../../hooks/useProjects";
-import PageHeader from "../../components/PageHeader/PageHeader";
+import Page from "../../components/Page/Page";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -195,36 +195,33 @@ export function Workers() {
   });
 
   return (
-    <div className="Workers">
-      <PageHeader title="Workers" />
-      <div className="Workers-content">
-        {staff && (
-          <div className="Workers-group">
-            <Title level={2}>Core team</Title>
-            <div className="Workers-list">
-              {staff.map((membership) => (
-                <WorkerRow
-                  key={membership.id}
-                  membership={membership}
-                ></WorkerRow>
-              ))}
-            </div>
+    <Page className="Workers" title="Workers">
+      {staff && (
+        <div className="Workers-group">
+          <Title level={2}>Core team</Title>
+          <div className="Workers-list">
+            {staff.map((membership) => (
+              <WorkerRow
+                key={membership.id}
+                membership={membership}
+              ></WorkerRow>
+            ))}
           </div>
-        )}
-        {freelancers && freelancers.length > 0 && (
-          <div className="Workers-group">
-            <Title level={2}>Freelancers</Title>
-            <div className="Workers-list">
-              {freelancers.map((membership) => (
-                <WorkerRow
-                  key={membership.id}
-                  membership={membership}
-                ></WorkerRow>
-              ))}
-            </div>
+        </div>
+      )}
+      {freelancers && freelancers.length > 0 && (
+        <div className="Workers-group">
+          <Title level={2}>Freelancers</Title>
+          <div className="Workers-list">
+            {freelancers.map((membership) => (
+              <WorkerRow
+                key={membership.id}
+                membership={membership}
+              ></WorkerRow>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </Page>
   );
 }

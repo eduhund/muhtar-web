@@ -73,7 +73,7 @@ function ProjectFilter({ timetableFilters }: any) {
 export function Filters({ timetableFilters, scope = null }: any) {
   const { filters, resetFilters } = timetableFilters;
   return (
-    <div className="Timetable-filters">
+    <>
       {(!scope || scope.includes("date")) && (
         <DateFilter timetableFilters={timetableFilters} />
       )}
@@ -86,6 +86,6 @@ export function Filters({ timetableFilters, scope = null }: any) {
       <Button type="link" disabled={!filters} onClick={resetFilters}>
         Reset
       </Button>
-    </div>
+    </>
   );
 }

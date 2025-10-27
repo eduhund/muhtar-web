@@ -1,0 +1,34 @@
+.Page {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &-header {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+    row-gap: 0;
+
+    &-title {
+      flex-grow: 1;
+    }
+
+    &-actions {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      margin-right: 12px;
+      margin-bottom: 22px;
+    }
+  }
+
+  &-content {
+    height: 100%;
+    border-top-left-radius: 16px;
+    overflow: auto;
+
+    background-color: #ffffff;
+  }
+}
