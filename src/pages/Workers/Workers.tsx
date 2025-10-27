@@ -8,10 +8,10 @@ import { Membership, TimetableItem } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMembership } from "../../hooks/useMembership";
 import { Navigate } from "react-router-dom";
-import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
+//import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 
 import "./Workers.scss";
-import { useProjects } from "../../hooks/useProjects";
+//import { useProjects } from "../../hooks/useProjects";
 import Page from "../../components/Page/Page";
 import SideList from "../../components/SideList/SideList";
 import { useState } from "react";
@@ -56,6 +56,7 @@ function filterByPeriod(
   });
 }
 
+/*
 function getLast5DaysSummary(
   entries: TimetableItem[]
 ): { date: string; duration: number }[] {
@@ -73,6 +74,7 @@ function getLast5DaysSummary(
   }));
   return formattedResult;
 }
+  */
 
 function WorkerRow({
   membership,
@@ -84,19 +86,23 @@ function WorkerRow({
   onClick: () => void;
 }) {
   const { timetable } = useTimetable();
-  const { projects } = useProjects();
+  //const { projects } = useProjects();
 
+  /*
   const membershipProjectsQt = (projects || [])?.filter((project) =>
     project?.memberships.some((m) => m.membershipId === membership.id)
   ).length;
+  */
 
   const membershipEntries =
     timetable?.filter((item) => item.membership.id === membership.id) || [];
 
+  /*
   const lastTrackedEntry = membershipEntries.sort((a, b) => b.ts - a.ts)[0];
   const lastTrackedDate = lastTrackedEntry?.ts
     ? dayjs(lastTrackedEntry?.ts).format("D MMMM YYYY")
     : "Never";
+  */
 
   const thisWeekEntries = filterByPeriod(membershipEntries, "thisWeek");
   const thisMonthEntries = filterByPeriod(membershipEntries, "thisMonth");
@@ -105,6 +111,7 @@ function WorkerRow({
   const totalMonthDuration =
     thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
 
+  /*
   const lastFiveDaysData = getLast5DaysSummary(thisWeekEntries);
 
   const CustomTooltip = ({
@@ -128,7 +135,9 @@ function WorkerRow({
       </div>
     );
   };
+  */
 
+  /*
   const TinyBarChart = () => {
     return (
       <BarChart
@@ -149,6 +158,7 @@ function WorkerRow({
       </BarChart>
     );
   };
+  */
 
   return (
     <div
