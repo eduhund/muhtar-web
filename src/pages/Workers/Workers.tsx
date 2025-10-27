@@ -12,6 +12,7 @@ import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 
 import "./Workers.scss";
 import { useProjects } from "../../hooks/useProjects";
+import PageHeader from "../../components/PageHeader/PageHeader";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -195,11 +196,7 @@ export function Workers() {
 
   return (
     <div className="Workers">
-      <div className="Workers-header">
-        <div className="Workers-header-title">
-          <Title level={1}>Workers</Title>
-        </div>
-      </div>
+      <PageHeader title="Workers" />
       <div className="Workers-content">
         {staff && (
           <div className="Workers-group">

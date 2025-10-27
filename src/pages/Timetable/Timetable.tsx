@@ -1,4 +1,4 @@
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 
 import { columns } from "./components/columns";
 import { useSelect } from "../../hooks/useSelect";
@@ -9,8 +9,7 @@ import { Filters } from "./components/Filters";
 import { useTimetableFilters } from "../../hooks/useTimetableFilters";
 import { TimetableItem } from "../../context/AppContext";
 import { TotalHint } from "./TotalHint";
-
-const { Title } = Typography;
+import PageHeader from "../../components/PageHeader/PageHeader";
 
 export function Timetable() {
   const { timetable, isLoading } = useTimetable();
@@ -20,12 +19,9 @@ export function Timetable() {
 
   return (
     <div className="Timetable">
-      <div className="Timetable-header">
-        <div className="Timetable-header-title">
-          <Title level={1}>Timetable</Title>
-        </div>
+      <PageHeader title="Timetable">
         {timetable?.length && <Filters timetableFilters={timetableFilters} />}
-      </div>
+      </PageHeader>
       <div id="timetable">
         <Table
           className="timetable"

@@ -1,25 +1,12 @@
 .Timetable {
   min-height: 100vh;
 
-  &-header {
+  .Timetable-filters {
     display: flex;
-    align-items: end;
-    flex-wrap: wrap;
-    gap: 16px;
-    row-gap: 0;
-    border-bottom: solid 1px #eeeeee;
-
-    &-title {
-      flex-grow: 1;
-    }
-
-    .Timetable-filters {
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-      margin-right: 12px;
-      margin-bottom: 22px;
-    }
+    flex-direction: row;
+    gap: 8px;
+    margin-right: 12px;
+    margin-bottom: 22px;
   }
 }
 
