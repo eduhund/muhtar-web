@@ -1,7 +1,5 @@
 .Timetable {
-  min-height: 100vh;
-
-  .Timetable-filters {
+  &-filters {
     display: flex;
     flex-direction: row;
     gap: 8px;

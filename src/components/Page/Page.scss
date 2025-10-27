@@ -1,8 +1,8 @@
 .Page {
-  height: 100%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 
   &-header {
     display: flex;
