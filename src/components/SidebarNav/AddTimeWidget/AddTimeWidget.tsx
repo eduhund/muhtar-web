@@ -107,7 +107,7 @@ export function AddTimeWidget() {
           >
             {Array.from({ length: 20 }, (_, i) => (
               <Select.Option key={(i + 1) / 2} value={((i + 1) / 2) * 60}>
-                {(i + 1) / 2}
+                {String((i + 1) / 2).replace(".", ",")}
               </Select.Option>
             ))}
           </Select>

@@ -62,7 +62,7 @@ export const columns: TableProps<DataType>["columns"] = [
     dataIndex: "duration",
     key: "duration",
     width: 80,
-    render: (duration: number) => duration / 60,
+    render: (duration: number) => String(duration / 60).replace(".", ","),
   },
   {
     title: "What",
