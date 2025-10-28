@@ -49,6 +49,18 @@
 }
 
 .WorkerPage {
+  &-overview {
+    &-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+
+      h5 {
+        flex-grow: 1;
+      }
+    }
+  }
+
   &-chart {
     width: 200px;
     height: 100px;

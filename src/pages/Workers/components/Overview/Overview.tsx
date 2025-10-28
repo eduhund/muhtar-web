@@ -1,7 +1,13 @@
-import { Typography } from "antd";
+import { Segmented, Typography } from "antd";
 import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 import dayjs from "dayjs";
 import { TimetableItem } from "../../../../context/AppContext";
+import isoWeek from "dayjs/plugin/isoWeek";
+import { useState } from "react";
+
+type Period = "Daily" | "Weekly" | "Monthly";
+
+dayjs.extend(isoWeek);
 
 const { Title } = Typography;
 
@@ -26,8 +32,84 @@ function getDailyEntries(
   return formattedResult;
 }
 
+function getWeeklyEntries(
+  entries: TimetableItem[]
+): { date: string; duration: number }[] {
+  const result: {
+    startDate: string;
+    endDate: string;
+    duration: number;
+  }[] = [];
+
+  for (let i = 0; i < 10; i++) {
+    const weekStart = dayjs().startOf("isoWeek").subtract(i, "week");
+    const weekEnd = weekStart.endOf("isoWeek");
+    const startDate = weekStart.format("YYYY-MM-DD");
+    const endDate = weekEnd.format("YYYY-MM-DD");
+    const duration = entries
+      .filter((entry) => entry.date >= startDate && entry.date <= endDate)
+      .reduce((acc, entry) => acc + (entry.duration || 0), 0);
+
+    result.unshift({
+      startDate,
+      endDate,
+      duration,
+    });
+  }
+
+  return result.map((item) => ({
+    date: `${dayjs(item.startDate).format("D MMMM")} - ${dayjs(
+      item.endDate
+    ).format("D MMMM")}`,
+    duration: item.duration / 60,
+  }));
+}
+
+function getMonthlyEntries(
+  entries: TimetableItem[]
+): { date: string; duration: number }[] {
+  const result: { date: string; duration: number }[] = [];
+  const now = dayjs();
+  const monthsCount = 12;
+
+  for (let i = monthsCount - 1; i >= 0; i--) {
+    const month = now.subtract(i, "month");
+    const startOfMonth = month.startOf("month").format("YYYY-MM-DD");
+    const isCurrentMonth = month.isSame(now, "month");
+    const endOfMonth = isCurrentMonth
+      ? now.format("YYYY-MM-DD")
+      : month.endOf("month").format("YYYY-MM-DD");
+
+    const duration = entries
+      .filter((entry) => entry.date >= startOfMonth && entry.date <= endOfMonth)
+      .reduce((acc, entry) => acc + (entry.duration || 0), 0);
+
+    result.push({
+      date: month.format("MMMM YYYY"),
+      duration: duration / 60,
+    });
+  }
+  return result;
+}
+
+function getEntriesByPeriod(
+  entries: TimetableItem[],
+  period: Period = "Daily"
+) {
+  switch (period) {
+    case "Monthly":
+      return getMonthlyEntries(entries);
+    case "Weekly":
+      return getWeeklyEntries(entries);
+    default:
+      return getDailyEntries(entries);
+  }
+}
+
 export default function Overview({ entries }: { entries: TimetableItem[] }) {
-  const dailyEntries = getDailyEntries(entries);
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>("Daily");
+  const groupedEntries = getEntriesByPeriod(entries, selectedPeriod);
+
   const CustomTooltip = ({
     active,
     payload,
@@ -49,7 +131,10 @@ export default function Overview({ entries }: { entries: TimetableItem[] }) {
       </div>
     );
   };
+
   const TinyBarChart = () => {
+    const topValue =
+      selectedPeriod === "Monthly" ? 180 : selectedPeriod === "Weekly" ? 40 : 8;
     return (
       <BarChart
         style={{
@@ -57,9 +142,9 @@ export default function Overview({ entries }: { entries: TimetableItem[] }) {
           height: "100px",
         }}
         responsive
-        data={dailyEntries}
+        data={groupedEntries}
       >
-        <YAxis domain={[0, 8]} hide={true} />
+        <YAxis domain={[0, topValue]} hide={true} />
         <Tooltip content={CustomTooltip} cursor={false} />
         <Bar
           dataKey="duration"
@@ -72,7 +157,16 @@ export default function Overview({ entries }: { entries: TimetableItem[] }) {
 
   return (
     <div className="WorkerPage-overview">
-      <Title level={5}>Last 30 days overview</Title>
+      <div className="WorkerPage-overview-header">
+        <Title level={5}>Timetable overview</Title>
+        <Segmented<Period>
+          options={["Daily", "Weekly", "Monthly"]}
+          onChange={(value) => {
+            setSelectedPeriod(value);
+          }}
+        />
+      </div>
+
       <TinyBarChart />
     </div>
   );
