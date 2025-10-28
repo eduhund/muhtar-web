@@ -45,13 +45,15 @@
         margin-bottom: 0;
       }
     }
+  }
+}
 
-    &-chart {
-      width: 200px;
-      height: 100px;
-    }
+.WorkerPage {
+  &-chart {
+    width: 200px;
+    height: 100px;
 
-    .WorkerRow-chart-tooltip {
+    &-tooltip {
       background-color: #333333;
       color: #ffffff;
       padding: 8px;
