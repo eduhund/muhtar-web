@@ -1,4 +1,4 @@
-import { Statistic, Typography } from "antd";
+import { Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -15,6 +15,7 @@ import "./Workers.scss";
 import Page from "../../components/Page/Page";
 import SideList from "../../components/SideList/SideList";
 import { useState } from "react";
+import QuickSummaryItem from "./components/QuickSummaryItem/QuickSummaryItem";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -171,9 +172,9 @@ function WorkerRow({
           {membership.contract[0]?.type || "No contract"}
         </Paragraph>
       </div>
-      <div className="WorkerRow-params">
-        <Statistic title="This week" value={totalWeekDuration.toFixed(0)} />
-        <Statistic title="This month" value={totalMonthDuration.toFixed(0)} />
+      <div className="WorkerRow-summary">
+        <QuickSummaryItem title="This week" value={totalWeekDuration} />
+        <QuickSummaryItem title="This month" value={totalMonthDuration} />
       </div>
     </div>
   );

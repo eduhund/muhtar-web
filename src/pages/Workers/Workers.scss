@@ -34,9 +34,17 @@
     }
   }
 
-  &-params {
+  &-summary {
     display: flex;
     gap: 12px;
+
+    padding-top: 2px;
+
+    &-item {
+      .ant-statistic-title {
+        margin-bottom: 0;
+      }
+    }
 
     &-chart {
       width: 200px;
