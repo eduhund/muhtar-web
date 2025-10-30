@@ -3,15 +3,20 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  position: relative;
 
   &-header {
+    z-index: 2;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 8px;
-
+    padding: 16px;
+    padding-bottom: 0;
+    background-color: #fff6f0;
     text-decoration: none;
+
+    box-shadow: -12px 8px 12px 12px #fff6f0;
 
     &-divider {
       width: 1px;
@@ -20,11 +25,30 @@
     }
   }
 
+  &-contentWrapper {
+    //flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 12px;
+  }
+
   &-widgets {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex-grow: 1;
+    //flex-grow: 1;
+  }
+
+  &-footer {
+    z-index: 2;
+    background: none;
+    padding: 12px 8px;
+    padding-top: 0;
+
+    box-shadow: -12px -8px 12px 12px #fff6f0;
   }
 
   &-user {
@@ -33,18 +57,15 @@
     gap: 8px;
     padding: 8px;
     box-sizing: border-box;
-
     border: 1px solid rgba($color: #ffffff, $alpha: 0.4);
     border-radius: 40px;
     background-color: rgba($color: #ffffff, $alpha: 0.8);
     backdrop-filter: blur(8px);
     box-shadow: 0 4px 12px 0 rgba($color: #141414, $alpha: 0.1);
-
     &-info {
       display: flex;
       flex-direction: column;
     }
-
     &-email {
       line-height: 16px;
     }

@@ -41,24 +41,28 @@ export function SidebarNav() {
           </>
         )}
       </Link>
-      <div className="SidebarNav-widgets">
-        <AddTimeWidget />
-        {isManagerType && <ProjectsWidget />}
-        {isManagerType && <WorkersWidget />}
+      <div className="SidebarNav-contentWrapper">
+        <div className="SidebarNav-widgets">
+          <AddTimeWidget />
+          {isManagerType && <ProjectsWidget />}
+          {isManagerType && <WorkersWidget />}
+        </div>
       </div>
       {user && (
-        <div className="SidebarNav-user">
-          <Avatar shape="circle" size={40} icon={<UserOutlined />} />
-          <div className="SidebarNav-user-info">
-            <Title
-              className="SidebarNav-user-name"
-              level={5}
-              title={`${user.firstName} ${user.lastName}`}
-              style={{ margin: 0 }}
-            >{`${user.firstName} ${user.lastName}`}</Title>
-            <Text className="SidebarNav-user-email" type="secondary">
-              {user.email}
-            </Text>
+        <div className="SidebarNav-footer">
+          <div className="SidebarNav-user">
+            <Avatar shape="circle" size={40} icon={<UserOutlined />} />
+            <div className="SidebarNav-user-info">
+              <Title
+                className="SidebarNav-user-name"
+                level={5}
+                title={`${user.firstName} ${user.lastName}`}
+                style={{ margin: 0 }}
+              >{`${user.firstName} ${user.lastName}`}</Title>
+              <Text className="SidebarNav-user-email" type="secondary">
+                {user.email}
+              </Text>
+            </div>
           </div>
         </div>
       )}
