@@ -25,7 +25,7 @@ export function SidebarWidget({
         <Link className="SidebarWidget-header" to={url}>
           <div className="SidebarWidget-title">
             {icon}
-            <Title level={4}>{title}</Title>
+            <Title level={5}>{title}</Title>
           </div>
           <RightOutlined />
         </Link>
@@ -33,7 +33,7 @@ export function SidebarWidget({
         <div className="SidebarWidget-header">
           <div className="SidebarWidget-title">
             {icon}
-            <Title level={4}>{title}</Title>
+            <Title level={5}>{title}</Title>
           </div>
         </div>
       )}
