@@ -10,6 +10,7 @@ import { WorkersWidget } from "./WorkersWidget/WorkersWidget";
 import { useTeam } from "../../hooks/useTeam";
 import { Link } from "react-router-dom";
 import { ProjectsWidget } from "./ProjectsWidget/ProjectsWidget";
+import { useSidebarExpanded } from "./hooks/useSidebarExpanded";
 
 const { Title, Text } = Typography;
 
@@ -17,6 +18,7 @@ export function SidebarNav() {
   const { user } = useUser();
   const { membership } = useMembership();
   const { team } = useTeam();
+  const isExpanded = useSidebarExpanded();
 
   const isManagerType =
     membership?.accessRole === "admin" || membership?.accessRole === "manager";
@@ -25,15 +27,19 @@ export function SidebarNav() {
       <Link to="/" className="SidebarNav-header">
         <img
           src="/assets/img/muhtar-logo_round.png"
-          width={32}
-          height={32}
+          width={40}
+          height={40}
           alt="Muhtar Logo"
           className="SidebarNav-logo"
         />
-        <div className="SidebarNav-header-divider"></div>
-        <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
-          {team?.name || "Unnamed team"}
-        </Title>
+        {isExpanded && (
+          <>
+            <div className="SidebarNav-header-divider"></div>
+            <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
+              {team?.name || "Unnamed team"}
+            </Title>
+          </>
+        )}
       </Link>
       <div className="SidebarNav-widgets">
         <AddTimeWidget />
