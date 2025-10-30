@@ -1,7 +1,7 @@
 .SidebarWidget {
   box-sizing: border-box;
 
-  border: 1px solid rgba($color: #ffffff, $alpha: 0.4);
+  //border: 1px solid rgba($color: #ffffff, $alpha: 0.4);
   border-radius: 12px;
   background-color: rgba($color: #ffffff, $alpha: 0.8);
   backdrop-filter: blur(8px);
@@ -32,6 +32,12 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: #666666;
+    }
   }
 
   &-title {
@@ -48,6 +54,8 @@
     svg {
       width: 20px;
       height: 20px;
+      margin-left: 2px;
+      color: #666666;
     }
   }
 
