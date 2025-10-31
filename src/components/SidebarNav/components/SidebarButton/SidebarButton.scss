@@ -8,19 +8,6 @@
   color: inherit;
   transition: background-color 0.2s;
 
-  &:hover {
-    text-decoration: none;
-    color: inherit;
-
-    .SidebarButton-icon {
-      background-color: #f6f6f6;
-
-      svg {
-        color: #333333;
-      }
-    }
-  }
-
   &-icon {
     width: 48px;
     height: 48px;
@@ -41,6 +28,30 @@
       height: 24px;
       color: #666666;
       transition: color 0.2s;
+    }
+  }
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+
+    .SidebarButton-icon {
+      background-color: #f6f6f6;
+
+      svg {
+        color: #333333;
+      }
+    }
+  }
+
+  &._active {
+    .SidebarButton-icon {
+      background-color: #333333;
+      color: #ffffff;
+
+      svg {
+        color: #ffffff;
+      }
     }
   }
 }

@@ -16,8 +16,9 @@ export default function SidebarButton({
   icon,
   title,
 }: IconItemButtonProps) {
+  const isActive = window.location.pathname.startsWith(link);
   return (
-    <Link className="SidebarButton" to={link}>
+    <Link className={"SidebarButton" + (isActive ? " _active" : "")} to={link}>
       <div className="SidebarButton-icon">{icon}</div>
       <Text className="SidebarButton-title">{title}</Text>
     </Link>
