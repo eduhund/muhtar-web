@@ -40,7 +40,6 @@ function getMonthlyEarnings(
 
 function EmployeeSalary({
   membership,
-  timetable,
 }: {
   membership: Membership;
   timetable: TimetableItem[];
@@ -106,6 +105,7 @@ export default function Salary({
   timetable: TimetableItem[];
 }) {
   const contract = membership.contract[membership.contract.length - 1];
+  console.log(contract);
   const isEmployee = contract.type === "staff";
   return (
     <div className="Salary">

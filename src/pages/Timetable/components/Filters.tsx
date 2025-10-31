@@ -1,6 +1,5 @@
-import { DatePicker, Select, Button } from "antd";
+import { DatePicker, Button } from "antd";
 
-import { defaultListSort } from "../../../utils/helpers";
 import { dateFormat } from "../../../utils/date";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 import MembershipDropdown from "../../../components/MembershipDropdown/MembershipDropdown";
