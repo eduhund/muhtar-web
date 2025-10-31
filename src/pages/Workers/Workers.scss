@@ -5,6 +5,18 @@
   height: 100%;
   overflow: hidden;
 
+  &-filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .ant-select {
+      width: 208px;
+    }
+  }
+
   &-content {
     display: flex;
     flex-direction: column;

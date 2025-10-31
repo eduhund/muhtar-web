@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Checkbox, Select, Switch, Typography } from "antd";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -100,6 +100,17 @@ function WorkerRow({
 export function Workers() {
   const [selectedMembership, setSelectedMembership] =
     useState<Membership | null>(null);
+  const [contractType, setContractType] = useState("all");
+  const [showActiveOnly, setShowActiveOnly] = useState(true);
+
+  function handleShowActiveOnlyChange(e: any) {
+    setShowActiveOnly(e.target.checked);
+  }
+
+  function handleContractTypeChange(value: string) {
+    setContractType(value);
+  }
+
   const { membership } = useMembership();
   const { memberships } = useMemberships();
 
@@ -107,7 +118,27 @@ export function Workers() {
     return <Navigate to="/" replace />;
   }
 
-  const sortedMemberships = memberships?.sort((a, b) =>
+  const filteredMemberships = memberships?.filter((m) => {
+    const lastContract =
+      m.contract && m.contract.length > 0
+        ? m.contract[m.contract.length - 1]
+        : null;
+    let contractMatch = true;
+    if (contractType === "staff") {
+      contractMatch = !!lastContract && lastContract.type === "staff";
+    } else if (contractType === "freelance") {
+      contractMatch = !!lastContract && lastContract.type === "freelance";
+    }
+
+    let statusMatch = true;
+    if (showActiveOnly) {
+      statusMatch = m.status === "active";
+    }
+
+    return contractMatch && statusMatch;
+  });
+
+  const sortedMemberships = filteredMemberships?.sort((a, b) =>
     a.name.localeCompare(b.name)
   );
 
@@ -115,6 +146,20 @@ export function Workers() {
     <Page title="Workers">
       <div className="Workers">
         <SideList>
+          <div className="Workers-filters">
+            <Select
+              defaultValue="all"
+              options={[
+                { value: "all", label: "All" },
+                { value: "staff", label: "Staff only" },
+                { value: "freelance", label: "Freelancers only" },
+              ]}
+              onChange={handleContractTypeChange}
+            />
+            <Checkbox onChange={handleShowActiveOnlyChange}>
+              Show active only
+            </Checkbox>
+          </div>
           {sortedMemberships && (
             <div className="Workers-group">
               <div className="Workers-list">
