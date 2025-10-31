@@ -1,0 +1,20 @@
+.Salary {
+  &-statistics {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+
+    &-item {
+      flex-shrink: 0;
+      width: 120px;
+    }
+
+    .ant-statistic-content-value {
+      font-size: 28px;
+    }
+
+    td {
+      padding: 0 !important;
+    }
+  }
+}
