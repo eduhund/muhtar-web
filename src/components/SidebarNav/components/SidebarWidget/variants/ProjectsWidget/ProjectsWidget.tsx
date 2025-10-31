@@ -1,5 +1,5 @@
 import { ReconciliationOutlined } from "@ant-design/icons";
-import { SidebarWidget } from "../../SidebarWidget/SidebarWidget";
+import { SidebarWidget } from "../../SidebarWidget";
 
 export function ProjectsWidget() {
   return (
