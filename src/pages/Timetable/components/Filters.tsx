@@ -3,6 +3,7 @@ import { DatePicker, Select, Button } from "antd";
 import { defaultListSort } from "../../../utils/helpers";
 import { dateFormat } from "../../../utils/date";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
+import MembershipDropdown from "../../../components/MembershipDropdown/MembershipDropdown";
 
 const { RangePicker } = DatePicker;
 
@@ -34,17 +35,13 @@ function MembershipFilter({ timetableFilters }: any) {
   const value = filters ? filters["memberships"] || [] : null;
 
   return (
-    <Select
-      placeholder="All"
-      options={filteredMembershipList}
-      value={value}
-      fieldNames={{ label: "name", value: "id" }}
-      filterSort={defaultListSort}
-      mode="multiple"
-      allowClear
-      prefix="Memberships"
-      style={{ width: "240px" }}
+    <MembershipDropdown
+      memberships={filteredMembershipList}
       onChange={handleChange}
+      value={value}
+      placeholder="All"
+      isMultiple={true}
+      style={{ width: "240px" }}
     />
   );
 }
