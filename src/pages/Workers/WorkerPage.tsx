@@ -18,7 +18,7 @@ export default function WorkerPage({ membership }: { membership: Membership }) {
       <Title level={2}>{membership.name}</Title>
       <div>
         <Overview entries={membershipEntries} />
-        <Salary membership={membership} timetable={timetable} />
+        <Salary membership={membership} timetable={timetable || []} />
       </div>
     </div>
   );
