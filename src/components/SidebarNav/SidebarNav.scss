@@ -6,6 +6,14 @@
   gap: 8px;
   position: relative;
 
+  &._collapsed {
+    width: 88px;
+
+    .SidebarNav-header {
+      justify-content: center;
+    }
+  }
+
   &-header {
     z-index: 2;
     display: flex;
