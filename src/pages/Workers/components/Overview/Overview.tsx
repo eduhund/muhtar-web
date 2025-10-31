@@ -5,6 +5,8 @@ import { TimetableItem } from "../../../../context/AppContext";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { useState } from "react";
 
+import "./Overview.scss";
+
 type Period = "Daily" | "Weekly" | "Monthly";
 
 dayjs.extend(isoWeek);
