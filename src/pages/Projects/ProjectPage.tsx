@@ -11,8 +11,22 @@ import {
 import { Project } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMemberships } from "../../hooks/useMemberships";
+import dayjs from "dayjs";
 
 const { Title } = Typography;
+
+const areaColors = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff7300",
+  "#0088fe",
+  "#00c49f",
+  "#ffbb28",
+  "#a4de6c",
+  "#d0ed57",
+  "#8dd1e1",
+];
 
 export default function ProjectPage({ project }: { project: Project }) {
   const { timetable } = useTimetable();
@@ -21,15 +35,12 @@ export default function ProjectPage({ project }: { project: Project }) {
     timetable?.filter((item) => item.project.id === project.id) || [];
 
   function groupEntriesByDayWithWorkers(entries: typeof projectEntries) {
-    // Сортируем все записи по дате
     const sortedEntries = [...entries].sort((a, b) =>
       a.date.localeCompare(b.date)
     );
-    // Получаем уникальные даты в порядке возрастания
     const uniqueDates = Array.from(
       new Set(sortedEntries.map((e) => e.date))
     ).sort();
-    // Для накопления итогов по каждому работнику
     const runningTotals: Record<string, number> = {};
     const result: Array<{
       date: string;
@@ -41,9 +52,7 @@ export default function ProjectPage({ project }: { project: Project }) {
       }>;
     }> = [];
     uniqueDates.forEach((date) => {
-      // Берём все записи до и включая текущий день
       const dayEntries = sortedEntries.filter((e) => e.date === date);
-      // Считаем накопленные значения по каждому работнику
       dayEntries.forEach((entry) => {
         const membershipId = entry.membership.id;
         const multiplier =
@@ -52,7 +61,6 @@ export default function ProjectPage({ project }: { project: Project }) {
         if (!runningTotals[membershipId]) runningTotals[membershipId] = 0;
         runningTotals[membershipId] += (entry.duration / 60) * multiplier;
       });
-      // Собираем список работников с накопленными итогами
       const workers = Object.keys(runningTotals).map((membershipId) => {
         const membershipName =
           memberships?.find((m) => m.id === membershipId)?.name || "Unknown";
@@ -67,7 +75,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         };
       });
       result.push({
-        date,
+        date: dayjs(date).format("D MMMM YYYY"),
         workers,
       });
     });
@@ -75,9 +83,15 @@ export default function ProjectPage({ project }: { project: Project }) {
   }
 
   const groupedEntries = groupEntriesByDayWithWorkers(projectEntries);
-  // Трансформируем для AreaChart: { date, workerId1: value, workerId2: value, ... }
   const chartData = groupedEntries.map((day) => {
-    const obj: Record<string, any> = { date: day.date };
+    const formattedDate = day.date
+      ? new Date(day.date).toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : day.date;
+    const obj: Record<string, number | string> = { date: formattedDate };
     day.workers.forEach((worker) => {
       obj[worker.membershipId] = worker.value;
     });
@@ -127,7 +141,6 @@ export default function ProjectPage({ project }: { project: Project }) {
   const totalDuration = coreTeamDuration + otherDuration;
 
   const StackedAreaChart = () => {
-    // Получаем список всех workerId, которые встречаются в groupedEntries
     const allWorkerIds = Array.from(
       new Set(
         groupedEntries.flatMap((day) => day.workers.map((w) => w.membershipId))
@@ -153,9 +166,10 @@ export default function ProjectPage({ project }: { project: Project }) {
         <XAxis dataKey="date" />
         <YAxis width="auto" />
         <Tooltip />
-        {allWorkerIds.map((workerId) => {
+        {allWorkerIds.map((workerId, idx) => {
           const workerName =
             memberships?.find((m) => m.id === workerId)?.name || workerId;
+          const color = areaColors[idx % areaColors.length];
           return (
             <Area
               key={workerId}
@@ -163,8 +177,8 @@ export default function ProjectPage({ project }: { project: Project }) {
               dataKey={workerId}
               name={workerName}
               stackId={1}
-              stroke="#8884d8"
-              fill="#8884d8"
+              stroke={color}
+              fill={color}
             />
           );
         })}
