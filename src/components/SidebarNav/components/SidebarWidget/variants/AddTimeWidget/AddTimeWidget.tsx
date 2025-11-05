@@ -20,7 +20,7 @@ import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
 
 type FieldType = {
   date: Dayjs;
-  duration: string;
+  duration: number;
   project: string;
   task?: string;
   comment?: string;
