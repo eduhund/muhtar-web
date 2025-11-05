@@ -95,6 +95,7 @@ export default function ProjectDropdown({
       allowClear={!isRequired}
       prefix={isMultiple ? "Projects" : "Project"}
       loading={isLoading}
+      showSearch={true}
       filterOption={(input, option) =>
         getLabelText(option?.label).toLowerCase().includes(input.toLowerCase())
       }

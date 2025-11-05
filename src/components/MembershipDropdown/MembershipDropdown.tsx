@@ -47,6 +47,7 @@ export default function MembershipDropdown({
       mode={isMultiple ? "multiple" : undefined}
       filterSort={defaultListSort}
       allowClear={!isRequired}
+      showSearch={true}
       prefix={isMultiple ? "Memberships" : "Membership"}
       loading={isLoading}
       filterOption={(input, option) =>
