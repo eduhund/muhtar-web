@@ -17,6 +17,7 @@ import Page from "../../components/Page/Page";
 
 import TimeEditModal from "./components/TimeEditModal";
 import "./Timetable.scss";
+import { useMembership } from "../../hooks/useMembership";
 
 interface DataType {
   key: string;
@@ -33,6 +34,7 @@ interface DataType {
 export function Timetable() {
   const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
   const { timetable, isLoading, deleteTime, restoreTime } = useTimetable();
+  const { membership } = useMembership();
   const timetableFilters = useTimetableFilters(timetable || []);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -142,35 +144,39 @@ export function Timetable() {
       width: 88,
       render: (_: any, record) => (
         <>
-          {!record.isDeleted && (
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEntryEdit(record);
-              }}
-            />
-          )}
-          {record.isDeleted ? (
-            <Button
-              type="text"
-              icon={<RollbackOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEntryRestore(record);
-              }}
-            />
-          ) : (
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEntryDelete(record);
-              }}
-            />
+          {record.membership.id === membership?.id && (
+            <>
+              {!record.isDeleted && (
+                <Button
+                  type="text"
+                  icon={<EditOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEntryEdit(record);
+                  }}
+                />
+              )}
+              {record.isDeleted ? (
+                <Button
+                  type="text"
+                  icon={<RollbackOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEntryRestore(record);
+                  }}
+                />
+              ) : (
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEntryDelete(record);
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       ),
