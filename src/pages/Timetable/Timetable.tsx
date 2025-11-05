@@ -1,6 +1,6 @@
-import { Table } from "antd";
+import { useState } from "react";
+import { Button, Table, type TableProps } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, type TableProps } from "antd";
 
 import { useSelect } from "../../hooks/useSelect";
 import { useTimetable } from "../../hooks/useTimetable";
@@ -11,6 +11,7 @@ import { TimetableItem } from "../../context/AppContext";
 import { TotalHint } from "./TotalHint";
 import Page from "../../components/Page/Page";
 
+import TimeEditModal from "./components/TimeEditModal";
 import "./Timetable.scss";
 
 interface DataType {
@@ -25,17 +26,18 @@ interface DataType {
 }
 
 export function Timetable() {
+  const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
   const { timetable, isLoading } = useTimetable();
   const timetableFilters = useTimetableFilters(timetable || []);
 
   const { rowSelection, onRowClick } = useSelect(timetable);
 
-  function handleEntryEdit(id: string) {
-    console.log("Edit entry", id);
+  function handleEntryEdit(record: DataType) {
+    setEditingEntry(record);
   }
 
-  function handleEntryDelete(id: string) {
-    console.log("Delete entry", id);
+  function handleEntryDelete(record: DataType) {
+    console.log("Delete entry", record.id);
   }
 
   const columns: TableProps<DataType>["columns"] = [
@@ -104,18 +106,24 @@ export function Timetable() {
       key: "actions",
       fixed: "right",
       width: 88,
-      render: (_: any, record: { id: string }) => (
+      render: (_: any, record) => (
         <>
           <Button
             type="text"
             icon={<EditOutlined />}
-            onClick={() => handleEntryEdit(record.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEntryEdit(record);
+            }}
           />
           <Button
             type="text"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleEntryDelete(record.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEntryDelete(record);
+            }}
           />
         </>
       ),
@@ -128,6 +136,10 @@ export function Timetable() {
       title="Timetable"
       actions={<Filters timetableFilters={timetableFilters} />}
     >
+      <TimeEditModal
+        record={editingEntry}
+        onClose={() => setEditingEntry(null)}
+      />
       <Table
         className="timetable"
         sticky={true}
