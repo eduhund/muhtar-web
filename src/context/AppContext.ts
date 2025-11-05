@@ -90,6 +90,7 @@ export interface TimetableItem {
   date: string; // YYYY-MM-DD
   duration: number; // in minutes
   comment: string;
+  isDeleted: boolean;
 }
 
 export type Timetable = TimetableItem[];

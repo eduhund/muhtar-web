@@ -138,7 +138,20 @@ class MembershipAPI extends privateAPI {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.post(`${this.prefix}/deleteTime`, this.token, {
+    return this.controller.post(`${this.prefix}/archiveTime`, this.token, {
+      id,
+    });
+  }
+
+  async restoreTime({
+    id,
+  }: {
+    id: string;
+  }): Promise<ApiResponse<TimetableItem>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/restoreTime`, this.token, {
       id,
     });
   }

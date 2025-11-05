@@ -30,13 +30,6 @@ function updateTimetableItem(
   return insertIntoTimetable(filteredList, item);
 }
 
-function removeFromTimetable(
-  list: TimetableItem[],
-  item: TimetableItem
-): TimetableItem[] {
-  return list.filter((e) => e.id !== item.id);
-}
-
 export function useTimetable() {
   const context = useContext(AppContext);
   if (!context) {
@@ -69,10 +62,27 @@ export function useTimetable() {
   }
 
   async function deleteTime(entry: { id: string }) {
-    const { OK, data } = await membershipAPI.deleteTime(entry);
-    if (data && timetable) {
-      const newtimetable = removeFromTimetable(timetable, data);
-      updateState({ timetable: newtimetable });
+    const { OK } = await membershipAPI.deleteTime(entry);
+    if (OK && timetable) {
+      const entryRecord = timetable.find((item) => item.id === entry.id);
+      if (entryRecord) {
+        entryRecord.isDeleted = true;
+        const newtimetable = updateTimetableItem(timetable, entryRecord);
+        updateState({ timetable: newtimetable });
+      }
+    }
+    return OK;
+  }
+
+  async function restoreTime(entry: { id: string }) {
+    const { OK } = await membershipAPI.restoreTime(entry);
+    if (OK && timetable) {
+      const entryRecord = timetable.find((item) => item.id === entry.id);
+      if (entryRecord) {
+        entryRecord.isDeleted = false;
+        const newtimetable = updateTimetableItem(timetable, entryRecord);
+        updateState({ timetable: newtimetable });
+      }
     }
     return OK;
   }
@@ -84,5 +94,6 @@ export function useTimetable() {
     addTime,
     updateTime,
     deleteTime,
+    restoreTime,
   };
 }

@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { Button, Table, type TableProps } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, message, Table, type TableProps } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  RollbackOutlined,
+} from "@ant-design/icons";
 
 import { useSelect } from "../../hooks/useSelect";
 import { useTimetable } from "../../hooks/useTimetable";
@@ -23,21 +27,51 @@ interface DataType {
   project: { id: string; name: string; customer: string | null };
   duration: number;
   comment: string;
+  isDeleted: boolean;
 }
 
 export function Timetable() {
   const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
-  const { timetable, isLoading } = useTimetable();
+  const { timetable, isLoading, deleteTime, restoreTime } = useTimetable();
   const timetableFilters = useTimetableFilters(timetable || []);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const { rowSelection, onRowClick } = useSelect(timetable);
+
+  const showSuccessMessage = (action: "delete" | "restore") => {
+    messageApi.open({
+      type: "success",
+      content: `Entry ${action}d successfully!`,
+    });
+  };
+
+  const showErrorMessage = (action: "delete" | "restore") => {
+    messageApi.open({
+      type: "error",
+      content: `Entry was not ${action}d!`,
+    });
+  };
 
   function handleEntryEdit(record: DataType) {
     setEditingEntry(record);
   }
 
-  function handleEntryDelete(record: DataType) {
-    console.log("Delete entry", record.id);
+  async function handleEntryDelete(record: DataType) {
+    const OK = await deleteTime({ id: record.id });
+    if (OK) {
+      showSuccessMessage("delete");
+    } else {
+      showErrorMessage("delete");
+    }
+  }
+
+  async function handleEntryRestore(record: DataType) {
+    const OK = await restoreTime({ id: record.id });
+    if (OK) {
+      showSuccessMessage("restore");
+    } else {
+      showErrorMessage("restore");
+    }
   }
 
   const columns: TableProps<DataType>["columns"] = [
@@ -108,23 +142,36 @@ export function Timetable() {
       width: 88,
       render: (_: any, record) => (
         <>
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEntryEdit(record);
-            }}
-          />
-          <Button
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEntryDelete(record);
-            }}
-          />
+          {!record.isDeleted && (
+            <Button
+              type="text"
+              icon={<EditOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEntryEdit(record);
+              }}
+            />
+          )}
+          {record.isDeleted ? (
+            <Button
+              type="text"
+              icon={<RollbackOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEntryRestore(record);
+              }}
+            />
+          ) : (
+            <Button
+              type="text"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEntryDelete(record);
+              }}
+            />
+          )}
         </>
       ),
     },
@@ -136,6 +183,7 @@ export function Timetable() {
       title="Timetable"
       actions={<Filters timetableFilters={timetableFilters} />}
     >
+      {contextHolder}
       <TimeEditModal
         record={editingEntry}
         onClose={() => setEditingEntry(null)}
@@ -154,6 +202,9 @@ export function Timetable() {
         )}
         columns={columns}
         rowSelection={rowSelection}
+        rowClassName={(record) =>
+          record.isDeleted ? "Timetable-row-deleted" : ""
+        }
         onRow={onRowClick}
         size="small"
         loading={isLoading}
