@@ -1,4 +1,4 @@
-import { DatePicker, Form, Select, Tooltip } from "antd";
+import { DatePicker, Form, message, Select, Tooltip } from "antd";
 import { Modal } from "antd";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 import TextArea from "antd/es/input/TextArea";
@@ -6,6 +6,7 @@ import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
 import { useEffect } from "react";
+import { useTimetable } from "../../../hooks/useTimetable";
 
 type FieldType = {
   date: Dayjs;
@@ -16,8 +17,10 @@ type FieldType = {
 };
 
 export default function TimeEditModal({ record, onClose }: any) {
+  const { updateTime } = useTimetable();
   const { activeProjects, isLoading } = useProjects();
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (record) {
@@ -30,8 +33,43 @@ export default function TimeEditModal({ record, onClose }: any) {
     }
   }, [record, form]);
 
-  function handleOk() {
-    onClose();
+  const showSuccessMessage = () => {
+    messageApi.open({
+      type: "success",
+      content: "Entry updated successfully!",
+    });
+  };
+
+  const showErrorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: "Entry was not updated!",
+    });
+  };
+
+  async function handleOk() {
+    const {
+      date,
+      duration,
+      project,
+      task = null,
+      comment = "",
+    } = form.getFieldsValue();
+    const OK = await updateTime({
+      date: date.format("YYYY-MM-DD"),
+      membershipId: record.membership.id,
+      id: record.id,
+      duration,
+      projectId: project,
+      taskId: task,
+      comment,
+    });
+    if (OK) {
+      showSuccessMessage();
+      onClose();
+    } else {
+      showErrorMessage();
+    }
   }
 
   function handleCancel() {
@@ -48,6 +86,7 @@ export default function TimeEditModal({ record, onClose }: any) {
       onOk={handleOk}
       onCancel={handleCancel}
     >
+      {contextHolder}
       <Form
         className="TimeEditModal-form"
         name="trackTime"

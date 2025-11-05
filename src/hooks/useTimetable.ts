@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AppContext, TimetableItem } from "../context/AppContext";
-import { AddTimeEntry, membershipAPI } from "../api";
+import { AddTimeEntry, membershipAPI, UpdateTimeEntry } from "../api";
 
 function insertIntoTimetable(
   list: TimetableItem[],
@@ -20,6 +20,21 @@ function insertIntoTimetable(
   const newTs = Number(item.ts ?? 0);
   while (idx < end && Number(list[idx].ts ?? 0) >= newTs) idx++;
   return [...list.slice(0, idx), item, ...list.slice(idx)];
+}
+
+function updateTimetableItem(
+  list: TimetableItem[],
+  item: TimetableItem
+): TimetableItem[] {
+  const filteredList = list.filter((e) => e.id !== item.id);
+  return insertIntoTimetable(filteredList, item);
+}
+
+function removeFromTimetable(
+  list: TimetableItem[],
+  item: TimetableItem
+): TimetableItem[] {
+  return list.filter((e) => e.id !== item.id);
 }
 
 export function useTimetable() {
@@ -44,5 +59,30 @@ export function useTimetable() {
     return data;
   }
 
-  return { timetable, isLoading: timetableLoading, getTime, addTime };
+  async function updateTime(entry: UpdateTimeEntry) {
+    const { OK, data } = await membershipAPI.updateTime(entry);
+    if (data && timetable) {
+      const newtimetable = updateTimetableItem(timetable, data);
+      updateState({ timetable: newtimetable });
+    }
+    return OK;
+  }
+
+  async function deleteTime(entry: { id: string }) {
+    const { OK, data } = await membershipAPI.deleteTime(entry);
+    if (data && timetable) {
+      const newtimetable = removeFromTimetable(timetable, data);
+      updateState({ timetable: newtimetable });
+    }
+    return OK;
+  }
+
+  return {
+    timetable,
+    isLoading: timetableLoading,
+    getTime,
+    addTime,
+    updateTime,
+    deleteTime,
+  };
 }

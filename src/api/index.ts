@@ -25,6 +25,10 @@ export type AddTimeEntry = {
   comment?: string;
 };
 
+export type UpdateTimeEntry = {
+  id: string;
+} & Partial<AddTimeEntry>;
+
 const apiController = new APIController(BASE_URI);
 
 class privateAPI {
@@ -115,6 +119,28 @@ class MembershipAPI extends privateAPI {
       throw new Error("Token is not set");
     }
     return this.controller.post(`${this.prefix}/addTime`, this.token, entry);
+  }
+
+  async updateTime(
+    entry: UpdateTimeEntry
+  ): Promise<ApiResponse<TimetableItem>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/updateTime`, this.token, entry);
+  }
+
+  async deleteTime({
+    id,
+  }: {
+    id: string;
+  }): Promise<ApiResponse<TimetableItem>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/deleteTime`, this.token, {
+      id,
+    });
   }
 
   async getProjects(query: { [key: string]: string } = {}) {
