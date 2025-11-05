@@ -53,10 +53,16 @@ export function useTimetable() {
   }
 
   async function updateTime(entry: UpdateTimeEntry) {
-    const { OK, data } = await membershipAPI.updateTime(entry);
-    if (data && timetable) {
-      const newtimetable = updateTimetableItem(timetable, data);
-      updateState({ timetable: newtimetable });
+    const { OK } = await membershipAPI.updateTime(entry);
+    if (OK && timetable) {
+      const entryRecord = timetable.find((item) => item.id === entry.id);
+      if (entryRecord) {
+        const newtimetable = updateTimetableItem(timetable, {
+          ...entryRecord,
+          ...entry,
+        });
+        updateState({ timetable: newtimetable });
+      }
     }
     return OK;
   }

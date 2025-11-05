@@ -18,7 +18,7 @@ type GetTimetableResponseDataType = Timetable;
 
 export type AddTimeEntry = {
   date: string;
-  duration: string;
+  duration: number;
   membershipId: string;
   projectId: string;
   taskId?: string | null;
