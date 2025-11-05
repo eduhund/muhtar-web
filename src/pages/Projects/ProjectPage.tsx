@@ -103,29 +103,29 @@ export default function ProjectPage({ project }: { project: Project }) {
     return obj;
   });
 
-  const durationEntries = groupedEntries[groupedEntries.length - 1].workers.map(
-    (worker) => ({
-      membershipId: worker.membershipId,
-      membershipName: worker.membershipName,
-      multiplier: worker.multiplier,
-      duration: worker.value,
-    })
-  );
+  const durationEntries = groupedEntries[
+    groupedEntries.length - 1
+  ]?.workers?.map((worker) => ({
+    membershipId: worker.membershipId,
+    membershipName: worker.membershipName,
+    multiplier: worker.multiplier,
+    duration: worker.value,
+  }));
 
-  const coreTeamEntires = durationEntries.filter((entry) =>
+  const coreTeamEntires = durationEntries?.filter((entry) =>
     project.memberships.some((m) => m.membershipId === entry.membershipId)
   );
 
-  const otherEntries = durationEntries.filter(
+  const otherEntries = durationEntries?.filter(
     (entry) =>
       !project.memberships.some((m) => m.membershipId === entry.membershipId)
   );
 
-  const coreTeamDuration = coreTeamEntires.reduce(
+  const coreTeamDuration = coreTeamEntires?.reduce(
     (acc, entry) => acc + entry.duration * entry.multiplier,
     0
   );
-  const otherDuration = otherEntries.reduce(
+  const otherDuration = otherEntries?.reduce(
     (acc, entry) => acc + entry.duration * entry.multiplier,
     0
   );
@@ -188,7 +188,7 @@ export default function ProjectPage({ project }: { project: Project }) {
       <StackedAreaChart />
       <Title level={4}>Core Team</Title>
       <ul>
-        {coreTeamEntires.map(
+        {coreTeamEntires?.map(
           ({ membershipId, membershipName, multiplier, duration }) => (
             <li key={membershipId}>
               {membershipName} (x{multiplier}): {duration} hours
@@ -198,7 +198,7 @@ export default function ProjectPage({ project }: { project: Project }) {
       </ul>
       <Title level={4}>Other Contributors</Title>
       <ul>
-        {otherEntries.map(
+        {otherEntries?.map(
           ({ membershipId, membershipName, multiplier, duration }) => (
             <li key={membershipId}>
               {membershipName} (x{multiplier}): {duration * multiplier} hours
