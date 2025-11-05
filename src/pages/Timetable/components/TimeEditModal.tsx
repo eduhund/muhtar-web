@@ -89,7 +89,7 @@ export default function TimeEditModal({ record, onClose }: any) {
       {contextHolder}
       <Form
         className="TimeEditModal-form"
-        name="trackTime"
+        name="updateTime"
         layout="vertical"
         requiredMark={false}
         form={form}
