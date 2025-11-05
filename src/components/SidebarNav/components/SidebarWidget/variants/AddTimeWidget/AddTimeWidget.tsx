@@ -93,25 +93,6 @@ export function AddTimeWidget() {
             style={{ width: "100%" }}
           />
         </Form.Item>
-        <Form.Item<FieldType> name="duration">
-          <Select
-            showSearch
-            placeholder="0"
-            prefix="Hours"
-            filterOption={(input, option) =>
-              String(option?.key ?? "")
-                .toLowerCase()
-                .includes(String(input).toLowerCase())
-            }
-            style={{ width: "100%" }}
-          >
-            {Array.from({ length: 20 }, (_, i) => (
-              <Select.Option key={(i + 1) / 2} value={((i + 1) / 2) * 60}>
-                {String((i + 1) / 2).replace(".", ",")}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
 
         <Form.Item<FieldType>
           name="project"
@@ -143,6 +124,26 @@ export function AddTimeWidget() {
             />
           </Form.Item>
         </Tooltip>
+
+        <Form.Item<FieldType> name="duration">
+          <Select
+            showSearch
+            placeholder="0"
+            prefix="Hours"
+            filterOption={(input, option) =>
+              String(option?.key ?? "")
+                .toLowerCase()
+                .includes(String(input).toLowerCase())
+            }
+            style={{ width: "100%" }}
+          >
+            {Array.from({ length: 20 }, (_, i) => (
+              <Select.Option key={(i + 1) / 2} value={((i + 1) / 2) * 60}>
+                {String((i + 1) / 2).replace(".", ",")}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
         <Form.Item<FieldType> name="comment">
           <TextArea rows={3} placeholder="What were you doing?" />
