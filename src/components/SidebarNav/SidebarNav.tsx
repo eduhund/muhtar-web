@@ -14,6 +14,7 @@ import { ProjectsButton } from "./components/SidebarButton/variants/ProjectsButt
 
 import "./SidebarNav.scss";
 import { WorkersButton } from "./components/SidebarButton/variants/WorkersButton/WorkersButton";
+import { useProjects } from "../../hooks/useProjects";
 
 const { Title, Text } = Typography;
 
@@ -64,20 +65,21 @@ function CollapsedSidebar() {
 function ExpandedSidebar() {
   const { user } = useUser();
   const { membership } = useMembership();
+  const { projects } = useProjects();
   const { team } = useTeam();
   const isAdmin = membership?.accessRole === "admin";
+  const hasAdminProjects = projects?.some((p) =>
+    p.memberships.some((m) => m.accessRole === "admin")
+  );
 
   function Widgets() {
-    if (isAdmin) {
-      return (
-        <>
-          <ProjectsWidget />
-          <WorkersWidget />
-          <AddTimeWidget />
-        </>
-      );
-    }
-    return <AddTimeWidget />;
+    return (
+      <>
+        {(isAdmin || hasAdminProjects) && <ProjectsWidget />}
+        {isAdmin && <WorkersWidget />}
+        <AddTimeWidget />
+      </>
+    );
   }
 
   return (
