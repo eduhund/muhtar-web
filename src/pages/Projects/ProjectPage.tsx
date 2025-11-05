@@ -51,6 +51,9 @@ export default function ProjectPage({ project }: { project: Project }) {
         multiplier: number;
       }>;
     }> = [];
+    const activeMembershipIds = Array.from(
+      new Set(entries.map((e) => e.membership.id))
+    );
     uniqueDates.forEach((date) => {
       const dayEntries = sortedEntries.filter((e) => e.date === date);
       dayEntries.forEach((entry) => {
@@ -60,8 +63,10 @@ export default function ProjectPage({ project }: { project: Project }) {
             ?.multiplier || 1;
         if (!runningTotals[membershipId]) runningTotals[membershipId] = 0;
         runningTotals[membershipId] += (entry.duration / 60) * multiplier;
+        runningTotals[membershipId] =
+          Math.round(runningTotals[membershipId] * 2) / 2;
       });
-      const workers = Object.keys(runningTotals).map((membershipId) => {
+      const workers = activeMembershipIds.map((membershipId) => {
         const membershipName =
           memberships?.find((m) => m.id === membershipId)?.name || "Unknown";
         const multiplier =
@@ -70,7 +75,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         return {
           membershipId,
           membershipName,
-          value: runningTotals[membershipId],
+          value: runningTotals[membershipId] || 0,
           multiplier,
         };
       });
@@ -98,27 +103,14 @@ export default function ProjectPage({ project }: { project: Project }) {
     return obj;
   });
 
-  const durationPerWorker: Record<string, number> = {};
-  projectEntries.forEach((entry) => {
-    const workerId = entry.membership.id;
-    if (!durationPerWorker[workerId]) {
-      durationPerWorker[workerId] = 0;
-    }
-    durationPerWorker[workerId] += entry.duration / 60; // in hours
-  });
-
-  const durationEntries = Object.entries(durationPerWorker)
-    .map(([membershipId, duration]) => ({
-      membershipId,
-      membershipName: memberships
-        ? memberships.find((m) => m.id === membershipId)?.name
-        : "Unknown",
-      multiplier:
-        project.memberships.find((m) => m.membershipId === membershipId)
-          ?.multiplier || 1,
-      duration,
-    }))
-    .sort((a: any, b: any) => a.membershipName.localeCompare(b.membershipName));
+  const durationEntries = groupedEntries[groupedEntries.length - 1].workers.map(
+    (worker) => ({
+      membershipId: worker.membershipId,
+      membershipName: worker.membershipName,
+      multiplier: worker.multiplier,
+      duration: worker.value,
+    })
+  );
 
   const coreTeamEntires = durationEntries.filter((entry) =>
     project.memberships.some((m) => m.membershipId === entry.membershipId)
@@ -199,7 +191,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         {coreTeamEntires.map(
           ({ membershipId, membershipName, multiplier, duration }) => (
             <li key={membershipId}>
-              {membershipName} (x{multiplier}): {duration * multiplier} hours
+              {membershipName} (x{multiplier}): {duration} hours
             </li>
           )
         )}
