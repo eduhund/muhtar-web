@@ -1,4 +1,4 @@
-import { Select, Tooltip } from "antd";
+import { Button, Select, Tooltip } from "antd";
 import { Project } from "../../context/AppContext";
 
 type ProjectDropdownProps = {
@@ -66,11 +66,40 @@ export default function ProjectDropdown({
   );
 
   const options = Object.keys(groupedOptions)
-    .map((customer) => ({
-      label: <span>{customer}</span>,
-      title: customer,
-      options: groupedOptions[customer],
-    }))
+    .map((customer) => {
+      const groupOptions = groupedOptions[customer];
+      return {
+        label: (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>{customer}</span>
+            {isMultiple && (
+              <Button
+                type="link"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const groupIds = groupOptions.map((opt) => opt.value);
+                  const newValue = Array.isArray(value)
+                    ? Array.from(new Set([...value, ...groupIds]))
+                    : groupIds;
+                  onChange(newValue);
+                }}
+              >
+                Select all
+              </Button>
+            )}
+          </span>
+        ),
+        title: customer,
+        options: groupOptions,
+      };
+    })
     .sort((a, b) => a.title.localeCompare(b.title))
     .map((group: GroupedOption) => {
       return {
@@ -85,6 +114,24 @@ export default function ProjectDropdown({
         }),
       };
     });
+
+  const handleChange = (selected: string[]) => {
+    let newValue = selected;
+    if (Array.isArray(selected)) {
+      selected.forEach((val) => {
+        if (val.startsWith("__all__")) {
+          const groupName = val.replace("__all__", "");
+          const groupIds =
+            groupedOptions[groupName]?.map((opt) => opt.value) || [];
+          newValue = [
+            ...selected.filter((v) => v !== val),
+            ...groupIds.filter((id) => !selected.includes(id)),
+          ];
+        }
+      });
+    }
+    onChange(newValue);
+  };
 
   return (
     <Select
@@ -109,7 +156,7 @@ export default function ProjectDropdown({
         </Tooltip>
       )}
       style={style}
-      onChange={onChange}
+      onChange={handleChange}
     />
   );
 }
