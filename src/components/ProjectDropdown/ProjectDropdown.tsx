@@ -1,4 +1,4 @@
-import { Button, Select, Tooltip } from "antd";
+import { Button, Select, Tooltip, Typography } from "antd";
 import { Project } from "../../context/AppContext";
 
 type ProjectDropdownProps = {
@@ -26,6 +26,8 @@ type GroupedOption = {
   title: string;
   options: GroupOptions[];
 };
+
+const { Paragraph } = Typography;
 
 function getLabelText(label: React.ReactNode) {
   if (
@@ -73,11 +75,13 @@ export default function ProjectDropdown({
           <span
             style={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "baseline",
               justifyContent: "space-between",
             }}
           >
-            <span>{customer}</span>
+            <Paragraph style={{ margin: 0 }} strong>
+              {customer}
+            </Paragraph>
             {isMultiple && (
               <Button
                 type="link"
