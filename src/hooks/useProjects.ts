@@ -13,5 +13,17 @@ export function useProjects() {
     [projects]
   );
 
-  return { projects, activeProjects, isLoading: projectsLoading };
+  async function addMemberToProject(projectId: string, memberId: string) {
+    // Implementation for adding a member to a project
+    // This is a placeholder and should be replaced with actual logic
+    console.log(`Adding member ${memberId} to project ${projectId}`);
+    return true;
+  }
+
+  return {
+    projects,
+    activeProjects,
+    isLoading: projectsLoading,
+    addMemberToProject,
+  };
 }

@@ -74,6 +74,11 @@ export interface Project {
   customer: string | null;
   status: "active" | "archived";
   isDeleted: boolean;
+  roles: {
+    name: string;
+    cost: number;
+    currency: Currency;
+  }[];
   memberships: {
     membershipId: string;
     accessRole: string;

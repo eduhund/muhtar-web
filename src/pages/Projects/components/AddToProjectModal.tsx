@@ -1,12 +1,9 @@
-import { Form, message } from "antd";
+import { Form, message, Select } from "antd";
 import { Modal } from "antd";
 import { useMemberships } from "../../../hooks/useMemberships";
 import { Project } from "../../../context/AppContext";
 import MembershipDropdown from "../../../components/MembershipDropdown/MembershipDropdown";
-
-type FieldType = {
-  memberships: string[];
-};
+import { useProjects } from "../../../hooks/useProjects";
 
 type AddToProjectModal = {
   isOpen: boolean;
@@ -20,12 +17,26 @@ export default function AddToProjectModal({
   onClose,
 }: AddToProjectModal) {
   const { memberships, isLoading } = useMemberships();
+  const { addMemberToProject } = useProjects();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
 
   const availableMemberships = (memberships || []).filter(
     (m) => !project.memberships.some((pm) => pm.membershipId === m.id)
   );
+
+  const projectRoles =
+    project.roles && project.roles.length > 0
+      ? project.roles.map((role) => ({
+          value: role.name,
+          label: role.name,
+        }))
+      : [
+          {
+            value: "null",
+            label: "No roles available",
+          },
+        ];
 
   const showSuccessMessage = () => {
     messageApi.open({
@@ -42,7 +53,14 @@ export default function AddToProjectModal({
   };
 
   async function handleOk() {
-    const OK = true;
+    const newMemberships = form.getFieldValue("memberships");
+    let OK = true;
+    for (const membershipId of newMemberships) {
+      const success = await addMemberToProject(project.id, membershipId);
+      if (!success) {
+        OK = false;
+      }
+    }
     if (OK) {
       showSuccessMessage();
       onClose();
@@ -65,24 +83,67 @@ export default function AddToProjectModal({
     >
       {contextHolder}
       <Form
-        className="TimeEditModal-form"
+        className="AddToProjectModal-form"
         name="updateTime"
         layout="vertical"
         requiredMark={false}
         form={form}
       >
-        <Form.Item<FieldType>
-          name="memberships"
+        <Form.Item<string>
+          className="AddToProjectModal-form-item"
+          name="membership1"
           rules={[{ required: true, message: "Please select memberships!" }]}
         >
           <MembershipDropdown
             memberships={availableMemberships}
-            isMultiple={true}
             value={null}
-            style={{ width: "100%" }}
             isRequired={true}
             isLoading={isLoading}
             onChange={() => {}}
+          />
+          <Select
+            prefix={<span>Role</span>}
+            options={projectRoles}
+            value={projectRoles[0]?.value}
+            placeholder="Select a membership"
+          />
+        </Form.Item>
+        <Form.Item<string>
+          className="AddToProjectModal-form-item"
+          name="membership2"
+          rules={[{ required: true, message: "Please select memberships!" }]}
+        >
+          <MembershipDropdown
+            memberships={availableMemberships}
+            value={null}
+            isRequired={true}
+            isLoading={isLoading}
+            onChange={() => {}}
+          />
+          <Select
+            prefix={<span>Role</span>}
+            options={projectRoles}
+            value={projectRoles[0]?.value}
+            placeholder="Select a membership"
+          />
+        </Form.Item>
+        <Form.Item<string>
+          className="AddToProjectModal-form-item"
+          name="membership3"
+          rules={[{ required: true, message: "Please select memberships!" }]}
+        >
+          <MembershipDropdown
+            memberships={availableMemberships}
+            value={null}
+            isRequired={true}
+            isLoading={isLoading}
+            onChange={() => {}}
+          />
+          <Select
+            prefix={<span>Role</span>}
+            options={projectRoles}
+            value={projectRoles[0]?.value}
+            placeholder="Select a membership"
           />
         </Form.Item>
       </Form>
