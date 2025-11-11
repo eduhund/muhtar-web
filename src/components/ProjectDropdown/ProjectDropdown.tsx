@@ -85,13 +85,27 @@ export default function ProjectDropdown({
                 onClick={(e) => {
                   e.stopPropagation();
                   const groupIds = groupOptions.map((opt) => opt.value);
-                  const newValue = Array.isArray(value)
-                    ? Array.from(new Set([...value, ...groupIds]))
-                    : groupIds;
+                  const selected = Array.isArray(value) ? value : [];
+                  const allSelected = groupIds.every((id) =>
+                    selected.includes(id)
+                  );
+                  let newValue;
+                  if (allSelected) {
+                    newValue = selected.filter((id) => !groupIds.includes(id));
+                  } else {
+                    newValue = Array.from(new Set([...selected, ...groupIds]));
+                  }
                   onChange(newValue);
                 }}
               >
-                Select all
+                {(() => {
+                  const groupIds = groupOptions.map((opt) => opt.value);
+                  const selected = Array.isArray(value) ? value : [];
+                  const allSelected = groupIds.every((id) =>
+                    selected.includes(id)
+                  );
+                  return allSelected ? "Clear" : "Select all";
+                })()}
               </Button>
             )}
           </span>
