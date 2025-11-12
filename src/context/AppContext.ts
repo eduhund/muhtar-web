@@ -88,6 +88,13 @@ export interface Project {
   }[];
 }
 
+export interface ProjectMembership {
+  membershipId: string;
+  accessRole: string;
+  workRole: string;
+  multiplier: number;
+}
+
 export interface TimetableItem {
   id: string;
   ts: number; // timestamp

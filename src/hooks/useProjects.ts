@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { AppContext } from "../context/AppContext";
+import { AppContext, ProjectMembership } from "../context/AppContext";
 import { membershipAPI } from "../api";
 
 export function useProjects() {
@@ -21,12 +21,7 @@ export function useProjects() {
       accessRole = "member",
       workRole = "staff",
       multiplier = 1,
-    }: {
-      membershipId: string;
-      accessRole: string;
-      workRole: string;
-      multiplier: number;
-    }
+    }: ProjectMembership
   ) {
     const { OK } = await membershipAPI.addProjectMembership(projectId, {
       membershipId,

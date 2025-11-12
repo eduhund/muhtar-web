@@ -1,7 +1,7 @@
 import { Form, message, Select } from "antd";
 import { Modal } from "antd";
 import { useMemberships } from "../../../hooks/useMemberships";
-import { Project } from "../../../context/AppContext";
+import { Project, ProjectMembership } from "../../../context/AppContext";
 import MembershipDropdown from "../../../components/MembershipDropdown/MembershipDropdown";
 import { useProjects } from "../../../hooks/useProjects";
 
@@ -63,11 +63,8 @@ export default function AddToProjectModal({
     let addedCounter = 0;
     const failedMemberships: string[] = [];
     for (const membership of Object.values(newMemberships)) {
-      const { membershipId, accessRole, workRole } = membership as {
-        membershipId: string;
-        accessRole: string;
-        workRole: string;
-      };
+      const { membershipId, accessRole, workRole } =
+        membership as ProjectMembership;
       const success = await addProjectMembership(project.id, {
         membershipId,
         accessRole,
