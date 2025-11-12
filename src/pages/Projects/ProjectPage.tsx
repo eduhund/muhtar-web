@@ -196,10 +196,12 @@ export default function ProjectPage({ project }: { project: Project }) {
         hours, Others: {otherDuration} hours)
       </p>
       <StackedAreaChart />
-      <Title level={4}>Core Team</Title>{" "}
-      <Button type="link" onClick={openModal}>
-        Add Member
-      </Button>
+      <div className="ProjectPage-coreTeam-header">
+        <Title level={4}>Core Team</Title>{" "}
+        <Button type="link" onClick={openModal}>
+          Add Member
+        </Button>
+      </div>
       <ul>
         {coreTeamEntires?.map(
           ({ membershipId, membershipName, multiplier, duration }) => (

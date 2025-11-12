@@ -101,6 +101,12 @@
       }
     }
   }
+
+  &-coreTeam-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+  }
 }
 
 .AddToProjectModal-form-item {
