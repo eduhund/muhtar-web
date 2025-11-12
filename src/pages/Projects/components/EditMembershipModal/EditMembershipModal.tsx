@@ -8,7 +8,7 @@ import "./EditMembershipModal.scss";
 
 type EditMembershipModal = {
   isOpen: boolean;
-  projectMembership: ProjectMembership;
+  projectMembership: ProjectMembership & { membershipName: string };
   project: Project;
   onClose: () => void;
 };
@@ -25,6 +25,7 @@ export default function EditMembershipModal({
   project,
   onClose,
 }: EditMembershipModal) {
+  console.log("projectMembership", projectMembership);
   const { updateProjectMembership, removeProjectMembership } = useProjects();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -105,9 +106,11 @@ export default function EditMembershipModal({
 
   return (
     <Modal
-      title="Edit Project Membership"
+      title={`Edit ${projectMembership.membershipName} Membership in ${project.name}`}
       closable={{ "aria-label": "Close" }}
       open={isOpen}
+      onOk={handleOk}
+      onCancel={handleCancel}
       footer={() => (
         <div className="EditMembershipModal-footer">
           <Button
@@ -132,7 +135,7 @@ export default function EditMembershipModal({
     >
       {contextHolder}
       <Form
-        className="AddToProjectModal-form"
+        className="EditMembershipModal-form"
         name="updateProjectMembership"
         layout="vertical"
         requiredMark={false}
