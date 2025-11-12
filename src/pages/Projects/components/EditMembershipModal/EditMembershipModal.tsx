@@ -4,6 +4,8 @@ import { Project, ProjectMembership } from "../../../../context/AppContext";
 import { useProjects } from "../../../../hooks/useProjects";
 import { DeleteOutlined } from "@ant-design/icons";
 
+import "./EditMembershipModal.scss";
+
 type EditMembershipModal = {
   isOpen: boolean;
   projectMembership: ProjectMembership;
@@ -23,7 +25,6 @@ export default function EditMembershipModal({
   project,
   onClose,
 }: EditMembershipModal) {
-  console.log("projectMembership:", projectMembership);
   const { updateProjectMembership, removeProjectMembership } = useProjects();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -107,8 +108,27 @@ export default function EditMembershipModal({
       title="Edit Project Membership"
       closable={{ "aria-label": "Close" }}
       open={isOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
+      footer={() => (
+        <div className="EditMembershipModal-footer">
+          <Button
+            key="remove"
+            type="text"
+            icon={<DeleteOutlined />}
+            danger
+            onClick={handleRemove}
+          >
+            Remove from Project
+          </Button>
+          <div className="EditMembershipModal-footer-actions">
+            <Button onClick={handleCancel} key="cancel">
+              Cancel
+            </Button>
+            <Button key="submit" type="primary" onClick={handleOk}>
+              Update
+            </Button>
+          </div>
+        </div>
+      )}
     >
       {contextHolder}
       <Form
@@ -146,9 +166,6 @@ export default function EditMembershipModal({
           />
         </Form.Item>
       </Form>
-      <Button icon={<DeleteOutlined />} danger onClick={handleRemove}>
-        Remove from Project
-      </Button>
     </Modal>
   );
 }
