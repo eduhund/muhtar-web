@@ -211,7 +211,7 @@ export default function ProjectPage({ project }: { project: Project }) {
       <div className="ProjectPage-members-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={openModal}>
-          Add Member
+          Add Members
         </Button>
       </div>
       <div className="ProjectPage-members-list">
@@ -234,10 +234,7 @@ export default function ProjectPage({ project }: { project: Project }) {
                 duration,
                 multiplier,
               }}
-              projectRoles={project.roles.map((role) => ({
-                value: role.key,
-                label: role.name,
-              }))}
+              project={project}
             />
           )
         )}
