@@ -2,6 +2,9 @@ import { CrownOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
 import "./ProjectMembership.scss";
+import { useState } from "react";
+import EditMembershipModal from "../EditMembershipModal/EditMembershipModal";
+import { Project } from "../../../../context/AppContext";
 
 type ProjectMembershipProps = {
   membership: {
@@ -12,13 +15,28 @@ type ProjectMembershipProps = {
     duration: number;
     multiplier: number;
   };
-  projectRoles: { value: string; label: string }[];
+  project: Project;
 };
 
 export default function ProjectMembership({
   membership,
-  projectRoles,
+  project,
 }: ProjectMembershipProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  function openEditModal() {
+    setIsEditModalOpen(true);
+  }
+
+  function closeEditModal() {
+    setIsEditModalOpen(false);
+  }
+
+  const projectRoles = project.roles.map((role) => ({
+    value: role.key,
+    label: role.name,
+  }));
+
   return (
     <div className="ProjectMembership">
       <div className="ProjectMembership-info">
@@ -42,8 +60,15 @@ export default function ProjectMembership({
           type="link"
           title="Settings"
           icon={<SettingOutlined />}
+          onClick={openEditModal}
         ></Button>
       </div>
+      <EditMembershipModal
+        isOpen={isEditModalOpen}
+        projectMembership={membership}
+        project={project}
+        onClose={closeEditModal}
+      />
     </div>
   );
 }

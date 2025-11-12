@@ -52,10 +52,51 @@ export function useProjects() {
     return OK;
   }
 
+  async function updateProjectMembership(
+    projectId: string,
+    {
+      membershipId,
+      accessRole = "member",
+      workRole = "staff",
+      multiplier = 1,
+    }: ProjectMembership
+  ) {
+    const { OK } = await membershipAPI.updateProjectMembership(projectId, {
+      membershipId,
+      accessRole,
+      workRole,
+      multiplier,
+    });
+    if (OK && projects) {
+      const updatedProjects = projects.map((project) => {
+        if (project.id === projectId) {
+          return {
+            ...project,
+            memberships: project.memberships.map((membership) => {
+              if (membership.membershipId === membershipId) {
+                return {
+                  membershipId,
+                  accessRole,
+                  workRole,
+                  multiplier,
+                };
+              }
+              return membership;
+            }),
+          };
+        }
+        return project;
+      });
+      updateState({ projects: updatedProjects });
+    }
+    return OK;
+  }
+
   return {
     projects,
     activeProjects,
     isLoading: projectsLoading,
     addProjectMembership,
+    updateProjectMembership,
   };
 }

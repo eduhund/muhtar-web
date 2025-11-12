@@ -103,7 +103,7 @@ export default function AddToProjectModal({
       {contextHolder}
       <Form
         className="AddToProjectModal-form"
-        name="updateTime"
+        name="addProjectMemberships"
         layout="vertical"
         requiredMark={false}
         form={form}
