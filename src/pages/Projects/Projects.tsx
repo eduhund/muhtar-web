@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import { useProjects } from "../../hooks/useProjects";
 import Page from "../../components/Page/Page";
 import SideList from "../../components/SideList/SideList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Project, TimetableItem } from "../../context/AppContext";
 import ProjectPage from "./ProjectPage";
 import { useTimetable } from "../../hooks/useTimetable";
@@ -88,8 +88,19 @@ function ProjectRow({
 
 export function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-
   const { projects } = useProjects();
+
+  useEffect(() => {
+    if (selectedProject && projects) {
+      const updated = projects.find((p) => p.id === selectedProject.id);
+      if (updated && updated !== selectedProject) {
+        setSelectedProject(updated);
+      }
+      if (!updated) {
+        setSelectedProject(null);
+      }
+    }
+  }, [projects, selectedProject]);
 
   const activeProjects = (projects || [])?.filter(
     (project) => project.status === "active"
