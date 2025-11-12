@@ -24,15 +24,13 @@ export default function ProjectMembership({
       <div className="ProjectMembership-info">
         <div className="ProjectMembership-name">
           {membership.membershipName}{" "}
-          {membership.accessRole !== "admin" && (
+          {membership.accessRole === "admin" && (
             <CrownOutlined style={{ color: "#999999" }} />
           )}
         </div>
         <div className="ProjectMembership-role">
-          {
-            projectRoles.find((role) => role.value === membership.workRole)
-              ?.label
-          }
+          {projectRoles.find((role) => role.value === membership.workRole)
+            ?.label || "No role assigned"}
           , {membership.multiplier}x
         </div>
       </div>

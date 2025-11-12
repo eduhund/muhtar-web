@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import AddToProjectModal from "./components/AddToProjectModal";
 import ProjectMembership from "./components/ProjectMembership/ProjectMembership";
+import ProjectContributor from "./components/ProjectContributor/ProjectContributor";
 
 const { Title } = Typography;
 
@@ -207,13 +208,13 @@ export default function ProjectPage({ project }: { project: Project }) {
         hours, Others: {otherDuration} hours)
       </p>
       <StackedAreaChart />
-      <div className="ProjectPage-coreTeam-header">
+      <div className="ProjectPage-members-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={openModal}>
           Add Member
         </Button>
       </div>
-      <div className="ProjectPage-coreTeam-list">
+      <div className="ProjectPage-members-list">
         {coreTeamEntires?.map(
           ({
             membershipId,
@@ -241,16 +242,23 @@ export default function ProjectPage({ project }: { project: Project }) {
           )
         )}
       </div>
-      <Title level={4}>Other Contributors</Title>
-      <ul>
-        {otherEntries?.map(
-          ({ membershipId, membershipName, multiplier, duration }) => (
-            <li key={membershipId}>
-              {membershipName} (x{multiplier}): {duration * multiplier} hours
-            </li>
-          )
-        )}
-      </ul>
+      <div className="ProjectPage-members-header">
+        <Title level={4}>Other Contributors</Title>
+      </div>
+      <div className="ProjectPage-members-list">
+        {otherEntries?.map(({ membershipId, membershipName, duration }) => (
+          <ProjectContributor
+            key={membershipId}
+            project={project}
+            contributor={{
+              contributorId: membershipId,
+              contributorName: membershipName,
+              duration,
+            }}
+          />
+        ))}
+      </div>
+
       <AddToProjectModal
         isOpen={isOpenModal}
         project={project}
