@@ -14,6 +14,8 @@ import { useMemberships } from "../../hooks/useMemberships";
 import dayjs from "dayjs";
 import { useState } from "react";
 import AddToProjectModal from "./components/AddToProjectModal";
+import ProjectMembership from "./components/ProjectMembership/ProjectMembership";
+import ProjectContributor from "./components/ProjectContributor/ProjectContributor";
 
 const { Title } = Typography;
 
@@ -58,6 +60,8 @@ export default function ProjectPage({ project }: { project: Project }) {
         membershipId: string;
         membershipName: string;
         value: number;
+        accessRole: string;
+        workRole: string;
         multiplier: number;
       }>;
     }> = [];
@@ -86,6 +90,12 @@ export default function ProjectPage({ project }: { project: Project }) {
           membershipId,
           membershipName,
           value: runningTotals[membershipId] || 0,
+          accessRole:
+            project.memberships.find((m) => m.membershipId === membershipId)
+              ?.accessRole || "Unknown",
+          workRole:
+            project.memberships.find((m) => m.membershipId === membershipId)
+              ?.workRole || "Unknown",
           multiplier,
         };
       });
@@ -119,6 +129,8 @@ export default function ProjectPage({ project }: { project: Project }) {
     membershipId: worker.membershipId,
     membershipName: worker.membershipName,
     multiplier: worker.multiplier,
+    accessRole: worker.accessRole,
+    workRole: worker.workRole,
     duration: worker.value,
   }));
 
@@ -196,31 +208,54 @@ export default function ProjectPage({ project }: { project: Project }) {
         hours, Others: {otherDuration} hours)
       </p>
       <StackedAreaChart />
-      <div className="ProjectPage-coreTeam-header">
+      <div className="ProjectPage-members-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={openModal}>
-          Add Member
+          Add Members
         </Button>
       </div>
-      <ul>
+      <div className="ProjectPage-members-list">
         {coreTeamEntires?.map(
-          ({ membershipId, membershipName, multiplier, duration }) => (
-            <li key={membershipId}>
-              {membershipName} (x{multiplier}): {duration} hours
-            </li>
+          ({
+            membershipId,
+            membershipName,
+            accessRole,
+            workRole,
+            multiplier,
+            duration,
+          }) => (
+            <ProjectMembership
+              key={membershipId}
+              membership={{
+                membershipId,
+                membershipName,
+                accessRole,
+                workRole,
+                duration,
+                multiplier,
+              }}
+              project={project}
+            />
           )
         )}
-      </ul>
-      <Title level={4}>Other Contributors</Title>
-      <ul>
-        {otherEntries?.map(
-          ({ membershipId, membershipName, multiplier, duration }) => (
-            <li key={membershipId}>
-              {membershipName} (x{multiplier}): {duration * multiplier} hours
-            </li>
-          )
-        )}
-      </ul>
+      </div>
+      <div className="ProjectPage-members-header">
+        <Title level={4}>Other Contributors</Title>
+      </div>
+      <div className="ProjectPage-members-list">
+        {otherEntries?.map(({ membershipId, membershipName, duration }) => (
+          <ProjectContributor
+            key={membershipId}
+            project={project}
+            contributor={{
+              contributorId: membershipId,
+              contributorName: membershipName,
+              duration,
+            }}
+          />
+        ))}
+      </div>
+
       <AddToProjectModal
         isOpen={isOpenModal}
         project={project}

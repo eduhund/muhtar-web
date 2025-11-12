@@ -1,0 +1,20 @@
+.ProjectContributor {
+  position: relative;
+  width: 300px;
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: #f9f9f9;
+    .ProjectContributor-actions {
+      display: block;
+    }
+  }
+
+  &-actions {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+  }
+}
