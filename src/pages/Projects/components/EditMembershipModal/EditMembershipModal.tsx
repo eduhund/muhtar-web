@@ -1,7 +1,8 @@
-import { Form, Input, message, Select } from "antd";
+import { Button, Form, Input, message, Select } from "antd";
 import { Modal } from "antd";
 import { Project, ProjectMembership } from "../../../../context/AppContext";
 import { useProjects } from "../../../../hooks/useProjects";
+import { DeleteOutlined } from "@ant-design/icons";
 
 type EditMembershipModal = {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export default function EditMembershipModal({
   onClose,
 }: EditMembershipModal) {
   console.log("projectMembership:", projectMembership);
-  const { updateProjectMembership } = useProjects();
+  const { updateProjectMembership, removeProjectMembership } = useProjects();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
 
@@ -40,17 +41,31 @@ export default function EditMembershipModal({
           },
         ];
 
-  const showSuccessMessage = () => {
+  const showUpdateSuccessMessage = () => {
     messageApi.open({
       type: "success",
       content: `Member updated successfully!`,
     });
   };
 
-  const showErrorMessage = () => {
+  const showUpdateErrorMessage = () => {
     messageApi.open({
       type: "error",
       content: `Member was not updated`,
+    });
+  };
+
+  const showRemoveSuccessMessage = () => {
+    messageApi.open({
+      type: "success",
+      content: `Member removed successfully!`,
+    });
+  };
+
+  const showRemoveErrorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: `Member was not removed`,
     });
   };
 
@@ -63,15 +78,28 @@ export default function EditMembershipModal({
       multiplier: Number(membership.multiplier),
     });
     if (success) {
-      showSuccessMessage();
+      showUpdateSuccessMessage();
       onClose();
     } else {
-      showErrorMessage();
+      showUpdateErrorMessage();
     }
   }
 
   function handleCancel() {
     onClose();
+  }
+
+  async function handleRemove() {
+    const success = await removeProjectMembership(
+      project.id,
+      projectMembership.membershipId
+    );
+    if (success) {
+      showRemoveSuccessMessage();
+      onClose();
+    } else {
+      showRemoveErrorMessage();
+    }
   }
 
   return (
@@ -118,6 +146,9 @@ export default function EditMembershipModal({
           />
         </Form.Item>
       </Form>
+      <Button icon={<DeleteOutlined />} danger onClick={handleRemove}>
+        Remove from Project
+      </Button>
     </Modal>
   );
 }

@@ -92,11 +92,37 @@ export function useProjects() {
     return OK;
   }
 
+  async function removeProjectMembership(
+    projectId: string,
+    membershipId: string
+  ) {
+    const { OK } = await membershipAPI.removeProjectMembership({
+      projectId,
+      membershipId,
+    });
+    if (OK && projects) {
+      const updatedProjects = projects.map((project) => {
+        if (project.id === projectId) {
+          return {
+            ...project,
+            memberships: project.memberships.filter(
+              (membership) => membership.membershipId !== membershipId
+            ),
+          };
+        }
+        return project;
+      });
+      updateState({ projects: updatedProjects });
+    }
+    return OK;
+  }
+
   return {
     projects,
     activeProjects,
     isLoading: projectsLoading,
     addProjectMembership,
     updateProjectMembership,
+    removeProjectMembership,
   };
 }
