@@ -11,6 +11,12 @@ type AddToProjectModal = {
   onClose: () => void;
 };
 
+const ACCESS_ROLES = [
+  { value: "quest", label: "Guest" },
+  { value: "member", label: "Member" },
+  { value: "admin", label: "Admin" },
+];
+
 export default function AddToProjectModal({
   isOpen,
   project,
@@ -97,59 +103,92 @@ export default function AddToProjectModal({
         <Form.Item<string>
           className="AddToProjectModal-form-item"
           name="membership1"
+          label="Member 1"
           rules={[{ required: true, message: "Please select memberships!" }]}
         >
-          <MembershipDropdown
-            memberships={availableMemberships}
-            value={null}
-            isRequired={true}
-            isLoading={isLoading}
-            onChange={() => {}}
-          />
-          <Select
-            prefix={<span>Role</span>}
-            options={projectRoles}
-            value={projectRoles[0]?.value}
-            placeholder="Select a membership"
-          />
+          <div className="membership">
+            <MembershipDropdown
+              memberships={availableMemberships}
+              value={null}
+              isRequired={true}
+              isLoading={isLoading}
+              onChange={() => {}}
+            />
+          </div>
+          <div className="membership-roles">
+            <Select
+              prefix={<span>Access Role</span>}
+              options={ACCESS_ROLES}
+              value={ACCESS_ROLES[1]?.value}
+              placeholder="Select a membership"
+            />
+            <Select
+              prefix={<span>Project Role</span>}
+              options={projectRoles}
+              value={projectRoles[0]?.value}
+              placeholder="Select a membership"
+            />
+          </div>
         </Form.Item>
         <Form.Item<string>
           className="AddToProjectModal-form-item"
           name="membership2"
+          label="Member 2"
           rules={[{ required: true, message: "Please select memberships!" }]}
         >
-          <MembershipDropdown
-            memberships={availableMemberships}
-            value={null}
-            isRequired={true}
-            isLoading={isLoading}
-            onChange={() => {}}
-          />
-          <Select
-            prefix={<span>Role</span>}
-            options={projectRoles}
-            value={projectRoles[0]?.value}
-            placeholder="Select a membership"
-          />
+          <div className="membership">
+            <MembershipDropdown
+              memberships={availableMemberships}
+              value={null}
+              isRequired={true}
+              isLoading={isLoading}
+              onChange={() => {}}
+            />
+          </div>
+          <div className="membership-roles">
+            <Select
+              prefix={<span>Access Role</span>}
+              options={ACCESS_ROLES}
+              value={ACCESS_ROLES[1]?.value}
+              placeholder="Select a membership"
+            />
+            <Select
+              prefix={<span>Project Role</span>}
+              options={projectRoles}
+              value={projectRoles[0]?.value}
+              placeholder="Select a membership"
+            />
+          </div>
         </Form.Item>
         <Form.Item<string>
           className="AddToProjectModal-form-item"
           name="membership3"
+          label="Member 3"
           rules={[{ required: true, message: "Please select memberships!" }]}
         >
-          <MembershipDropdown
-            memberships={availableMemberships}
-            value={null}
-            isRequired={true}
-            isLoading={isLoading}
-            onChange={() => {}}
-          />
-          <Select
-            prefix={<span>Role</span>}
-            options={projectRoles}
-            value={projectRoles[0]?.value}
-            placeholder="Select a membership"
-          />
+          <div className="membership">
+            <MembershipDropdown
+              memberships={availableMemberships}
+              value={null}
+              isRequired={true}
+              isLoading={isLoading}
+              onChange={() => {}}
+            />
+          </div>
+          <div className="membership-roles">
+            <Select
+              prefix={<span>Access Role</span>}
+              options={ACCESS_ROLES}
+              value={ACCESS_ROLES[1]?.value}
+              placeholder="Select a membership"
+            />
+            <Select
+              prefix={<span>Project Role</span>}
+              options={projectRoles}
+              value={projectRoles[0]?.value}
+              placeholder="Select a membership"
+            />
+          </div>
         </Form.Item>
       </Form>
     </Modal>

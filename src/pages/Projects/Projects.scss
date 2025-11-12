@@ -105,24 +105,19 @@
 
 .AddToProjectModal-form-item {
   width: 100%;
-  .ant-form-item-control-input-content {
+
+  .membership {
+    margin-bottom: 8px;
+  }
+
+  .membership-roles {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 12px;
-    flex-wrap: nowrap;
-  }
 
-  .ant-select:first-child {
-    width: auto;
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 0;
-  }
-
-  .ant-select:last-child {
-    flex-basis: 160px;
-    flex-grow: 0;
-    flex-shrink: 1;
+    .ant-select {
+      flex-grow: 1;
+    }
   }
 }
