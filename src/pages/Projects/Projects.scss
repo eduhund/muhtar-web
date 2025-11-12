@@ -101,4 +101,29 @@
       }
     }
   }
+
+  &-coreTeam-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+  }
+}
+
+.AddToProjectModal-form-item {
+  width: 100%;
+
+  .membership {
+    margin-bottom: 8px;
+  }
+
+  .membership-roles {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+
+    .ant-select {
+      flex-grow: 1;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Button, Typography } from "antd";
 import {
   AreaChart,
   Area,
@@ -12,6 +12,8 @@ import { Project } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMemberships } from "../../hooks/useMemberships";
 import dayjs from "dayjs";
+import { useState } from "react";
+import AddToProjectModal from "./components/AddToProjectModal";
 
 const { Title } = Typography;
 
@@ -29,10 +31,18 @@ const areaColors = [
 ];
 
 export default function ProjectPage({ project }: { project: Project }) {
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const { timetable } = useTimetable();
   const { memberships } = useMemberships();
   const projectEntries =
     timetable?.filter((item) => item.project.id === project.id) || [];
+
+  function openModal() {
+    setIsOpenModal(true);
+  }
+  function closeModal() {
+    setIsOpenModal(false);
+  }
 
   function groupEntriesByDayWithWorkers(entries: typeof projectEntries) {
     const sortedEntries = [...entries].sort((a, b) =>
@@ -186,7 +196,12 @@ export default function ProjectPage({ project }: { project: Project }) {
         hours, Others: {otherDuration} hours)
       </p>
       <StackedAreaChart />
-      <Title level={4}>Core Team</Title>
+      <div className="ProjectPage-coreTeam-header">
+        <Title level={4}>Core Team</Title>{" "}
+        <Button type="link" onClick={openModal}>
+          Add Member
+        </Button>
+      </div>
       <ul>
         {coreTeamEntires?.map(
           ({ membershipId, membershipName, multiplier, duration }) => (
@@ -206,6 +221,11 @@ export default function ProjectPage({ project }: { project: Project }) {
           )
         )}
       </ul>
+      <AddToProjectModal
+        isOpen={isOpenModal}
+        project={project}
+        onClose={closeModal}
+      />
     </div>
   );
 }

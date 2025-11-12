@@ -74,12 +74,25 @@ export interface Project {
   customer: string | null;
   status: "active" | "archived";
   isDeleted: boolean;
+  roles: {
+    key: string;
+    name: string;
+    cost: number;
+    currency: Currency;
+  }[];
   memberships: {
     membershipId: string;
     accessRole: string;
     workRole: string;
     multiplier: number;
   }[];
+}
+
+export interface ProjectMembership {
+  membershipId: string;
+  accessRole: string;
+  workRole: string;
+  multiplier: number;
 }
 
 export interface TimetableItem {
