@@ -17,7 +17,7 @@ export default function AddToProjectModal({
   onClose,
 }: AddToProjectModal) {
   const { memberships, isLoading } = useMemberships();
-  const { addMemberToProject } = useProjects();
+  const { addProjectMembership } = useProjects();
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
 
@@ -28,7 +28,7 @@ export default function AddToProjectModal({
   const projectRoles =
     project.roles && project.roles.length > 0
       ? project.roles.map((role) => ({
-          value: role.name,
+          value: role.key,
           label: role.name,
         }))
       : [
@@ -53,10 +53,15 @@ export default function AddToProjectModal({
   };
 
   async function handleOk() {
-    const newMemberships = form.getFieldValue("memberships");
+    const newMemberships = form.getFieldsValue();
     let OK = true;
     for (const membershipId of newMemberships) {
-      const success = await addMemberToProject(project.id, membershipId);
+      const success = await addProjectMembership(project.id, {
+        membershipId,
+        accessRole: "member",
+        workRole: "staff",
+        multiplier: 1,
+      });
       if (!success) {
         OK = false;
       }

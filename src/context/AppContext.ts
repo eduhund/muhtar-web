@@ -75,6 +75,7 @@ export interface Project {
   status: "active" | "archived";
   isDeleted: boolean;
   roles: {
+    key: string;
     name: string;
     cost: number;
     currency: Currency;

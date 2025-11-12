@@ -173,6 +173,70 @@ class MembershipAPI extends privateAPI {
       query
     );
   }
+
+  async addProjectMembership(
+    projectId: string,
+    projectMembership: {
+      membershipId: string;
+      accessRole: string;
+      workRole: string;
+      multiplier: number;
+    }
+  ) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/addProjectMembership`,
+      this.token,
+      {
+        projectId,
+        ...projectMembership,
+      }
+    );
+  }
+
+  async updateProjectMembership(
+    projectId: string,
+    projectMembership: {
+      membershipId: string;
+      accessRole?: string;
+      workRole?: string;
+      multiplier?: number;
+    }
+  ) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/updateProjectMembership`,
+      this.token,
+      {
+        projectId,
+        ...projectMembership,
+      }
+    );
+  }
+
+  async removeProjectMembership({
+    projectId,
+    membershipId,
+  }: {
+    projectId: string;
+    membershipId: string;
+  }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/removeProjectMembership`,
+      this.token,
+      {
+        projectId,
+        membershipId,
+      }
+    );
+  }
 }
 
 export const authAPI = new AuthAPI(apiController);
