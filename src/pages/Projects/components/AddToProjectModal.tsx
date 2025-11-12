@@ -44,39 +44,50 @@ export default function AddToProjectModal({
           },
         ];
 
-  const showSuccessMessage = () => {
+  const showSuccessMessage = (count: number) => {
     messageApi.open({
       type: "success",
-      content: "Members added successfully!",
+      content: `${count} member${count > 1 ? "s" : ""} added successfully!`,
     });
   };
 
-  const showErrorMessage = () => {
+  const showErrorMessage = (memberships: string[]) => {
     messageApi.open({
       type: "error",
-      content: "Members were not added!",
+      content: `Members were not added:\n${memberships.join("\n")}`,
     });
   };
 
   async function handleOk() {
     const newMemberships = form.getFieldsValue();
-    let OK = true;
-    for (const membershipId of newMemberships) {
+    let addedCounter = 0;
+    const failedMemberships: string[] = [];
+    for (const membership of Object.values(newMemberships)) {
+      const { membershipId, accessRole, workRole } = membership as {
+        membershipId: string;
+        accessRole: string;
+        workRole: string;
+      };
       const success = await addProjectMembership(project.id, {
         membershipId,
-        accessRole: "member",
-        workRole: "staff",
+        accessRole,
+        workRole,
         multiplier: 1,
       });
       if (!success) {
-        OK = false;
+        failedMemberships.push(
+          memberships?.find((m) => m.id === membershipId)?.name || "Unknown"
+        );
+      } else {
+        addedCounter++;
       }
     }
-    if (OK) {
-      showSuccessMessage();
+    if (addedCounter > 0) {
+      showSuccessMessage(addedCounter);
       onClose();
-    } else {
-      showErrorMessage();
+    }
+    if (failedMemberships.length > 0) {
+      showErrorMessage(failedMemberships);
     }
   }
 
@@ -99,14 +110,22 @@ export default function AddToProjectModal({
         layout="vertical"
         requiredMark={false}
         form={form}
+        initialValues={{
+          membership1: {
+            accessRole: ACCESS_ROLES[1]?.value || "member",
+            workRole: projectRoles[0]?.value || "staff",
+          },
+        }}
       >
         <Form.Item<string>
           className="AddToProjectModal-form-item"
-          name="membership1"
           label="Member 1"
           rules={[{ required: true, message: "Please select memberships!" }]}
         >
-          <div className="membership">
+          <Form.Item<string>
+            className="membership"
+            name={["membership1", "membershipId"]}
+          >
             <MembershipDropdown
               memberships={availableMemberships}
               value={null}
@@ -114,80 +133,22 @@ export default function AddToProjectModal({
               isLoading={isLoading}
               onChange={() => {}}
             />
-          </div>
+          </Form.Item>
           <div className="membership-roles">
-            <Select
-              prefix={<span>Access Role</span>}
-              options={ACCESS_ROLES}
-              value={ACCESS_ROLES[1]?.value}
-              placeholder="Select a membership"
-            />
-            <Select
-              prefix={<span>Project Role</span>}
-              options={projectRoles}
-              value={projectRoles[0]?.value}
-              placeholder="Select a membership"
-            />
-          </div>
-        </Form.Item>
-        <Form.Item<string>
-          className="AddToProjectModal-form-item"
-          name="membership2"
-          label="Member 2"
-          rules={[{ required: true, message: "Please select memberships!" }]}
-        >
-          <div className="membership">
-            <MembershipDropdown
-              memberships={availableMemberships}
-              value={null}
-              isRequired={true}
-              isLoading={isLoading}
-              onChange={() => {}}
-            />
-          </div>
-          <div className="membership-roles">
-            <Select
-              prefix={<span>Access Role</span>}
-              options={ACCESS_ROLES}
-              value={ACCESS_ROLES[1]?.value}
-              placeholder="Select a membership"
-            />
-            <Select
-              prefix={<span>Project Role</span>}
-              options={projectRoles}
-              value={projectRoles[0]?.value}
-              placeholder="Select a membership"
-            />
-          </div>
-        </Form.Item>
-        <Form.Item<string>
-          className="AddToProjectModal-form-item"
-          name="membership3"
-          label="Member 3"
-          rules={[{ required: true, message: "Please select memberships!" }]}
-        >
-          <div className="membership">
-            <MembershipDropdown
-              memberships={availableMemberships}
-              value={null}
-              isRequired={true}
-              isLoading={isLoading}
-              onChange={() => {}}
-            />
-          </div>
-          <div className="membership-roles">
-            <Select
-              prefix={<span>Access Role</span>}
-              options={ACCESS_ROLES}
-              value={ACCESS_ROLES[1]?.value}
-              placeholder="Select a membership"
-            />
-            <Select
-              prefix={<span>Project Role</span>}
-              options={projectRoles}
-              value={projectRoles[0]?.value}
-              placeholder="Select a membership"
-            />
+            <Form.Item<string> name={["membership1", "accessRole"]}>
+              <Select
+                prefix={<span>Access Role</span>}
+                options={ACCESS_ROLES}
+                value={ACCESS_ROLES[1]?.value}
+              />
+            </Form.Item>
+            <Form.Item<string> name={["membership1", "workRole"]}>
+              <Select
+                prefix={<span>Project Role</span>}
+                options={projectRoles}
+                value={projectRoles[0]?.value}
+              />
+            </Form.Item>
           </div>
         </Form.Item>
       </Form>
