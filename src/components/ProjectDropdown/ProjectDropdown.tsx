@@ -36,7 +36,14 @@ function getLabelText(label: React.ReactNode) {
     "props" in label &&
     (label as React.ReactElement).props?.children
   ) {
-    return (label as React.ReactElement).props.children;
+    const children = (label as React.ReactElement).props.children;
+    if (typeof children === "string") {
+      return children;
+    } else if (Array.isArray(children)) {
+      return getLabelText(children[0]);
+    } else {
+      return getLabelText(children);
+    }
   }
   return label;
 }
