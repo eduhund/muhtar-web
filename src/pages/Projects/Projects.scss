@@ -109,6 +109,18 @@
       gap: 8px;
     }
 
+    &-dates {
+      color: #666666;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    &-assigned {
+      color: #666666;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
     .ant-checkbox {
       align-self: flex-start;
       margin-top: 3px;

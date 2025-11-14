@@ -234,13 +234,16 @@ export default function ProjectPage({ project }: { project: Project }) {
                 }
               >
                 <div>{task.name}</div>
-                <div>
+                <div className="ProjectPage-tasks-dates">
                   {task.startDate
                     ? dayjs(task.startDate).format("D MMM")
                     : "N/A"}{" "}
-                  - {task.dueDate ? dayjs(task.dueDate).format("D MMM") : "N/A"}
+                  → {task.dueDate ? dayjs(task.dueDate).format("D MMM") : "N/A"}{" "}
+                  {task.duration && <>({task.duration / 60}h)</>}
                 </div>
-                <div>{task.assignedMembership?.name}</div>
+                <div className="ProjectPage-tasks-assigned">
+                  {task.assignedMembership?.name}
+                </div>
               </Checkbox>
             ))}
           </div>
