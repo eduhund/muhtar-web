@@ -30,7 +30,6 @@ type GroupedOption = {
 const { Paragraph } = Typography;
 
 function getLabelText(label: React.ReactNode) {
-  console.log("getLabelText:", label);
   if (
     typeof label === "object" &&
     label !== null &&
@@ -43,10 +42,9 @@ function getLabelText(label: React.ReactNode) {
     } else if (Array.isArray(children)) {
       return getLabelText(children[0]);
     } else {
-      return getLabelText(children);
+      return label.toString();
     }
-  }
-  return label;
+  } else return "";
 }
 
 export default function ProjectDropdown({
