@@ -30,6 +30,7 @@ type GroupedOption = {
 const { Paragraph } = Typography;
 
 function getLabelText(label: React.ReactNode) {
+  console.log("getLabelText:", label);
   if (
     typeof label === "object" &&
     label !== null &&
