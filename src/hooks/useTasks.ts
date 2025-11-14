@@ -35,13 +35,11 @@ export function useTasks() {
     const { OK } = await membershipAPI.updateTask(entry);
     if (OK && tasks) {
       const entryRecord = tasks.find((item) => item.id === entry.id);
-      console.log("entryRecord", entryRecord);
       if (entryRecord) {
         const newTasks = updateTasksList(tasks, {
           ...entryRecord,
           ...entry,
         });
-        console.log("newTasks", newTasks);
         updateState({ tasks: newTasks });
       }
     }
