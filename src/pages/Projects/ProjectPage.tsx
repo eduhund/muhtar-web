@@ -1,4 +1,4 @@
-import { Button, Typography } from "antd";
+import { Button, Checkbox, Typography } from "antd";
 import {
   AreaChart,
   Area,
@@ -16,6 +16,7 @@ import { useState } from "react";
 import AddToProjectModal from "./components/AddToProjectModal";
 import ProjectMembership from "./components/ProjectMembership/ProjectMembership";
 import ProjectContributor from "./components/ProjectContributor/ProjectContributor";
+import { useTasks } from "../../hooks/useTasks";
 
 const { Title } = Typography;
 
@@ -36,6 +37,7 @@ export default function ProjectPage({ project }: { project: Project }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { timetable } = useTimetable();
   const { memberships } = useMemberships();
+  const { tasks, updateTask } = useTasks();
   const projectEntries =
     timetable?.filter((item) => item.project.id === project.id) || [];
 
@@ -45,6 +47,8 @@ export default function ProjectPage({ project }: { project: Project }) {
   function closeModal() {
     setIsOpenModal(false);
   }
+
+  const filteredTasks = tasks?.filter((task) => task.projectId === project.id);
 
   function groupEntriesByDayWithWorkers(entries: typeof projectEntries) {
     const sortedEntries = [...entries].sort((a, b) =>
@@ -154,6 +158,13 @@ export default function ProjectPage({ project }: { project: Project }) {
 
   const totalDuration = coreTeamDuration + otherDuration;
 
+  async function handleTaskDoneChange(taskId: string, checked: boolean) {
+    await updateTask({
+      id: taskId,
+      dueDate: checked ? dayjs().toISOString() : null,
+    });
+  }
+
   const StackedAreaChart = () => {
     const allWorkerIds = Array.from(
       new Set(
@@ -208,6 +219,26 @@ export default function ProjectPage({ project }: { project: Project }) {
         hours, Others: {otherDuration} hours)
       </p>
       <StackedAreaChart />
+      <div className="ProjectPage-tasks">
+        <Title level={4}>Tasks</Title>
+        {filteredTasks && filteredTasks.length > 0 ? (
+          <div>
+            {filteredTasks.map((task) => (
+              <Checkbox
+                key={task.id}
+                checked={!!task.dueDate}
+                onChange={(e) =>
+                  handleTaskDoneChange(task.id, e.target.checked)
+                }
+              >
+                {task.name}
+              </Checkbox>
+            ))}
+          </div>
+        ) : (
+          <p>No tasks found for this project.</p>
+        )}
+      </div>
       <div className="ProjectPage-members-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={openModal}>
