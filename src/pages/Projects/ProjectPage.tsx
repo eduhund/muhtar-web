@@ -163,7 +163,7 @@ export default function ProjectPage({ project }: { project: Project }) {
   async function handleTaskDoneChange(taskId: string, checked: boolean) {
     await updateTask({
       id: taskId,
-      dueDate: checked ? dayjs().toISOString() : null,
+      doneDate: checked ? dayjs().toISOString() : null,
     });
   }
 

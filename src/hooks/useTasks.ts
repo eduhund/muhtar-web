@@ -7,8 +7,9 @@ export type TaskEntry = {
   projectId: string;
   assignedMembershipId: string | null;
   jobId: string | null;
-  startDate: string | null; // YYYY-MM-DD
-  dueDate: string | null; // YYYY-MM-DD
+  startDate: string | null;
+  dueDate: string | null;
+  doneDate: string | null;
   duration: number | null; // in minutes
   notes: string;
 };
@@ -34,11 +35,13 @@ export function useTasks() {
     const { OK } = await membershipAPI.updateTask(entry);
     if (OK && tasks) {
       const entryRecord = tasks.find((item) => item.id === entry.id);
+      console.log("entryRecord", entryRecord);
       if (entryRecord) {
         const newTasks = updateTasksList(tasks, {
           ...entryRecord,
           ...entry,
         });
+        console.log("newTasks", newTasks);
         updateState({ tasks: newTasks });
       }
     }
