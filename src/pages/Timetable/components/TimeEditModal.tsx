@@ -1,4 +1,4 @@
-import { DatePicker, Form, message, Select, Tooltip } from "antd";
+import { DatePicker, Form, Select, Tooltip } from "antd";
 import { Modal } from "antd";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 import TextArea from "antd/es/input/TextArea";
@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
 import { useEffect } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
+import { useUIMessages } from "../../../providers/UIMessageProvider";
 
 type FieldType = {
   date: Dayjs;
@@ -20,7 +21,7 @@ export default function TimeEditModal({ record, onClose }: any) {
   const { updateTime } = useTimetable();
   const { activeProjects, isLoading } = useProjects();
   const [form] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
+  const UIMessages = useUIMessages();
 
   useEffect(() => {
     if (record) {
@@ -32,20 +33,6 @@ export default function TimeEditModal({ record, onClose }: any) {
       });
     }
   }, [record, form]);
-
-  const showSuccessMessage = () => {
-    messageApi.open({
-      type: "success",
-      content: "Entry updated successfully!",
-    });
-  };
-
-  const showErrorMessage = () => {
-    messageApi.open({
-      type: "error",
-      content: "Entry was not updated!",
-    });
-  };
 
   async function handleOk() {
     const {
@@ -65,10 +52,10 @@ export default function TimeEditModal({ record, onClose }: any) {
       comment,
     });
     if (OK) {
-      showSuccessMessage();
+      UIMessages?.editTime.success();
       onClose();
     } else {
-      showErrorMessage();
+      UIMessages?.editTime.error();
     }
   }
 
@@ -86,7 +73,6 @@ export default function TimeEditModal({ record, onClose }: any) {
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      {contextHolder}
       <Form
         className="TimeEditModal-form"
         name="updateTime"

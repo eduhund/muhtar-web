@@ -11,6 +11,7 @@ import { Timetable } from "./pages/Timetable";
 import { AppProvider } from "./providers/AppProvider";
 import { Workers } from "./pages/Workers/Workers";
 import { Projects } from "./pages/Projects/Projects";
+import { MessageProvider } from "./providers/UIMessageProvider";
 
 const App = () => {
   return (
@@ -24,18 +25,20 @@ const App = () => {
           path="/*"
           element={
             <AppProvider>
-              <div className="App-container">
-                <div className="App-sidebar">
-                  <SidebarNav />
+              <MessageProvider>
+                <div className="App-container">
+                  <div className="App-sidebar">
+                    <SidebarNav />
+                  </div>
+                  <div className="App-content">
+                    <Routes>
+                      <Route path="/" element={<Timetable />} />
+                      <Route path="/projects" element={<Projects />} />
+                      <Route path="/workers" element={<Workers />} />
+                    </Routes>
+                  </div>
                 </div>
-                <div className="App-content">
-                  <Routes>
-                    <Route path="/" element={<Timetable />} />
-                    <Route path="/projects" element={<Projects />} />
-                    <Route path="/workers" element={<Workers />} />
-                  </Routes>
-                </div>
-              </div>
+              </MessageProvider>
             </AppProvider>
           }
         />

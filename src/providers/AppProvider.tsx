@@ -31,6 +31,7 @@ type AppState = {
   tasks?: Task[] | null;
   tasksLoading?: boolean;
 };
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>({
     user: null,
@@ -73,7 +74,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       projectsLoading: true,
       membershipsLoading: true,
     }));
-    const { data } = (await userAPI.getMe()) as any;
+    const { data } = (await userAPI.getMe()) as { data: any };
     if (data) {
       setState((prev) => ({
         ...prev,

@@ -1,12 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Select,
-  Tooltip,
-} from "antd";
+import { Button, DatePicker, Form, Input, Select, Tooltip } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -17,6 +9,7 @@ import { useState } from "react";
 import { useTimetable } from "../../../../../../hooks/useTimetable";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
+import { useUIMessages } from "../../../../../../providers/UIMessageProvider";
 
 type FieldType = {
   date: Dayjs;
@@ -33,21 +26,8 @@ export function AddTimeWidget() {
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
   const { addTime } = useTimetable();
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const showSuccessMessage = () => {
-    messageApi.open({
-      type: "success",
-      content: "Entry added successfully!",
-    });
-  };
-
-  const showErrorMessage = () => {
-    messageApi.open({
-      type: "error",
-      content: "Entry was not added!",
-    });
-  };
+  const UIMessages = useUIMessages();
+  console.log("addTimeMessage", UIMessages);
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -61,9 +41,9 @@ export function AddTimeWidget() {
       comment,
     });
     if (newTime) {
-      showSuccessMessage();
+      addTimeMessage.success();
     } else {
-      showErrorMessage();
+      addTimeMessage.error();
     }
     setIsAddingTime(false);
   }
@@ -72,7 +52,6 @@ export function AddTimeWidget() {
 
   return (
     <SidebarWidget title="Track the time" icon={<PlusCircleOutlined />}>
-      {contextHolder}
       <Form
         name="trackTime"
         layout="vertical"
