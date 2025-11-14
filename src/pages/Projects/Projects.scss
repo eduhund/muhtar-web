@@ -102,6 +102,19 @@
     }
   }
 
+  &-tasks {
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ant-checkbox {
+      align-self: flex-start;
+      margin-top: 3px;
+    }
+  }
+
   &-members-header {
     display: flex;
     align-items: baseline;

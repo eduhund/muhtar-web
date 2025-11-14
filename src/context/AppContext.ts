@@ -64,11 +64,13 @@ export interface Membership {
 export interface Task {
   id: string;
   name: string;
-  projectId: string;
-  assignedMembershipId: string | null;
+  team: { id: string; name: string };
+  project: { id: string; name: string; customer: string | null };
+  assignedMembership: { id: string; name: string } | null;
   jobId: string | null;
-  startDate: string | null; // YYYY-MM-DD
-  dueDate: string | null; // YYYY-MM-DD
+  startDate: string | null;
+  dueDate: string | null;
+  doneDate: string | null;
   duration: number | null; // in minutes
   notes: string;
   history: any[]; //HistoryRecord<Task, string>[];

@@ -48,7 +48,9 @@ export default function ProjectPage({ project }: { project: Project }) {
     setIsOpenModal(false);
   }
 
-  const filteredTasks = tasks?.filter((task) => task.projectId === project.id);
+  const filteredTasks = tasks?.filter(
+    (task) => task.project?.id === project.id
+  );
 
   function groupEntriesByDayWithWorkers(entries: typeof projectEntries) {
     const sortedEntries = [...entries].sort((a, b) =>
@@ -222,16 +224,23 @@ export default function ProjectPage({ project }: { project: Project }) {
       <div className="ProjectPage-tasks">
         <Title level={4}>Tasks</Title>
         {filteredTasks && filteredTasks.length > 0 ? (
-          <div>
+          <div className="ProjectPage-tasks-list">
             {filteredTasks.map((task) => (
               <Checkbox
                 key={task.id}
-                checked={!!task.dueDate}
+                checked={!!task.doneDate}
                 onChange={(e) =>
                   handleTaskDoneChange(task.id, e.target.checked)
                 }
               >
-                {task.name}
+                <div>{task.name}</div>
+                <div>
+                  {task.startDate
+                    ? dayjs(task.startDate).format("D MMM")
+                    : "N/A"}{" "}
+                  - {task.dueDate ? dayjs(task.dueDate).format("D MMM") : "N/A"}
+                </div>
+                <div>{task.assignedMembership?.name}</div>
               </Checkbox>
             ))}
           </div>
