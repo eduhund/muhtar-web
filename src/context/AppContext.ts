@@ -61,6 +61,20 @@ export interface Membership {
   team?: { id: string; name: string } | null;
 }
 
+export interface Task {
+  id: string;
+  name: string;
+  projectId: string;
+  assignedMembershipId: string | null;
+  jobId: string | null;
+  startDate: string | null; // YYYY-MM-DD
+  dueDate: string | null; // YYYY-MM-DD
+  duration: number | null; // in minutes
+  notes: string;
+  history: any[]; //HistoryRecord<Task, string>[];
+  isDeleted: boolean;
+}
+
 export interface Team {
   id: string;
   name: string;
@@ -121,6 +135,8 @@ export interface AppContext {
   projectsLoading?: boolean;
   timetable?: Timetable | null;
   timetableLoading?: boolean;
+  tasks?: Task[] | null;
+  tasksLoading?: boolean;
   updateState: (state: Partial<AppContext>) => void;
 }
 

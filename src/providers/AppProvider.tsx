@@ -6,6 +6,7 @@ import {
   Project,
   Timetable,
   AppContext,
+  Task,
 } from "../context/AppContext";
 import { membershipStorage, userStorage } from "../utils/storage";
 import { membershipAPI, userAPI } from "../api";
@@ -27,6 +28,8 @@ type AppState = {
   projectsLoading: boolean;
   timetable: Timetable | null;
   timetableLoading: boolean;
+  tasks?: Task[] | null;
+  tasksLoading?: boolean;
 };
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>({
@@ -42,6 +45,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     projectsLoading: false,
     timetable: null,
     timetableLoading: false,
+    tasks: null,
+    tasksLoading: false,
   });
 
   function logOut() {
@@ -111,6 +116,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
+  async function initTasks() {
+    setState((prev) => ({ ...prev, tasksLoading: true }));
+    const { data } = await membershipAPI.getTasks({});
+    setState((prev) => ({
+      ...prev,
+      tasks: (data as Task[]) || null,
+      tasksLoading: false,
+    }));
+  }
+
   async function initProvider() {
     if (!userStorage.hasAccessToken()) {
       logOut();
@@ -122,6 +137,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
     initUserData();
     initTimetable();
+    initTasks();
   }
 
   useEffect(() => {

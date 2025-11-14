@@ -237,6 +237,45 @@ class MembershipAPI extends privateAPI {
       }
     );
   }
+
+  getTasks(query: { [key: string]: string } = {}) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.get(`${this.prefix}/getTasks`, this.token, query);
+  }
+
+  createTask(task: { name: string; projectId: string }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/createTask`, this.token, task);
+  }
+
+  updateTask(task: { id: string; name?: string; projectId?: string }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/updateTask`, this.token, task);
+  }
+
+  archiveTask(taskId: string) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/archiveTask`, this.token, {
+      id: taskId,
+    });
+  }
+
+  restoreTask(taskId: string) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/restoreTask`, this.token, {
+      id: taskId,
+    });
+  }
 }
 
 export const authAPI = new AuthAPI(apiController);
