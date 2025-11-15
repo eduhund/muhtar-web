@@ -1,15 +1,16 @@
-import { Button, DatePicker, Form, Input, Select, Tooltip } from "antd";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget";
 import { dateFormat } from "../../../../../../utils/date";
 import { useProjects } from "../../../../../../hooks/useProjects";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTimetable } from "../../../../../../hooks/useTimetable";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
 import { useUIMessages } from "../../../../../../providers/UIMessageProvider";
+import { useTasks } from "../../../../../../hooks/useTasks";
 
 type FieldType = {
   date: Dayjs;
@@ -23,10 +24,22 @@ const { TextArea } = Input;
 
 export function AddTimeWidget() {
   const [isAddingTime, setIsAddingTime] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null
+  );
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
+  const { tasks } = useTasks();
   const { addTime } = useTimetable();
   const UIMessages = useUIMessages();
+
+  const filteredTasks = useMemo(
+    () =>
+      tasks
+        ? tasks.filter((task) => task.project.id === selectedProjectId)
+        : [],
+    [tasks, selectedProjectId]
+  );
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -82,26 +95,26 @@ export function AddTimeWidget() {
             style={{ width: "100%" }}
             isRequired={true}
             isLoading={isLoading}
-            onChange={() => {}}
+            onChange={(value) => setSelectedProjectId(value)}
           />
         </Form.Item>
 
-        <Tooltip title="Tasks are not available yet">
-          <Form.Item<FieldType> name="task">
-            <Select
-              showSearch
-              placeholder="Select..."
-              options={[]}
-              value={{}}
-              fieldNames={{ label: "name", value: "id" }}
-              prefix="Task"
-              allowClear={false}
-              style={{ width: "100%" }}
-              onChange={() => {}}
-              disabled
-            />
-          </Form.Item>
-        </Tooltip>
+        <Form.Item<FieldType> name="task">
+          <Select
+            showSearch
+            placeholder={
+              !selectedProjectId ? "Select project first" : "Select..."
+            }
+            options={filteredTasks}
+            value={{}}
+            fieldNames={{ label: "name", value: "id" }}
+            prefix="Task"
+            allowClear={false}
+            style={{ width: "100%" }}
+            onChange={() => {}}
+            disabled={!selectedProjectId}
+          />
+        </Form.Item>
 
         <Form.Item<FieldType> name="duration">
           <Select

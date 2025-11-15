@@ -3,7 +3,7 @@ import { Project } from "../../context/AppContext";
 
 type ProjectDropdownProps = {
   projects: Project[];
-  onChange: (value: string[]) => void;
+  onChange: (value: any) => void;
   value: any;
   placeholder?: string;
   isRequired?: boolean;
@@ -36,15 +36,9 @@ function getLabelText(label: React.ReactNode) {
     "props" in label &&
     (label as React.ReactElement).props?.children
   ) {
-    const children = (label as React.ReactElement).props.children;
-    if (typeof children === "string") {
-      return children;
-    } else if (Array.isArray(children)) {
-      return getLabelText(children[0]);
-    } else {
-      return label.toString();
-    }
-  } else return "";
+    return (label as React.ReactElement).props.children;
+  }
+  return label;
 }
 
 export default function ProjectDropdown({
