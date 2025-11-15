@@ -52,10 +52,10 @@ export default function TimeEditModal({ record, onClose }: any) {
       comment,
     });
     if (OK) {
-      UIMessages?.editTime.success();
+      UIMessages?.updateTime.success();
       onClose();
     } else {
-      UIMessages?.editTime.error();
+      UIMessages?.updateTime.error();
     }
   }
 

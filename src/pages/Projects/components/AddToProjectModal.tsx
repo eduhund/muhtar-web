@@ -1,9 +1,10 @@
-import { Form, message, Select } from "antd";
+import { Form, Select } from "antd";
 import { Modal } from "antd";
 import { useMemberships } from "../../../hooks/useMemberships";
 import { Project, ProjectMembership } from "../../../context/AppContext";
 import MembershipDropdown from "../../../components/MembershipDropdown/MembershipDropdown";
 import { useProjects } from "../../../hooks/useProjects";
+import { useUIMessages } from "../../../providers/UIMessageProvider";
 
 type AddToProjectModal = {
   isOpen: boolean;
@@ -24,7 +25,7 @@ export default function AddToProjectModal({
 }: AddToProjectModal) {
   const { memberships, isLoading } = useMemberships();
   const { addProjectMembership } = useProjects();
-  const [messageApi, contextHolder] = message.useMessage();
+  const UIMessages = useUIMessages();
   const [form] = Form.useForm();
 
   const availableMemberships = (memberships || []).filter(
@@ -43,20 +44,6 @@ export default function AddToProjectModal({
             label: "No roles available",
           },
         ];
-
-  const showSuccessMessage = (count: number) => {
-    messageApi.open({
-      type: "success",
-      content: `${count} member${count > 1 ? "s" : ""} added successfully!`,
-    });
-  };
-
-  const showErrorMessage = (memberships: string[]) => {
-    messageApi.open({
-      type: "error",
-      content: `Members were not added:\n${memberships.join("\n")}`,
-    });
-  };
 
   async function handleOk() {
     const newMemberships = form.getFieldsValue();
@@ -80,11 +67,11 @@ export default function AddToProjectModal({
       }
     }
     if (addedCounter > 0) {
-      showSuccessMessage(addedCounter);
+      UIMessages?.addProjectMembers.success(addedCounter);
       onClose();
     }
     if (failedMemberships.length > 0) {
-      showErrorMessage(failedMemberships);
+      UIMessages?.addProjectMembers.error(failedMemberships);
     }
   }
 
@@ -100,7 +87,6 @@ export default function AddToProjectModal({
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      {contextHolder}
       <Form
         className="AddToProjectModal-form"
         name="addProjectMemberships"

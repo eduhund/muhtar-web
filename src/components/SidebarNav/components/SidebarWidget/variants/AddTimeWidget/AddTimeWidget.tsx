@@ -27,7 +27,6 @@ export function AddTimeWidget() {
   const { activeProjects, isLoading } = useProjects();
   const { addTime } = useTimetable();
   const UIMessages = useUIMessages();
-  console.log("addTimeMessage", UIMessages);
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -41,9 +40,9 @@ export function AddTimeWidget() {
       comment,
     });
     if (newTime) {
-      addTimeMessage.success();
+      UIMessages?.addTime.success();
     } else {
-      addTimeMessage.error();
+      UIMessages?.addTime.error();
     }
     setIsAddingTime(false);
   }

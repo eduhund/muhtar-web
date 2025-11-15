@@ -1,10 +1,11 @@
-import { Button, message } from "antd";
+import { Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
 import { useProjects } from "../../../../hooks/useProjects";
 import { Project } from "../../../../context/AppContext";
 
 import "./ProjectContributor.scss";
+import { useUIMessages } from "../../../../providers/UIMessageProvider";
 
 type ProjectContributorProps = {
   project: Project;
@@ -20,21 +21,7 @@ export default function ProjectContributor({
   contributor,
 }: ProjectContributorProps) {
   const { addProjectMembership } = useProjects();
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const showSuccessMessage = () => {
-    messageApi.open({
-      type: "success",
-      content: `Member added to the project!`,
-    });
-  };
-
-  const showErrorMessage = () => {
-    messageApi.open({
-      type: "error",
-      content: `Member was not added!`,
-    });
-  };
+  const UIMessages = useUIMessages();
 
   async function handleAddToProject() {
     const success = await addProjectMembership(project.id, {
@@ -44,14 +31,13 @@ export default function ProjectContributor({
       multiplier: 1,
     });
     if (success) {
-      showSuccessMessage();
+      UIMessages?.addProjectMember.success();
     } else {
-      showErrorMessage();
+      UIMessages?.addProjectMember.error();
     }
   }
   return (
     <div className="ProjectContributor">
-      {contextHolder}
       <div className="ProjectContributor-info">
         <div className="ProjectContributor-name">
           {contributor.contributorName}

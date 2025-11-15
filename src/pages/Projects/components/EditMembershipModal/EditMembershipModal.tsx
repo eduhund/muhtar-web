@@ -1,10 +1,11 @@
-import { Button, Form, Input, message, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import { Modal } from "antd";
 import { Project, ProjectMembership } from "../../../../context/AppContext";
 import { useProjects } from "../../../../hooks/useProjects";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import "./EditMembershipModal.scss";
+import { useUIMessages } from "../../../../providers/UIMessageProvider";
 
 type EditMembershipModal = {
   isOpen: boolean;
@@ -25,9 +26,8 @@ export default function EditMembershipModal({
   project,
   onClose,
 }: EditMembershipModal) {
-  console.log("projectMembership", projectMembership);
   const { updateProjectMembership, removeProjectMembership } = useProjects();
-  const [messageApi, contextHolder] = message.useMessage();
+  const UIMessages = useUIMessages();
   const [form] = Form.useForm();
 
   const projectRoles =
@@ -43,34 +43,6 @@ export default function EditMembershipModal({
           },
         ];
 
-  const showUpdateSuccessMessage = () => {
-    messageApi.open({
-      type: "success",
-      content: `Member updated successfully!`,
-    });
-  };
-
-  const showUpdateErrorMessage = () => {
-    messageApi.open({
-      type: "error",
-      content: `Member was not updated`,
-    });
-  };
-
-  const showRemoveSuccessMessage = () => {
-    messageApi.open({
-      type: "success",
-      content: `Member removed successfully!`,
-    });
-  };
-
-  const showRemoveErrorMessage = () => {
-    messageApi.open({
-      type: "error",
-      content: `Member was not removed`,
-    });
-  };
-
   async function handleOk() {
     const { membership } = form.getFieldsValue();
     const success = await updateProjectMembership(project.id, {
@@ -80,10 +52,10 @@ export default function EditMembershipModal({
       multiplier: Number(membership.multiplier),
     });
     if (success) {
-      showUpdateSuccessMessage();
+      UIMessages?.updateProjectMember.success();
       onClose();
     } else {
-      showUpdateErrorMessage();
+      UIMessages?.updateProjectMember.error();
     }
   }
 
@@ -97,10 +69,10 @@ export default function EditMembershipModal({
       projectMembership.membershipId
     );
     if (success) {
-      showRemoveSuccessMessage();
+      UIMessages?.removeProjectMember.success();
       onClose();
     } else {
-      showRemoveErrorMessage();
+      UIMessages?.removeProjectMember.error();
     }
   }
 
@@ -133,7 +105,6 @@ export default function EditMembershipModal({
         </div>
       )}
     >
-      {contextHolder}
       <Form
         className="EditMembershipModal-form"
         name="updateProjectMembership"
