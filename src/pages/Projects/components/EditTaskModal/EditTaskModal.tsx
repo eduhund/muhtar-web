@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import { useUIMessages } from "../../../../providers/UIMessageProvider";
 import { useTasks } from "../../../../hooks/useTasks";
 
-type FieldType = {
+import "./EditTaskModal.scss";
+
+type FieldType<T extends "fixed" | "range" = "fixed"> = {
   project: string;
   startDate: Dayjs;
   dueDate: Dayjs;
   assigneedMembership: string;
-  duration: string | { min: string; max: string };
+  duration: T extends "range" ? { min: number; max: number } : number;
   name: string;
   notes?: string;
 };
@@ -33,12 +35,10 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
       duration?.max != null
     ) {
       return [duration.min * 60, duration.max * 60] as [number, number];
+    } else if (durationType === "fixed") {
+      return Number(duration) * 60 || null;
     } else {
-      return (
-        (typeof duration === "object"
-          ? duration?.min || duration?.max
-          : duration) * 60 || null
-      );
+      return null;
     }
   }
 
@@ -68,6 +68,7 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
   async function handleOk() {
     const { startDate, dueDate, assigneedMembershipId, duration, name, notes } =
       form.getFieldsValue();
+    console.log({ durationType, duration });
     const OK = await updateTask({
       id: task.id,
       startDate: startDate ? startDate.format("YYYY-MM-DD") : null,
@@ -114,7 +115,7 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
         </Form.Item>
         <Form.Item<FieldType> name="startDate">
           <DatePicker
-            prefix="Date"
+            prefix="Start date"
             placeholder="Select when to start"
             format={dateFormat}
             allowClear={false}
@@ -124,7 +125,7 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
 
         <Form.Item<FieldType> name="dueDate">
           <DatePicker
-            prefix="Date"
+            prefix="Deadline"
             placeholder="Select when needs to be done"
             format={dateFormat}
             minDate={today}
@@ -133,45 +134,53 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="duration">
+        <div className="duration">
           <Switch
             checkedChildren="range"
             unCheckedChildren="fixed"
-            defaultChecked
+            defaultChecked={durationType === "range"}
             onChange={(checked) => setDurationType(checked ? "range" : "fixed")}
           />
-          {durationType === "range" ? (
-            <Input.Group compact>
-              <Form.Item<FieldType> name={["duration", "min"]} noStyle>
-                <InputNumber
-                  prefix="Min Hours"
-                  placeholder="Min hours"
-                  min={0}
-                  step={1}
-                  style={{ width: "50%" }}
-                />
+          <Form.Item<FieldType<typeof durationType>> name="duration">
+            {durationType === "range" ? (
+              <Form.Item>
+                <Form.Item<FieldType<"range">>
+                  name={["duration", "min"]}
+                  noStyle
+                >
+                  <InputNumber
+                    prefix="Min Hours"
+                    placeholder="Min hours"
+                    min={0}
+                    step={1}
+                    style={{ width: "47%" }}
+                  />
+                </Form.Item>
+                {" — "}
+                <Form.Item<FieldType<"range">>
+                  name={["duration", "max"]}
+                  noStyle
+                >
+                  <InputNumber
+                    prefix="Max Hours"
+                    placeholder="Max hours"
+                    min={0}
+                    step={1}
+                    style={{ width: "47%" }}
+                  />
+                </Form.Item>
               </Form.Item>
-              <Form.Item<FieldType> name={["duration", "max"]} noStyle>
-                <InputNumber
-                  prefix="Max Hours"
-                  placeholder="Max hours"
-                  min={0}
-                  step={1}
-                  style={{ width: "50%" }}
-                />
-              </Form.Item>
-            </Input.Group>
-          ) : (
-            <InputNumber
-              prefix="Hours"
-              placeholder="Estimated duration in hours"
-              min={0}
-              step={1}
-              style={{ width: "100%" }}
-            />
-          )}
-        </Form.Item>
-
+            ) : (
+              <InputNumber
+                prefix="Hours"
+                placeholder="Estimated duration in hours"
+                min={0}
+                step={1}
+                style={{ width: "100%" }}
+              />
+            )}
+          </Form.Item>
+        </div>
         <Form.Item<FieldType> name="notes">
           <TextArea rows={5} placeholder="What were you doing?" />
         </Form.Item>
