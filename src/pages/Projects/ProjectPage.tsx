@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 
-import { Project } from "../../context/AppContext";
+import { Project, Task } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMemberships } from "../../hooks/useMemberships";
 import dayjs from "dayjs";
@@ -213,12 +213,23 @@ export default function ProjectPage({ project }: { project: Project }) {
     );
   };
 
+  function renderTaskDuration(task: Task) {
+    if (!task.duration) return null;
+    if (Array.isArray(task.duration)) {
+      const [min, max] = task.duration;
+      return `${min / 60}-${max / 60}h`;
+    } else {
+      return `${task.duration / 60}h`;
+    }
+  }
+
   return (
     <div>
       <Title level={2}>{project.name}</Title>
       <p>
-        Total Time Logged: {totalDuration} hours (Core Team: {coreTeamDuration}{" "}
-        hours, Others: {otherDuration} hours)
+        Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core Team:{" "}
+        {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
+        {Number(otherDuration).toFixed(0)} hours)
       </p>
       <StackedAreaChart />
       <div className="ProjectPage-tasks">
@@ -239,7 +250,7 @@ export default function ProjectPage({ project }: { project: Project }) {
                     ? dayjs(task.startDate).format("D MMM")
                     : "N/A"}{" "}
                   → {task.dueDate ? dayjs(task.dueDate).format("D MMM") : "N/A"}{" "}
-                  {task.duration && <>({task.duration / 60}h)</>}
+                  {renderTaskDuration(task)}
                 </div>
                 <div className="ProjectPage-tasks-assigned">
                   {task.assignedMembership?.name}

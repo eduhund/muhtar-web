@@ -71,7 +71,7 @@ export interface Task {
   startDate: string | null;
   dueDate: string | null;
   doneDate: string | null;
-  duration: number | null; // in minutes
+  duration: number | [number, number] | null; // in minutes
   notes: string;
   history: any[]; //HistoryRecord<Task, string>[];
   isDeleted: boolean;
