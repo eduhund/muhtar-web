@@ -27,6 +27,14 @@ type UIMessages = {
     success: () => void;
     error: () => void;
   };
+  createTask: {
+    success: () => void;
+    error: () => void;
+  };
+  updateTask: {
+    success: () => void;
+    error: () => void;
+  };
 };
 
 const MessageContext = createContext<UIMessages | null>(null);
@@ -120,6 +128,34 @@ export const MessageProvider = ({
         messageApi.open({
           type: "error",
           content: "Member was not removed!",
+        });
+      },
+    },
+    createTask: {
+      success: () => {
+        messageApi.open({
+          type: "success",
+          content: "Task created successfully!",
+        });
+      },
+      error: () => {
+        messageApi.open({
+          type: "error",
+          content: "Task was not created!",
+        });
+      },
+    },
+    updateTask: {
+      success: () => {
+        messageApi.open({
+          type: "success",
+          content: "Task updated successfully!",
+        });
+      },
+      error: () => {
+        messageApi.open({
+          type: "error",
+          content: "Task was not updated!",
         });
       },
     },

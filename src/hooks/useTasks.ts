@@ -22,7 +22,7 @@ export function useTasks() {
 
   const { tasks, tasksLoading, updateState } = context;
 
-  async function addTask(entry: TaskEntry) {
+  async function createTask(entry: TaskEntry) {
     const { data } = (await membershipAPI.createTask(entry)) as { data: Task };
     if (data && tasks) {
       const newTasks = updateTasksList(tasks, data);
@@ -75,7 +75,7 @@ export function useTasks() {
   return {
     tasks,
     isLoading: tasksLoading,
-    addTask,
+    createTask,
     updateTask,
     archiveTask,
     restoreTask,
