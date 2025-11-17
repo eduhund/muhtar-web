@@ -1,9 +1,9 @@
-import { DatePicker, Form, Input, InputNumber } from "antd";
+import { DatePicker, Form, Input, InputNumber, Switch } from "antd";
 import { Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUIMessages } from "../../../../providers/UIMessageProvider";
 import { useTasks } from "../../../../hooks/useTasks";
 
@@ -13,24 +13,52 @@ type FieldType = {
   dueDate: Dayjs;
   assigneedMembership: string;
   duration: string | { min: string; max: string };
-  name?: string;
+  name: string;
   notes?: string;
 };
 
 export default function EditTaskModal({ isOpen, task, onClose }: any) {
+  const [durationType, setDurationType] = useState<"fixed" | "range">("fixed");
   const { updateTask } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
 
+  function calculateResultingDuration(
+    duration: { min: number; max: number } | number
+  ): number | [number, number] | null {
+    if (
+      durationType === "range" &&
+      typeof duration === "object" &&
+      duration?.min != null &&
+      duration?.max != null
+    ) {
+      return [duration.min * 60, duration.max * 60] as [number, number];
+    } else {
+      return (
+        (typeof duration === "object"
+          ? duration?.min || duration?.max
+          : duration) * 60 || null
+      );
+    }
+  }
+
   useEffect(() => {
     if (task) {
+      function handleDurationType() {
+        if (Array.isArray(task.duration)) {
+          setDurationType("range");
+          return { min: task.duration[0] / 60, max: task.duration[1] / 60 };
+        }
+
+        setDurationType("fixed");
+        return task.duration ? task.duration / 60 : null;
+      }
+
       form.setFieldsValue({
         startDate: task.startDate ? dayjs(task.startDate) : null,
         dueDate: task.dueDate ? dayjs(task.dueDate) : null,
         assigneedMembershipId: task.assignedMembership?.id || null,
-        duration: Array.isArray(task.duration)
-          ? { min: task.duration[0], max: task.duration[1] }
-          : task.duration || null,
+        duration: handleDurationType(),
         name: task.name,
         notes: task.notes || "",
       });
@@ -42,11 +70,10 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
       form.getFieldsValue();
     const OK = await updateTask({
       id: task.id,
-      startDate: startDate.format("YYYY-MM-DD"),
+      startDate: startDate ? startDate.format("YYYY-MM-DD") : null,
       dueDate: dueDate ? dueDate.format("YYYY-MM-DD") : null,
       assignedMembershipId: assigneedMembershipId,
-      duration:
-        typeof duration === "object" ? [duration.min, duration.max] : duration,
+      duration: calculateResultingDuration(duration),
       name,
       notes,
     });
@@ -107,13 +134,42 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
         </Form.Item>
 
         <Form.Item<FieldType> name="duration">
-          <InputNumber
-            prefix="Hours"
-            placeholder="Estimated duration in hours"
-            min={0}
-            step={1}
-            style={{ width: "100%" }}
+          <Switch
+            checkedChildren="range"
+            unCheckedChildren="fixed"
+            defaultChecked
+            onChange={(checked) => setDurationType(checked ? "range" : "fixed")}
           />
+          {durationType === "range" ? (
+            <Input.Group compact>
+              <Form.Item<FieldType> name={["duration", "min"]} noStyle>
+                <InputNumber
+                  prefix="Min Hours"
+                  placeholder="Min hours"
+                  min={0}
+                  step={1}
+                  style={{ width: "50%" }}
+                />
+              </Form.Item>
+              <Form.Item<FieldType> name={["duration", "max"]} noStyle>
+                <InputNumber
+                  prefix="Max Hours"
+                  placeholder="Max hours"
+                  min={0}
+                  step={1}
+                  style={{ width: "50%" }}
+                />
+              </Form.Item>
+            </Input.Group>
+          ) : (
+            <InputNumber
+              prefix="Hours"
+              placeholder="Estimated duration in hours"
+              min={0}
+              step={1}
+              style={{ width: "100%" }}
+            />
+          )}
         </Form.Item>
 
         <Form.Item<FieldType> name="notes">
