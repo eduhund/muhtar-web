@@ -221,10 +221,10 @@ export default function ProjectPage({ project }: { project: Project }) {
       </p>
       <StackedAreaChart />
       <div className="ProjectPage-tasks">
-        <div className="ProjectPage-tasks-header">
+        <div className="ProjectPage-block-header">
           <Title level={4}>Tasks</Title>
           <Button type="link" onClick={() => openModal("addTask")}>
-            Add new task
+            Add new Task
           </Button>
         </div>
 
@@ -238,7 +238,7 @@ export default function ProjectPage({ project }: { project: Project }) {
           <p>No tasks found for this project.</p>
         )}
       </div>
-      <div className="ProjectPage-members-header">
+      <div className="ProjectPage-block-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={() => openModal("addToProject")}>
           Add Members
@@ -269,7 +269,7 @@ export default function ProjectPage({ project }: { project: Project }) {
           )
         )}
       </div>
-      <div className="ProjectPage-members-header">
+      <div className="ProjectPage-block-header">
         <Title level={4}>Other Contributors</Title>
       </div>
       <div className="ProjectPage-members-list">

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Checkbox, Typography } from "antd";
 import dayjs from "dayjs";
 
@@ -5,17 +6,29 @@ import { useTasks } from "../../../../hooks/useTasks";
 import { Task } from "../../../../context/AppContext";
 
 import "./ProjectTask.scss";
+import EditTaskModal from "../EditTaskModal/EditTaskModal";
 
 const { Text } = Typography;
 
 export default function ProjectTask({ task }: { task: Task }) {
+  const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
   const { updateTask } = useTasks();
+
   async function handleTaskDoneChange(taskId: string, checked: boolean) {
     await updateTask({
       id: taskId,
       doneDate: checked ? dayjs().toISOString() : null,
     });
   }
+
+  function handleOpenTaskModal() {
+    setIsOpenTaskModal(true);
+  }
+
+  function handleCloseTaskModal() {
+    setIsOpenTaskModal(false);
+  }
+
   function renderTaskDuration() {
     if (!task.duration) return null;
     if (Array.isArray(task.duration)) {
@@ -42,22 +55,29 @@ export default function ProjectTask({ task }: { task: Task }) {
   }
 
   return (
-    <div className="ProjectTask">
-      <Checkbox
-        key={task.id}
-        checked={!!task.doneDate}
-        onChange={(e) => handleTaskDoneChange(task.id, e.target.checked)}
-      />
-      <div className="ProjectTask-info">
-        <Text className="ProjectTask-title">{task.name}</Text>
-        <div className="ProjectTask-meta">
-          <div className="ProjectTask-dates">{renderTaskDates()}</div>
-          <div className="ProjectTask-assigned">
-            <span>{task.assignedMembership?.name || "Unassigned"}, </span>
-            <span>{renderTaskDuration()}</span>
+    <div className="ProjectTask-wrapper">
+      <div className="ProjectTask" onClick={handleOpenTaskModal}>
+        <Checkbox
+          key={task.id}
+          checked={!!task.doneDate}
+          onChange={(e) => handleTaskDoneChange(task.id, e.target.checked)}
+        />
+        <div className="ProjectTask-info">
+          <Text className="ProjectTask-title">{task.name}</Text>
+          <div className="ProjectTask-meta">
+            <div className="ProjectTask-dates">{renderTaskDates()}</div>
+            <div className="ProjectTask-assigned">
+              <span>{task.assignedMembership?.name || "Unassigned"}, </span>
+              <span>{renderTaskDuration()}</span>
+            </div>
           </div>
         </div>
       </div>
+      <EditTaskModal
+        isOpen={isOpenTaskModal}
+        task={task}
+        onClose={handleCloseTaskModal}
+      />
     </div>
   );
 }

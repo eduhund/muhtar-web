@@ -17,7 +17,7 @@ type FieldType = {
   notes?: string;
 };
 
-export default function EditTaskModal({ task, onClose }: any) {
+export default function EditTaskModal({ isOpen, task, onClose }: any) {
   const { updateTask } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
@@ -66,15 +66,15 @@ export default function EditTaskModal({ task, onClose }: any) {
 
   return (
     <Modal
-      title="Edit Timetable Entry"
+      title="Edit Task"
       closable={{ "aria-label": "Close" }}
-      open={!!task}
+      open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
     >
       <Form
-        className="AddTaskModal-form"
-        name="addTask"
+        className="EditTaskModal-form"
+        name="editTask"
         layout="vertical"
         requiredMark={false}
         form={form}
