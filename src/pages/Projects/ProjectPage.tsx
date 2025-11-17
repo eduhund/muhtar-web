@@ -18,6 +18,7 @@ import ProjectMembership from "./components/ProjectMembership/ProjectMembership"
 import ProjectContributor from "./components/ProjectContributor/ProjectContributor";
 import { useTasks } from "../../hooks/useTasks";
 import ProjectTask from "./components/ProjectTask/ProjectTask";
+import AddTaskModal from "./components/AddTaskModal/AddTaskModal";
 
 const { Title } = Typography;
 
@@ -35,18 +36,21 @@ const areaColors = [
 ];
 
 export default function ProjectPage({ project }: { project: Project }) {
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modals, setModals] = useState({
+    addToProject: false,
+    addTask: false,
+  });
   const { timetable } = useTimetable();
   const { memberships } = useMemberships();
   const { tasks } = useTasks();
   const projectEntries =
     timetable?.filter((item) => item.project.id === project.id) || [];
 
-  function openModal() {
-    setIsOpenModal(true);
+  function openModal(modalName: keyof typeof modals) {
+    setModals((prev) => ({ ...prev, [modalName]: true }));
   }
-  function closeModal() {
-    setIsOpenModal(false);
+  function closeModal(modalName: keyof typeof modals) {
+    setModals((prev) => ({ ...prev, [modalName]: false }));
   }
 
   const filteredTasks = tasks?.filter(
@@ -217,7 +221,13 @@ export default function ProjectPage({ project }: { project: Project }) {
       </p>
       <StackedAreaChart />
       <div className="ProjectPage-tasks">
-        <Title level={4}>Tasks</Title>
+        <div className="ProjectPage-tasks-header">
+          <Title level={4}>Tasks</Title>
+          <Button type="link" onClick={() => openModal("addTask")}>
+            Add new task
+          </Button>
+        </div>
+
         {filteredTasks && filteredTasks.length > 0 ? (
           <div className="ProjectPage-tasks-list">
             {filteredTasks.map((task) => (
@@ -230,7 +240,7 @@ export default function ProjectPage({ project }: { project: Project }) {
       </div>
       <div className="ProjectPage-members-header">
         <Title level={4}>Core Team</Title>{" "}
-        <Button type="link" onClick={openModal}>
+        <Button type="link" onClick={() => openModal("addToProject")}>
           Add Members
         </Button>
       </div>
@@ -277,9 +287,14 @@ export default function ProjectPage({ project }: { project: Project }) {
       </div>
 
       <AddToProjectModal
-        isOpen={isOpenModal}
+        isOpen={modals.addToProject}
         project={project}
-        onClose={closeModal}
+        onClose={() => closeModal("addToProject")}
+      />
+      <AddTaskModal
+        isOpen={modals.addTask}
+        project={project}
+        onClose={() => closeModal("addTask")}
       />
     </div>
   );

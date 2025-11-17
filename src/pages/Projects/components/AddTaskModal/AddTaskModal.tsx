@@ -16,7 +16,7 @@ type FieldType = {
   notes?: string;
 };
 
-export default function AddTaskModal({ project, onClose }: any) {
+export default function AddTaskModal({ isOpen, project, onClose }: any) {
   const { createTask } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
@@ -32,7 +32,11 @@ export default function AddTaskModal({ project, onClose }: any) {
       dueDate: dueDate ? dueDate.format("YYYY-MM-DD") : null,
       doneDate: null,
       duration:
-        typeof duration === "object" ? [duration.min, duration.max] : duration,
+        typeof duration === "object"
+          ? [duration.min * 60, duration.max * 60]
+          : duration
+          ? duration * 60
+          : null,
       name,
       notes,
     });
@@ -52,9 +56,9 @@ export default function AddTaskModal({ project, onClose }: any) {
 
   return (
     <Modal
-      title="Edit Timetable Entry"
+      title="New Task"
       closable={{ "aria-label": "Close" }}
-      open={!!project}
+      open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
     >
@@ -73,7 +77,7 @@ export default function AddTaskModal({ project, onClose }: any) {
         </Form.Item>
         <Form.Item<FieldType> name="startDate">
           <DatePicker
-            prefix="Date"
+            prefix="Start date"
             placeholder="Select when to start"
             format={dateFormat}
             allowClear={false}
@@ -83,7 +87,7 @@ export default function AddTaskModal({ project, onClose }: any) {
 
         <Form.Item<FieldType> name="dueDate">
           <DatePicker
-            prefix="Date"
+            prefix="Deadline"
             placeholder="Select when needs to be done"
             format={dateFormat}
             minDate={today}
@@ -103,7 +107,7 @@ export default function AddTaskModal({ project, onClose }: any) {
         </Form.Item>
 
         <Form.Item<FieldType> name="notes">
-          <TextArea rows={5} placeholder="What were you doing?" />
+          <TextArea rows={5} placeholder="Some notes about the task" />
         </Form.Item>
       </Form>
     </Modal>
