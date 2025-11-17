@@ -1,4 +1,4 @@
-import { Button, Checkbox, Typography } from "antd";
+import { Button, Typography } from "antd";
 import {
   AreaChart,
   Area,
@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 
-import { Project, Task } from "../../context/AppContext";
+import { Project } from "../../context/AppContext";
 import { useTimetable } from "../../hooks/useTimetable";
 import { useMemberships } from "../../hooks/useMemberships";
 import dayjs from "dayjs";
@@ -17,6 +17,7 @@ import AddToProjectModal from "./components/AddToProjectModal";
 import ProjectMembership from "./components/ProjectMembership/ProjectMembership";
 import ProjectContributor from "./components/ProjectContributor/ProjectContributor";
 import { useTasks } from "../../hooks/useTasks";
+import ProjectTask from "./components/ProjectTask/ProjectTask";
 
 const { Title } = Typography;
 
@@ -37,7 +38,7 @@ export default function ProjectPage({ project }: { project: Project }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { timetable } = useTimetable();
   const { memberships } = useMemberships();
-  const { tasks, updateTask } = useTasks();
+  const { tasks } = useTasks();
   const projectEntries =
     timetable?.filter((item) => item.project.id === project.id) || [];
 
@@ -160,13 +161,6 @@ export default function ProjectPage({ project }: { project: Project }) {
 
   const totalDuration = coreTeamDuration + otherDuration;
 
-  async function handleTaskDoneChange(taskId: string, checked: boolean) {
-    await updateTask({
-      id: taskId,
-      doneDate: checked ? dayjs().toISOString() : null,
-    });
-  }
-
   const StackedAreaChart = () => {
     const allWorkerIds = Array.from(
       new Set(
@@ -213,16 +207,6 @@ export default function ProjectPage({ project }: { project: Project }) {
     );
   };
 
-  function renderTaskDuration(task: Task) {
-    if (!task.duration) return null;
-    if (Array.isArray(task.duration)) {
-      const [min, max] = task.duration;
-      return `${min / 60}-${max / 60}h`;
-    } else {
-      return `${task.duration / 60}h`;
-    }
-  }
-
   return (
     <div>
       <Title level={2}>{project.name}</Title>
@@ -237,25 +221,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         {filteredTasks && filteredTasks.length > 0 ? (
           <div className="ProjectPage-tasks-list">
             {filteredTasks.map((task) => (
-              <Checkbox
-                key={task.id}
-                checked={!!task.doneDate}
-                onChange={(e) =>
-                  handleTaskDoneChange(task.id, e.target.checked)
-                }
-              >
-                <div>{task.name}</div>
-                <div className="ProjectPage-tasks-dates">
-                  {task.startDate
-                    ? dayjs(task.startDate).format("D MMM")
-                    : "N/A"}{" "}
-                  → {task.dueDate ? dayjs(task.dueDate).format("D MMM") : "N/A"}{" "}
-                  {renderTaskDuration(task)}
-                </div>
-                <div className="ProjectPage-tasks-assigned">
-                  {task.assignedMembership?.name}
-                </div>
-              </Checkbox>
+              <ProjectTask key={task.id} task={task} />
             ))}
           </div>
         ) : (

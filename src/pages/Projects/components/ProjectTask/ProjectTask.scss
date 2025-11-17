@@ -1,0 +1,36 @@
+.ProjectTask {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: rgba($color: #000000, $alpha: 0.04);
+    cursor: pointer;
+  }
+
+  &-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-title {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  &-meta {
+    color: #666666;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  &-assigned {
+    color: #666666;
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
