@@ -2,7 +2,6 @@ import { Typography } from "antd";
 import { useProjects } from "../../hooks/useProjects";
 import Page from "../../components/Page/Page";
 import SideList from "../../components/SideList/SideList";
-import { useEffect, useState } from "react";
 import { Project, TimetableItem } from "../../context/AppContext";
 import ProjectPage from "./ProjectPage";
 import { useTimetable } from "../../hooks/useTimetable";
@@ -10,7 +9,7 @@ import QuickSummaryItem from "../Workers/components/QuickSummaryItem/QuickSummar
 import dayjs from "dayjs";
 
 import "./Projects.scss";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 
@@ -88,20 +87,13 @@ function ProjectRow({
 }
 
 export function Projects() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { projectId } = useParams<{ projectId?: string }>();
+  const navigate = useNavigate();
   const { projects } = useProjects();
 
-  useEffect(() => {
-    if (selectedProject && projects) {
-      const updated = projects.find((p) => p.id === selectedProject.id);
-      if (updated && updated !== selectedProject) {
-        setSelectedProject(updated);
-      }
-      if (!updated) {
-        setSelectedProject(null);
-      }
-    }
-  }, [projects, selectedProject]);
+  const selectedProject = projectId
+    ? projects?.find((p) => p.id === projectId) || null
+    : null;
 
   const activeProjects = (projects || [])?.filter(
     (project) => project.status === "active"
@@ -119,7 +111,7 @@ export function Projects() {
                     key={project.id}
                     project={project}
                     isSelected={project.id === selectedProject?.id}
-                    onClick={() => setSelectedProject(project)}
+                    onClick={() => navigate(`/projects/${project.id}`)}
                   />
                 ))}
               </div>
