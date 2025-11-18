@@ -1,4 +1,4 @@
-import { DatePicker, Form, Select, Tooltip } from "antd";
+import { DatePicker, Form, Select } from "antd";
 import { Modal } from "antd";
 import ProjectDropdown from "../../../components/ProjectDropdown/ProjectDropdown";
 import TextArea from "antd/es/input/TextArea";
