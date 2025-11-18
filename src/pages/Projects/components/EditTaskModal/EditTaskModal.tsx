@@ -64,7 +64,7 @@ export default function EditTaskModal({ isOpen, task, project, onClose }: any) {
       form.setFieldsValue({
         startDate: task.startDate ? dayjs(task.startDate) : null,
         dueDate: task.dueDate ? dayjs(task.dueDate) : null,
-        assigneedMembership: task.assignedMembershipId || null,
+        assigneedMembership: task.assignedMembership?.id || null,
         duration: handleDurationType(),
         name: task.name,
         notes: task.notes || "",
