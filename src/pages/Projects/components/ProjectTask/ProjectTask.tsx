@@ -66,7 +66,10 @@ export default function ProjectTask({
         <Checkbox
           key={task.id}
           checked={!!task.doneDate}
-          onChange={(e) => handleTaskDoneChange(task.id, e.target.checked)}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleTaskDoneChange(task.id, e.target.checked);
+          }}
         />
         <div className="ProjectTask-info">
           <Text className="ProjectTask-title">{task.name}</Text>
