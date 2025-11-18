@@ -5,9 +5,10 @@ import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
+import { useTasks } from "../../../hooks/useTasks";
 
 type FieldType = {
   date: Dayjs;
@@ -20,8 +21,19 @@ type FieldType = {
 export default function TimeEditModal({ record, onClose }: any) {
   const { updateTime } = useTimetable();
   const { activeProjects, isLoading } = useProjects();
+  const { tasks } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
+
+  const filteredTasks = useMemo(
+    () =>
+      tasks
+        ? tasks.filter(
+            (task) => task.project.id === form.getFieldValue("project")
+          )
+        : [],
+    [tasks, form]
+  );
 
   useEffect(() => {
     if (record) {
@@ -29,6 +41,7 @@ export default function TimeEditModal({ record, onClose }: any) {
         date: dayjs(record.date),
         project: record.project.id,
         duration: record.duration,
+        task: record.task ? record.task.id : null,
         comment: record.comment,
       });
     }
@@ -112,22 +125,19 @@ export default function TimeEditModal({ record, onClose }: any) {
           />
         </Form.Item>
 
-        <Tooltip title="Tasks are not available yet">
-          <Form.Item<FieldType> name="task">
-            <Select
-              showSearch
-              placeholder="Select..."
-              options={[]}
-              value={{}}
-              fieldNames={{ label: "name", value: "id" }}
-              prefix="Task"
-              allowClear={false}
-              style={{ width: "100%" }}
-              onChange={() => {}}
-              disabled
-            />
-          </Form.Item>
-        </Tooltip>
+        <Form.Item<FieldType> name="task">
+          <Select
+            showSearch
+            placeholder={"Select..."}
+            options={filteredTasks}
+            value={{}}
+            fieldNames={{ label: "name", value: "id" }}
+            prefix="Task"
+            allowClear={false}
+            style={{ width: "100%" }}
+            onChange={() => {}}
+          />
+        </Form.Item>
 
         <Form.Item<FieldType> name="duration">
           <Select
