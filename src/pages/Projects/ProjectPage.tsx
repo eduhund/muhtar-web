@@ -231,7 +231,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         {filteredTasks && filteredTasks.length > 0 ? (
           <div className="ProjectPage-tasks-list">
             {filteredTasks.map((task) => (
-              <ProjectTask key={task.id} task={task} />
+              <ProjectTask key={task.id} task={task} project={project} />
             ))}
           </div>
         ) : (

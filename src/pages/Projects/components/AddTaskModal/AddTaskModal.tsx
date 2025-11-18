@@ -5,6 +5,8 @@ import { dateFormat } from "../../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useUIMessages } from "../../../../providers/UIMessageProvider";
 import { useTasks } from "../../../../hooks/useTasks";
+import MembershipDropdown from "../../../../components/MembershipDropdown/MembershipDropdown";
+import { useMemberships } from "../../../../hooks/useMemberships";
 
 type FieldType = {
   project: string;
@@ -18,8 +20,13 @@ type FieldType = {
 
 export default function AddTaskModal({ isOpen, project, onClose }: any) {
   const { createTask } = useTasks();
+  const { memberships } = useMemberships();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
+
+  const projectMemberships = project.memberships.map((pm) => {
+    return memberships?.find((m) => m.id === pm.membershipId);
+  });
 
   async function handleOk() {
     const { startDate, dueDate, assigneedMembershipId, duration, name, notes } =
@@ -93,6 +100,15 @@ export default function AddTaskModal({ isOpen, project, onClose }: any) {
             minDate={today}
             allowClear={false}
             style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Form.Item<FieldType> name="assigneedMembership">
+          <MembershipDropdown
+            memberships={projectMemberships}
+            value={null}
+            isRequired={false}
+            onChange={() => {}}
           />
         </Form.Item>
 

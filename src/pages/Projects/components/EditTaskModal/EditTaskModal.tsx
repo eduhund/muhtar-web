@@ -8,6 +8,8 @@ import { useUIMessages } from "../../../../providers/UIMessageProvider";
 import { useTasks } from "../../../../hooks/useTasks";
 
 import "./EditTaskModal.scss";
+import { useMemberships } from "../../../../hooks/useMemberships";
+import MembershipDropdown from "../../../../components/MembershipDropdown/MembershipDropdown";
 
 type FieldType<T extends "fixed" | "range" = "fixed"> = {
   project: string;
@@ -19,11 +21,16 @@ type FieldType<T extends "fixed" | "range" = "fixed"> = {
   notes?: string;
 };
 
-export default function EditTaskModal({ isOpen, task, onClose }: any) {
+export default function EditTaskModal({ isOpen, task, project, onClose }: any) {
   const [durationType, setDurationType] = useState<"fixed" | "range">("fixed");
+  const { memberships } = useMemberships();
   const { updateTask } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
+
+  const projectMemberships = project.memberships.map((pm: any) => {
+    return memberships?.find((m) => m.id === pm.membershipId);
+  });
 
   function calculateResultingDuration(
     duration: { min: number; max: number } | number
@@ -66,14 +73,13 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
   }, [task, form]);
 
   async function handleOk() {
-    const { startDate, dueDate, assigneedMembershipId, duration, name, notes } =
+    const { startDate, dueDate, assigneedMembership, duration, name, notes } =
       form.getFieldsValue();
-    console.log({ durationType, duration });
     const OK = await updateTask({
       id: task.id,
       startDate: startDate ? startDate.format("YYYY-MM-DD") : null,
       dueDate: dueDate ? dueDate.format("YYYY-MM-DD") : null,
-      assignedMembershipId: assigneedMembershipId,
+      assignedMembershipId: assigneedMembership || null,
       duration: calculateResultingDuration(duration),
       name,
       notes,
@@ -131,6 +137,15 @@ export default function EditTaskModal({ isOpen, task, onClose }: any) {
             minDate={today}
             allowClear={false}
             style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Form.Item<FieldType> name="assigneedMembership">
+          <MembershipDropdown
+            memberships={projectMemberships}
+            value={null}
+            isRequired={false}
+            onChange={() => {}}
           />
         </Form.Item>
 

@@ -3,14 +3,20 @@ import { Checkbox, Typography } from "antd";
 import dayjs from "dayjs";
 
 import { useTasks } from "../../../../hooks/useTasks";
-import { Task } from "../../../../context/AppContext";
+import { Project, Task } from "../../../../context/AppContext";
 
 import "./ProjectTask.scss";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
 
 const { Text } = Typography;
 
-export default function ProjectTask({ task }: { task: Task }) {
+export default function ProjectTask({
+  task,
+  project,
+}: {
+  task: Task;
+  project: Project;
+}) {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
   const { updateTask } = useTasks();
 
@@ -76,6 +82,7 @@ export default function ProjectTask({ task }: { task: Task }) {
       <EditTaskModal
         isOpen={isOpenTaskModal}
         task={task}
+        project={project}
         onClose={handleCloseTaskModal}
       />
     </div>
