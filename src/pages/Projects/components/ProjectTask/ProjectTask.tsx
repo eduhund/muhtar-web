@@ -67,9 +67,9 @@ export default function ProjectTask({
           key={task.id}
           checked={!!task.doneDate}
           onChange={(e) => {
-            e.stopPropagation();
             handleTaskDoneChange(task.id, e.target.checked);
           }}
+          onClick={(e) => e.stopPropagation()}
         />
         <div className="ProjectTask-info">
           <Text className="ProjectTask-title">{task.name}</Text>
