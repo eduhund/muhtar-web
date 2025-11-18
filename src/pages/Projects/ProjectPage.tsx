@@ -32,7 +32,7 @@ export default function ProjectPage({ project }: { project?: Project }) {
     {
       key: "2",
       label: "Timeline",
-      children: "Content of Tab Pane 2",
+      children: "Coming soon...",
     },
   ];
 
