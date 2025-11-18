@@ -10,6 +10,7 @@ import QuickSummaryItem from "../Workers/components/QuickSummaryItem/QuickSummar
 import dayjs from "dayjs";
 
 import "./Projects.scss";
+import { useParams } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 
