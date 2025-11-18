@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, message, Table, type TableProps } from "antd";
+import { Button, message, Table, Tag, type TableProps } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -26,6 +26,7 @@ interface DataType {
   ts: number;
   membership: { id: string; name: string };
   project: { id: string; name: string; customer: string | null };
+  task: { id: string; name: string } | null;
   duration: number;
   comment: string;
   isDeleted: boolean;
@@ -136,13 +137,23 @@ export function Timetable() {
       title: "What",
       dataIndex: "comment",
       key: "comment",
+      render: (_: unknown, { task, comment }: DataType) => (
+        <div>
+          {task && (
+            <Tag color="orange" style={{ marginBottom: 4 }}>
+              {task.name}
+            </Tag>
+          )}
+          <div>{comment}</div>
+        </div>
+      ),
     },
     {
       title: "",
       key: "actions",
       fixed: "right",
       width: 88,
-      render: (_: any, record) => (
+      render: (_: unknown, record) => (
         <>
           {record.membership.id === membership?.id && (
             <>
