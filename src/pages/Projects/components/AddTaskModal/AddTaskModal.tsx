@@ -1,4 +1,4 @@
-import { DatePicker, Form, Input, InputNumber } from "antd";
+import { DatePicker, Form, Input, InputNumber, Switch } from "antd";
 import { Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../../utils/date";
@@ -7,43 +7,58 @@ import { useUIMessages } from "../../../../providers/UIMessageProvider";
 import { useTasks } from "../../../../hooks/useTasks";
 import MembershipDropdown from "../../../../components/MembershipDropdown/MembershipDropdown";
 import { useMemberships } from "../../../../hooks/useMemberships";
+import { useState } from "react";
 
-type FieldType = {
+type FieldType<T extends "fixed" | "range" = "fixed"> = {
   project: string;
-  startDate: Dayjs;
-  dueDate: Dayjs;
-  assigneedMembership: string;
-  duration: string | { min: string; max: string };
+  startDate: Dayjs | null;
+  dueDate: Dayjs | null;
+  assigneedMembership: string | null;
+  duration: T extends "range" ? { min: number; max: number } : number;
   name?: string;
   notes?: string;
 };
 
 export default function AddTaskModal({ isOpen, project, onClose }: any) {
+  const [durationType, setDurationType] = useState<"fixed" | "range">("fixed");
   const { createTask } = useTasks();
   const { memberships } = useMemberships();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
 
-  const projectMemberships = project.memberships.map((pm) => {
+  const projectMemberships = project.memberships.map((pm: any) => {
     return memberships?.find((m) => m.id === pm.membershipId);
   });
 
+  function calculateResultingDuration(
+    duration: { min: number; max: number } | number
+  ): number | [number, number] | null {
+    if (
+      durationType === "range" &&
+      typeof duration === "object" &&
+      duration?.min != null &&
+      duration?.max != null
+    ) {
+      return [duration.min * 60, duration.max * 60] as [number, number];
+    } else if (durationType === "fixed") {
+      return Number(duration) * 60 || null;
+    } else {
+      return null;
+    }
+  }
+
   async function handleOk() {
-    const { startDate, dueDate, assigneedMembershipId, duration, name, notes } =
+    const { startDate, dueDate, assigneedMembership, duration, name, notes } =
       form.getFieldsValue();
+    console.log(form.getFieldsValue());
     const OK = await createTask({
       projectId: project.id,
       jobId: null,
-      assignedMembershipId: assigneedMembershipId || null,
-      startDate: startDate.format("YYYY-MM-DD"),
+      assignedMembershipId: assigneedMembership || null,
+      startDate: startDate ? startDate.format("YYYY-MM-DD") : null,
       dueDate: dueDate ? dueDate.format("YYYY-MM-DD") : null,
       doneDate: null,
-      duration:
-        typeof duration === "object"
-          ? [duration.min * 60, duration.max * 60]
-          : duration
-          ? duration * 60
-          : null,
+      duration: calculateResultingDuration(duration),
       name,
       notes,
     });
@@ -112,15 +127,55 @@ export default function AddTaskModal({ isOpen, project, onClose }: any) {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="duration">
-          <InputNumber
-            prefix="Hours"
-            placeholder="Estimated duration in hours"
-            min={0}
-            step={1}
-            style={{ width: "100%" }}
+        <div className="duration">
+          <Switch
+            checkedChildren="range"
+            unCheckedChildren="fixed"
+            defaultChecked={durationType === "range"}
+            onChange={(checked) => setDurationType(checked ? "range" : "fixed")}
           />
-        </Form.Item>
+          {durationType === "range" ? (
+            <Form.Item<FieldType<typeof durationType>>>
+              <Form.Item>
+                <Form.Item<FieldType<"range">>
+                  name={["duration", "min"]}
+                  noStyle
+                >
+                  <InputNumber
+                    prefix="Min Hours"
+                    placeholder="Min hours"
+                    min={0}
+                    step={1}
+                    style={{ width: "47%" }}
+                  />
+                </Form.Item>
+                {" — "}
+                <Form.Item<FieldType<"range">>
+                  name={["duration", "max"]}
+                  noStyle
+                >
+                  <InputNumber
+                    prefix="Max Hours"
+                    placeholder="Max hours"
+                    min={0}
+                    step={1}
+                    style={{ width: "47%" }}
+                  />
+                </Form.Item>
+              </Form.Item>
+            </Form.Item>
+          ) : (
+            <Form.Item<FieldType<typeof durationType>> name="duration">
+              <InputNumber
+                prefix="Hours"
+                placeholder="Estimated duration in hours"
+                min={0}
+                step={1}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          )}
+        </div>
 
         <Form.Item<FieldType> name="notes">
           <TextArea rows={5} placeholder="Some notes about the task" />

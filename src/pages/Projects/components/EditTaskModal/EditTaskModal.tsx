@@ -13,9 +13,9 @@ import MembershipDropdown from "../../../../components/MembershipDropdown/Member
 
 type FieldType<T extends "fixed" | "range" = "fixed"> = {
   project: string;
-  startDate: Dayjs;
-  dueDate: Dayjs;
-  assigneedMembership: string;
+  startDate: Dayjs | null;
+  dueDate: Dayjs | null;
+  assigneedMembership: string | null;
   duration: T extends "range" ? { min: number; max: number } : number;
   name: string;
   notes?: string;
