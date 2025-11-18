@@ -50,7 +50,6 @@ export default function AddTaskModal({ isOpen, project, onClose }: any) {
   async function handleOk() {
     const { startDate, dueDate, assigneedMembership, duration, name, notes } =
       form.getFieldsValue();
-    console.log(form.getFieldsValue());
     const OK = await createTask({
       projectId: project.id,
       jobId: null,

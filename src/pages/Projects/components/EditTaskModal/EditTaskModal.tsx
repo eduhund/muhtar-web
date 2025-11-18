@@ -156,8 +156,8 @@ export default function EditTaskModal({ isOpen, task, project, onClose }: any) {
             defaultChecked={durationType === "range"}
             onChange={(checked) => setDurationType(checked ? "range" : "fixed")}
           />
-          <Form.Item<FieldType<typeof durationType>> name="duration">
-            {durationType === "range" ? (
+          {durationType === "range" ? (
+            <Form.Item<FieldType<typeof durationType>>>
               <Form.Item>
                 <Form.Item<FieldType<"range">>
                   name={["duration", "min"]}
@@ -185,7 +185,9 @@ export default function EditTaskModal({ isOpen, task, project, onClose }: any) {
                   />
                 </Form.Item>
               </Form.Item>
-            ) : (
+            </Form.Item>
+          ) : (
+            <Form.Item<FieldType<typeof durationType>> name="duration">
               <InputNumber
                 prefix="Hours"
                 placeholder="Estimated duration in hours"
@@ -193,8 +195,8 @@ export default function EditTaskModal({ isOpen, task, project, onClose }: any) {
                 step={1}
                 style={{ width: "100%" }}
               />
-            )}
-          </Form.Item>
+            </Form.Item>
+          )}
         </div>
         <Form.Item<FieldType> name="notes">
           <TextArea rows={5} placeholder="What were you doing?" />
