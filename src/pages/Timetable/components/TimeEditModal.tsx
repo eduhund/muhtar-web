@@ -5,7 +5,7 @@ import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
 import { useTasks } from "../../../hooks/useTasks";
@@ -24,19 +24,21 @@ export default function TimeEditModal({ record, onClose }: any) {
   const { tasks } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null
+  );
 
   const filteredTasks = useMemo(
     () =>
-      tasks
-        ? tasks.filter(
-            (task) => task.project.id === form.getFieldValue("project")
-          )
+      tasks && selectedProjectId
+        ? tasks.filter((task) => task.project.id === selectedProjectId)
         : [],
-    [tasks, form]
+    [tasks, selectedProjectId]
   );
 
   useEffect(() => {
     if (record) {
+      setSelectedProjectId(record.project.id);
       form.setFieldsValue({
         date: dayjs(record.date),
         project: record.project.id,
@@ -121,7 +123,10 @@ export default function TimeEditModal({ record, onClose }: any) {
             style={{ width: "100%" }}
             isRequired={true}
             isLoading={isLoading}
-            onChange={() => {}}
+            onChange={(value) => {
+              setSelectedProjectId(value);
+              form.setFieldValue("task", null); // Сбросить выбранную задачу
+            }}
           />
         </Form.Item>
 
@@ -130,12 +135,10 @@ export default function TimeEditModal({ record, onClose }: any) {
             showSearch
             placeholder={"Select..."}
             options={filteredTasks}
-            value={{}}
             fieldNames={{ label: "name", value: "id" }}
             prefix="Task"
-            allowClear={false}
+            allowClear
             style={{ width: "100%" }}
-            onChange={() => {}}
           />
         </Form.Item>
 

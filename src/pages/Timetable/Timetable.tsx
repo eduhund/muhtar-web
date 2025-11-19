@@ -201,10 +201,12 @@ export function Timetable() {
       actions={<Filters timetableFilters={timetableFilters} />}
     >
       {contextHolder}
-      <TimeEditModal
-        record={editingEntry}
-        onClose={() => setEditingEntry(null)}
-      />
+      {editingEntry && (
+        <TimeEditModal
+          record={editingEntry}
+          onClose={() => setEditingEntry(null)}
+        />
+      )}
       <Table
         className="timetable"
         sticky={true}
