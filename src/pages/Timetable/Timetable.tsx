@@ -19,6 +19,7 @@ import TimeEditModal from "./components/TimeEditModal";
 import "./Timetable.scss";
 import { useMembership } from "../../hooks/useMembership";
 import { useProjects } from "../../hooks/useProjects";
+import { useUIMessages } from "../../providers/UIMessageProvider";
 
 interface DataType {
   key: string;
@@ -39,7 +40,7 @@ export function Timetable() {
   const { projects } = useProjects();
   const { membership } = useMembership();
   const timetableFilters = useTimetableFilters(timetable || []);
-  const [messageApi, contextHolder] = message.useMessage();
+  const UIMessages = useUIMessages();
 
   const { rowSelection, onRowClick } = useSelect(timetable);
 
@@ -54,20 +55,6 @@ export function Timetable() {
     return membership ? membership.accessRole : null;
   }
 
-  const showSuccessMessage = (action: "delete" | "restore") => {
-    messageApi.open({
-      type: "success",
-      content: `Entry ${action}d successfully!`,
-    });
-  };
-
-  const showErrorMessage = (action: "delete" | "restore") => {
-    messageApi.open({
-      type: "error",
-      content: `Entry was not ${action}d!`,
-    });
-  };
-
   function handleEntryEdit(record: DataType) {
     setEditingEntry(record);
   }
@@ -75,18 +62,18 @@ export function Timetable() {
   async function handleEntryDelete(record: DataType) {
     const OK = await deleteTime({ id: record.id });
     if (OK) {
-      showSuccessMessage("delete");
+      UIMessages.deleteTime.success();
     } else {
-      showErrorMessage("delete");
+      UIMessages.deleteTime.error();
     }
   }
 
   async function handleEntryRestore(record: DataType) {
     const OK = await restoreTime({ id: record.id });
     if (OK) {
-      showSuccessMessage("restore");
+      UIMessages.restoreTime.success();
     } else {
-      showErrorMessage("restore");
+      UIMessages.restoreTime.error();
     }
   }
 
@@ -215,13 +202,10 @@ export function Timetable() {
       title="Timetable"
       actions={<Filters timetableFilters={timetableFilters} />}
     >
-      {contextHolder}
-      {editingEntry && (
-        <TimeEditModal
-          record={editingEntry}
-          onClose={() => setEditingEntry(null)}
-        />
-      )}
+      <TimeEditModal
+        record={editingEntry}
+        onClose={() => setEditingEntry(null)}
+      />
       <Table
         className="timetable"
         sticky={true}

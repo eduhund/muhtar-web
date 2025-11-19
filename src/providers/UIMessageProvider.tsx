@@ -11,6 +11,14 @@ type UIMessages = {
     success: () => void;
     error: () => void;
   };
+  deleteTime: {
+    success: () => void;
+    error: () => void;
+  };
+  restoreTime: {
+    success: () => void;
+    error: () => void;
+  };
   addProjectMember: {
     success: () => void;
     error: () => void;
@@ -37,7 +45,7 @@ type UIMessages = {
   };
 };
 
-const MessageContext = createContext<UIMessages | null>(null);
+const MessageContext = createContext<UIMessages>({} as UIMessages);
 
 export const MessageProvider = ({
   children,
@@ -72,6 +80,34 @@ export const MessageProvider = ({
         messageApi.open({
           type: "error",
           content: "Time entry was not updated!",
+        });
+      },
+    },
+    deleteTime: {
+      success: () => {
+        messageApi.open({
+          type: "success",
+          content: "Time entry deleted successfully!",
+        });
+      },
+      error: () => {
+        messageApi.open({
+          type: "error",
+          content: "Time entry was not deleted!",
+        });
+      },
+    },
+    restoreTime: {
+      success: () => {
+        messageApi.open({
+          type: "success",
+          content: "Time entry restored successfully!",
+        });
+      },
+      error: () => {
+        messageApi.open({
+          type: "error",
+          content: "Time entry was not restored!",
         });
       },
     },
