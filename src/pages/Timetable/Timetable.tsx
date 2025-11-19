@@ -18,6 +18,7 @@ import Page from "../../components/Page/Page";
 import TimeEditModal from "./components/TimeEditModal";
 import "./Timetable.scss";
 import { useMembership } from "../../hooks/useMembership";
+import { useProjects } from "../../hooks/useProjects";
 
 interface DataType {
   key: string;
@@ -35,11 +36,23 @@ interface DataType {
 export function Timetable() {
   const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
   const { timetable, isLoading, deleteTime, restoreTime } = useTimetable();
+  const { projects } = useProjects();
   const { membership } = useMembership();
   const timetableFilters = useTimetableFilters(timetable || []);
   const [messageApi, contextHolder] = message.useMessage();
 
   const { rowSelection, onRowClick } = useSelect(timetable);
+
+  const isAdmin = membership?.accessRole === "admin";
+
+  function getProjectRole(projectId: string, membershipId?: string) {
+    const project = projects?.find((p) => p.id === projectId);
+    if (!project) return null;
+    const membership = project.memberships.find(
+      (m) => m.membershipId === membershipId
+    );
+    return membership ? membership.accessRole : null;
+  }
 
   const showSuccessMessage = (action: "delete" | "restore") => {
     messageApi.open({
@@ -155,7 +168,9 @@ export function Timetable() {
       width: 88,
       render: (_: unknown, record) => (
         <>
-          {record.membership.id === membership?.id && (
+          {(isAdmin ||
+            getProjectRole(record.project.id, membership?.id) === "admin" ||
+            record.membership.id === membership?.id) && (
             <>
               {!record.isDeleted && (
                 <Button
