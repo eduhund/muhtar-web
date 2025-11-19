@@ -1,8 +1,23 @@
 import { useMemo } from "react";
-
 import { Button } from "antd";
+import { TimetableItem } from "../../../context/AppContext";
 
-export function TotalHint({ data, filteredData, filters, selection }: any) {
+type Props = {
+  data: TimetableItem[];
+  filteredData: TimetableItem[];
+  filters: { [key: string]: unknown };
+  selection: {
+    selectedRowKeys: React.Key[];
+    onChange: (selectedRowKeys: React.Key[]) => void;
+  };
+};
+
+export default function TotalHint({
+  data,
+  filteredData,
+  filters,
+  selection,
+}: Props) {
   const { selectedRowKeys, onChange } = selection;
   const total = useMemo(() => {
     if (
@@ -11,13 +26,15 @@ export function TotalHint({ data, filteredData, filters, selection }: any) {
     ) {
       return null;
     } else if (selectedRowKeys.length > 0) {
-      return selectedRowKeys.reduce((prev: any, curr: any) => {
-        const selectedItem = data.find((item: any) => item.id === curr);
-        return prev + selectedItem.duration / 60 || 0;
+      return selectedRowKeys.reduce((prev: number, curr: React.Key) => {
+        const selectedItem = data.find(
+          (item: TimetableItem) => item.id === curr
+        );
+        return prev + (selectedItem?.duration ?? 0) / 60;
       }, 0);
     } else {
       return filteredData.reduce(
-        (prev: any, curr: any) => prev + curr.duration / 60,
+        (prev: number, curr: TimetableItem) => prev + curr.duration / 60,
         0
       );
     }

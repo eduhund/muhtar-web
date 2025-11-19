@@ -66,7 +66,7 @@ function ProjectFilter({ timetableFilters }: any) {
   );
 }
 
-export function Filters({ timetableFilters, scope = null }: any) {
+export default function Filters({ timetableFilters, scope = null }: any) {
   const { filters, resetFilters } = timetableFilters;
   return (
     <>
