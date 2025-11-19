@@ -12,7 +12,7 @@ import { Project } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
 import { useMemberships } from "../../../../hooks/useMemberships";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import AddToProjectModal from "../../components/AddToProjectModal";
 import ProjectMembership from "../../components/ProjectMembership/ProjectMembership";
 import ProjectContributor from "../../components/ProjectContributor/ProjectContributor";
@@ -165,7 +165,7 @@ export default function Overview({ project }: { project: Project }) {
 
   const totalDuration = coreTeamDuration + otherDuration;
 
-  const StackedAreaChart = () => {
+  const StackedAreaChart = useCallback(() => {
     const allWorkerIds = Array.from(
       new Set(
         groupedEntries.flatMap((day) => day.workers.map((w) => w.membershipId))
@@ -209,7 +209,7 @@ export default function Overview({ project }: { project: Project }) {
         })}
       </AreaChart>
     );
-  };
+  }, [chartData, groupedEntries, memberships]);
 
   return (
     <div className="ProjectPage-overview">
