@@ -32,8 +32,7 @@ export function useTasks() {
   }
 
   async function updateTask(entry: { id: string } & Partial<TaskEntry>) {
-    const { OK } = await membershipAPI.updateTask(entry);
-    if (OK && tasks) {
+    if (tasks) {
       const entryRecord = tasks.find((item) => item.id === entry.id);
       if (entryRecord) {
         const newTasks = updateTasksList(tasks, {
@@ -42,8 +41,14 @@ export function useTasks() {
         });
         updateState({ tasks: newTasks });
       }
+      const { OK } = await membershipAPI.updateTask(entry);
+      if (!OK && entryRecord) {
+        const newTasks = updateTasksList(tasks, entryRecord);
+        updateState({ tasks: newTasks });
+      }
+      return OK;
     }
-    return OK;
+    return false;
   }
 
   async function archiveTask(id: string) {

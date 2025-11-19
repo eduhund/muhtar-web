@@ -7,6 +7,7 @@ import { Project, Task } from "../../../../context/AppContext";
 
 import "./ProjectTask.scss";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
+import { useUIMessages } from "../../../../providers/UIMessageProvider";
 
 const { Text } = Typography;
 
@@ -19,12 +20,16 @@ export default function ProjectTask({
 }) {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
   const { updateTask } = useTasks();
+  const UIMessages = useUIMessages();
 
   async function handleTaskDoneChange(taskId: string, checked: boolean) {
-    await updateTask({
+    const OK = await updateTask({
       id: taskId,
       doneDate: checked ? dayjs().toISOString() : null,
     });
+    if (!OK) {
+      UIMessages?.updateTask.error();
+    }
   }
 
   function handleOpenTaskModal() {
