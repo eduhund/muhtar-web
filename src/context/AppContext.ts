@@ -84,6 +84,38 @@ export interface Team {
   isDeleted: boolean;
 }
 
+type ProjectPlanResource = {
+  type: string;
+  value: number;
+};
+
+type ProjectPlanRole = {
+  key: string;
+  resources: ProjectPlanResource[];
+};
+
+type ProjectPlanJob = {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  taskIds: string[];
+  roles: ProjectPlanRole[];
+  children: ProjectPlanJob[];
+};
+
+type ProjectPlan = {
+  startDate: string;
+  endDate: string;
+  totalBudget: number;
+  totalResources: ProjectPlanResource[];
+  jobs: ProjectPlanJob[];
+};
+
+type ProjectContract = {
+  currency: string;
+};
+
 export interface Project {
   id: string;
   name: string;
@@ -102,6 +134,8 @@ export interface Project {
     workRole: string;
     multiplier: number;
   }[];
+  contract: ProjectContract | null;
+  plan: ProjectPlan | null;
 }
 
 export interface ProjectMembership {

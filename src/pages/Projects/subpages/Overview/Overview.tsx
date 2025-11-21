@@ -19,6 +19,7 @@ import ProjectContributor from "../../components/ProjectContributor/ProjectContr
 import { useTasks } from "../../../../hooks/useTasks";
 import ProjectTask from "../../components/ProjectTask/ProjectTask";
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
+import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 
 const { Title } = Typography;
 
@@ -165,6 +166,19 @@ export default function Overview({ project }: { project: Project }) {
 
   const totalDuration = coreTeamDuration + otherDuration;
 
+  console.log(project.roles);
+
+  const lastDay = groupedEntries[groupedEntries.length - 1];
+  const totalDurationByLastDay = lastDay
+    ? lastDay.workers.reduce((acc, worker) => {
+        const workerRoleCost =
+          project.roles.find(
+            (role) => (role.key || role.name) === worker.workRole
+          )?.cost || 0;
+        return acc + worker.value * workerRoleCost;
+      }, 0)
+    : 0;
+
   const StackedAreaChart = useCallback(() => {
     const allWorkerIds = Array.from(
       new Set(
@@ -213,6 +227,7 @@ export default function Overview({ project }: { project: Project }) {
 
   return (
     <div className="ProjectPage-overview">
+      <BudgetSummary project={project} totalSpent={totalDurationByLastDay} />
       <p>
         Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core Team:{" "}
         {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
