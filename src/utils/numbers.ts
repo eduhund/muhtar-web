@@ -1,4 +1,4 @@
-function splitNumber(num: number, size = 3, separator = " ") {
+export function splitNumber(num: number, size = 3, separator = " ") {
   const str = String(num);
   const reversed = str.split("").reverse().join("");
 

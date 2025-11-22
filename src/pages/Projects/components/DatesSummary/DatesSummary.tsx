@@ -1,5 +1,6 @@
 import { Card, Descriptions, Statistic, Tooltip } from "antd";
 import { Project } from "../../../../context/AppContext";
+import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
   const now = new Date();
@@ -27,8 +28,8 @@ export default function DatesSummary({ project }: { project: Project }) {
           />
         </Tooltip>
         <Descriptions size="small" column={1}>
-          <Descriptions.Item label="End date">
-            {project.plan?.deadline ?? "N/A"}
+          <Descriptions.Item label="Deadline">
+            {deadline ? dayjs(deadline).format("D MMMM YYYY") : "N/A"}
           </Descriptions.Item>
         </Descriptions>
       </div>
