@@ -1,4 +1,4 @@
-import { Button, Typography } from "antd";
+import { Button, Col, Row, Typography } from "antd";
 import {
   AreaChart,
   Area,
@@ -20,6 +20,7 @@ import { useTasks } from "../../../../hooks/useTasks";
 import ProjectTask from "../../components/ProjectTask/ProjectTask";
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
+import DatesSummary from "../../components/DatesSummary/DatesSummary";
 
 const { Title } = Typography;
 
@@ -166,8 +167,6 @@ export default function Overview({ project }: { project: Project }) {
 
   const totalDuration = coreTeamDuration + otherDuration;
 
-  console.log(project.roles);
-
   const lastDay = groupedEntries[groupedEntries.length - 1];
   const totalDurationByLastDay = lastDay
     ? lastDay.workers.reduce((acc, worker) => {
@@ -227,7 +226,17 @@ export default function Overview({ project }: { project: Project }) {
 
   return (
     <div className="ProjectPage-overview">
-      <BudgetSummary project={project} totalSpent={totalDurationByLastDay} />
+      <Row gutter={16}>
+        <Col span={12}>
+          <BudgetSummary
+            project={project}
+            totalSpent={totalDurationByLastDay}
+          />
+        </Col>
+        <Col span={12}>
+          <DatesSummary project={project} />
+        </Col>
+      </Row>
       <p>
         Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core Team:{" "}
         {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}

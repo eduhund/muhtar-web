@@ -106,7 +106,7 @@ type ProjectPlanJob = {
 
 type ProjectPlan = {
   startDate: string;
-  endDate: string;
+  deadline: string;
   totalBudget: number;
   totalResources: ProjectPlanResource[];
   jobs: ProjectPlanJob[];

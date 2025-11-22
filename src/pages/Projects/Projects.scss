@@ -117,6 +117,15 @@
   }
 }
 
+.ProjectWidget {
+  background-color: #fafafa;
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
 .AddToProjectModal-form-item {
   width: 100%;
 
