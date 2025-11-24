@@ -4,6 +4,9 @@ import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
   const now = new Date();
+  const startDate = project.plan?.startDate
+    ? new Date(project.plan.startDate)
+    : null;
   const deadline = project.plan?.deadline
     ? new Date(project.plan.deadline)
     : null;
@@ -28,6 +31,9 @@ export default function DatesSummary({ project }: { project: Project }) {
           />
         </Tooltip>
         <Descriptions size="small" column={1}>
+          <Descriptions.Item label="Start date">
+            {startDate ? dayjs(startDate).format("D MMMM YYYY") : "N/A"}
+          </Descriptions.Item>
           <Descriptions.Item label="Deadline">
             {deadline ? dayjs(deadline).format("D MMMM YYYY") : "N/A"}
           </Descriptions.Item>

@@ -42,6 +42,9 @@ export default function BudgetSummary({
           <Descriptions.Item label="Total budget">
             {splitNumber(project.plan?.totalBudget ?? 0)} {currencySymbol}
           </Descriptions.Item>
+          <Descriptions.Item label="Remaining">
+            {splitNumber(budget - totalSpent)} {currencySymbol}
+          </Descriptions.Item>
         </Descriptions>
       </div>
     </Card>
