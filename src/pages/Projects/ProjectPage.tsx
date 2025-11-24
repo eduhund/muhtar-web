@@ -4,6 +4,7 @@ import { Project } from "../../context/AppContext";
 
 import type { TabsProps } from "antd";
 import Overview from "./subpages/Overview/Overview";
+import ProjectPlan from "./subpages/ProjectPlan/ProjectPlan";
 import { useParams } from "react-router-dom";
 import { useProjects } from "../../hooks/useProjects";
 
@@ -31,8 +32,8 @@ export default function ProjectPage({ project }: { project?: Project }) {
     },
     {
       key: "2",
-      label: "Timeline",
-      children: "Coming soon...",
+      label: "Project Plan",
+      children: <ProjectPlan plan={currentProject.plan} />,
     },
   ];
 

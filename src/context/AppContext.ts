@@ -84,17 +84,17 @@ export interface Team {
   isDeleted: boolean;
 }
 
-type ProjectPlanResource = {
+export type ProjectPlanResource = {
   type: string;
   value: number;
 };
 
-type ProjectPlanRole = {
+export type ProjectPlanRole = {
   key: string;
   resources: ProjectPlanResource[];
 };
 
-type ProjectPlanJob = {
+export type ProjectPlanJob = {
   id: string;
   name: string;
   startDate: string;
@@ -104,7 +104,7 @@ type ProjectPlanJob = {
   children: ProjectPlanJob[];
 };
 
-type ProjectPlan = {
+export type ProjectPlan = {
   startDate: string;
   deadline: string;
   totalBudget: number;
