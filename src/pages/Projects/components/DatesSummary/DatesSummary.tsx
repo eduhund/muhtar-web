@@ -11,10 +11,7 @@ export default function DatesSummary({ project }: { project: Project }) {
     ? new Date(project.plan.deadline)
     : null;
   const daysRemaining = deadline
-    ? Math.max(
-        0,
-        Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-      )
+    ? Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     : null;
   return (
     <Card variant="borderless" className="ProjectWidget DatesSummary">
