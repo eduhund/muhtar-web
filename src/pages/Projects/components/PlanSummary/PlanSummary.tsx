@@ -127,7 +127,7 @@ const DaysDiffBadge: React.FC<DaysDiffBadgeProps> = ({ daysDiff }) => {
   return (
     <span className={`ppw-days-diff-badge ${badgeClass}`}>
       {daysDiff > 0 ? "+" : ""}
-      {daysDiff}д
+      {daysDiff}d
     </span>
   );
 };
@@ -148,7 +148,7 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
         {formatDate(stage.plannedEnd, locale)}
       </span>
       <span className="ppw-date-text ppw-date-text--muted">
-        ({stage.plannedDays}д)
+        ({stage.plannedDays}d)
       </span>
 
       {hasActualDates && (
@@ -160,7 +160,7 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
           </span>
           {stage.actualDays > 0 && (
             <span className="ppw-date-text ppw-date-text--muted">
-              ({stage.actualDays}д)
+              ({stage.actualDays}d)
             </span>
           )}
           <DaysDiffBadge daysDiff={daysDiff} />
@@ -193,7 +193,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className="ppw-progress-section">
       <div className="ppw-budget-header">
-        <span className="ppw-budget-label">Бюджет</span>
+        <span className="ppw-budget-label">Budget</span>
         <div className="ppw-budget-amounts">
           <span className="ppw-budget-spent">
             {formatMoney(stage.spent, currency, locale)}
