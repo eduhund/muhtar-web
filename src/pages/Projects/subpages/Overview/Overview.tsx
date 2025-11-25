@@ -1,4 +1,4 @@
-import { Button, Col, Row, Typography } from "antd";
+import { Button, Col, Grid, Row, Typography } from "antd";
 import {
   AreaChart,
   Area,
@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
 import { Project } from "../../../../context/AppContext";
@@ -21,6 +22,10 @@ import ProjectTask from "../../components/ProjectTask/ProjectTask";
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 import DatesSummary from "../../components/DatesSummary/DatesSummary";
+import {
+  PlanSummary,
+  ProjectStage,
+} from "../../components/PlanSummary/PlanSummary";
 
 const { Title } = Typography;
 
@@ -35,6 +40,70 @@ const areaColors = [
   "#a4de6c",
   "#d0ed57",
   "#8dd1e1",
+];
+
+// Example mock data
+const mockProjectData: ProjectStage[] = [
+  {
+    id: "1",
+    name: "Project Initiation",
+    plannedStart: "2024-11-01",
+    plannedEnd: "2024-11-15",
+    actualStart: "2024-11-01",
+    actualEnd: "2024-11-16",
+    budget: 500000,
+    spent: 520000,
+    status: "completed",
+    plannedDays: 15,
+    actualDays: 16,
+  },
+  {
+    id: "2",
+    name: "Architecture Design",
+    plannedStart: "2024-11-16",
+    plannedEnd: "2024-11-30",
+    actualStart: "2024-11-17",
+    actualEnd: "2024-11-29",
+    budget: 800000,
+    spent: 750000,
+    status: "completed",
+    plannedDays: 15,
+    actualDays: 13,
+  },
+  {
+    id: "3",
+    name: "MVP Development",
+    plannedStart: "2024-12-01",
+    plannedEnd: "2024-12-20",
+    actualStart: "2024-11-30",
+    budget: 1500000,
+    spent: 1200000,
+    status: "inProgress",
+    plannedDays: 20,
+    actualDays: 26,
+  },
+  {
+    id: "4",
+    name: "Testing and QA",
+    plannedStart: "2024-12-21",
+    plannedEnd: "2025-01-05",
+    budget: 600000,
+    spent: 0,
+    status: "backlog",
+    plannedDays: 16,
+    actualDays: 0,
+  },
+  {
+    id: "5",
+    name: "Deployment and Launch",
+    plannedStart: "2025-01-06",
+    plannedEnd: "2025-01-15",
+    budget: 400000,
+    spent: 0,
+    status: "backlog",
+    plannedDays: 10,
+    actualDays: 0,
+  },
 ];
 
 export default function Overview({ project }: { project: Project }) {
@@ -185,42 +254,46 @@ export default function Overview({ project }: { project: Project }) {
       )
     );
     return (
-      <AreaChart
-        style={{
-          width: "100%",
-          maxWidth: "700px",
-          maxHeight: "70vh",
-          aspectRatio: 1.618,
-        }}
-        data={chartData}
-        margin={{
-          top: 20,
-          right: 0,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis width="auto" />
-        <Tooltip />
-        {allWorkerIds.map((workerId, idx) => {
-          const workerName =
-            memberships?.find((m) => m.id === workerId)?.name || workerId;
-          const color = areaColors[idx % areaColors.length];
-          return (
-            <Area
-              key={workerId}
-              type="monotone"
-              dataKey={workerId}
-              name={workerName}
-              stackId={1}
-              stroke={color}
-              fill={color}
-            />
-          );
-        })}
-      </AreaChart>
+      <div>
+        <Title level={4}>Time Logged</Title>
+        <ResponsiveContainer width="100%" height={350}>
+          <AreaChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 0,
+              left: 0,
+              bottom: 0,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis width="auto" />
+            <Tooltip />
+            {allWorkerIds.map((workerId, idx) => {
+              const workerName =
+                memberships?.find((m) => m.id === workerId)?.name || workerId;
+              const color = areaColors[idx % areaColors.length];
+              return (
+                <Area
+                  key={workerId}
+                  type="monotone"
+                  dataKey={workerId}
+                  name={workerName}
+                  stackId={1}
+                  stroke={color}
+                  fill={color}
+                />
+              );
+            })}
+          </AreaChart>
+        </ResponsiveContainer>
+        <p>
+          Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core
+          Team: {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
+          {Number(otherDuration).toFixed(0)} hours)
+        </p>
+      </div>
     );
   }, [chartData, groupedEntries, memberships]);
 
@@ -237,12 +310,14 @@ export default function Overview({ project }: { project: Project }) {
           <DatesSummary project={project} />
         </Col>
       </Row>
-      <p>
-        Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core Team:{" "}
-        {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
-        {Number(otherDuration).toFixed(0)} hours)
-      </p>
-      <StackedAreaChart />
+      <Row gutter={16} style={{ marginTop: 32 }}>
+        <Col span={12}>
+          <StackedAreaChart />
+        </Col>
+        <Col span={12}>
+          <PlanSummary stages={mockProjectData} />
+        </Col>
+      </Row>
       <div className="ProjectPage-tasks">
         <div className="ProjectPage-block-header">
           <Title level={4}>Tasks</Title>
