@@ -106,14 +106,26 @@ export type ProjectPlanJob = {
 
 export type ProjectPlan = {
   startDate: string;
-  deadline: string;
+  endDate: string;
   totalBudget: number;
   totalResources: ProjectPlanResource[];
+  roles: ProjectPlanRole[];
   jobs: ProjectPlanJob[];
 };
 
 type ProjectContract = {
-  currency: string;
+  budget: { amount: number; currency: Currency };
+  roles: {
+    key: string;
+    name: string;
+    resources: {
+      type: string;
+      costPerUnit: {
+        amount: number;
+        currency: Currency;
+      };
+    }[];
+  }[];
 };
 
 export interface Project {
@@ -122,20 +134,14 @@ export interface Project {
   customer: string | null;
   status: "active" | "archived";
   isDeleted: boolean;
-  roles: {
-    key: string;
-    name: string;
-    cost: number;
-    currency: Currency;
-  }[];
   memberships: {
     membershipId: string;
     accessRole: string;
     workRole: string;
     multiplier: number;
   }[];
-  contract: ProjectContract | null;
-  plan: ProjectPlan | null;
+  activeContract: ProjectContract | null;
+  activePlan: ProjectPlan | null;
 }
 
 export interface ProjectMembership {

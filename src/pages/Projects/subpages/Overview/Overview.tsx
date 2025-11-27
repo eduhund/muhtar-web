@@ -242,9 +242,10 @@ export default function Overview({ project }: { project: Project }) {
   const totalDurationByLastDay = lastDay
     ? lastDay.workers.reduce((acc, worker) => {
         const workerRoleCost =
-          project.roles.find(
-            (role) => (role.key || role.name) === worker.workRole
-          )?.cost || 0;
+          project?.activeContract?.roles
+            ?.find((role) => (role.key || role.name) === worker.workRole)
+            ?.resources?.find((resource) => resource.type === "time")
+            ?.costPerUnit.amount || 0;
         return acc + worker.value * workerRoleCost;
       }, 0)
     : 0;
