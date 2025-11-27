@@ -56,7 +56,6 @@ export default function Overview({ project }: { project: Project }) {
   function closeModal(modalName: keyof typeof modals) {
     setModals((prev) => ({ ...prev, [modalName]: false }));
   }
-  console.log(project);
 
   /*
   const filteredTasks = tasks?.filter(

@@ -3,7 +3,6 @@ import { Project } from "../../../../context/AppContext";
 import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
-  console.log(project);
   const now = new Date();
   const startDate = project.activePlan?.planStart
     ? new Date(project.activePlan.planStart)
@@ -14,6 +13,12 @@ export default function DatesSummary({ project }: { project: Project }) {
   const daysRemaining = deadline
     ? Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     : null;
+
+  const statisticStyle =
+    daysRemaining !== null && daysRemaining < 0
+      ? { color: "#cf1322" } // Red color for overdue
+      : {};
+
   return (
     <Card variant="borderless" className="ProjectWidget DatesSummary">
       <div className="ProjectWidget-body">
@@ -21,6 +26,7 @@ export default function DatesSummary({ project }: { project: Project }) {
           <Statistic
             title="Days remaining"
             value={daysRemaining ?? 0}
+            valueStyle={statisticStyle}
             groupSeparator={" "}
             decimalSeparator={","}
             precision={0}
