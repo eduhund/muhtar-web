@@ -5,10 +5,10 @@ import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
-import { useTasks } from "../../../hooks/useTasks";
+//import { useTasks } from "../../../hooks/useTasks";
 
 type FieldType = {
   date: Dayjs;
@@ -21,13 +21,12 @@ type FieldType = {
 export default function TimeEditModal({ record, onClose }: any) {
   const { updateTime } = useTimetable();
   const { activeProjects, isLoading } = useProjects();
-  const { tasks } = useTasks();
+  //const { tasks } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
-  );
+  const [, setSelectedProjectId] = useState<string | null>(null);
 
+  /*
   const filteredTasks = useMemo(
     () =>
       tasks && selectedProjectId
@@ -35,6 +34,7 @@ export default function TimeEditModal({ record, onClose }: any) {
         : [],
     [tasks, selectedProjectId]
   );
+  */
 
   useEffect(() => {
     if (record) {
@@ -50,20 +50,13 @@ export default function TimeEditModal({ record, onClose }: any) {
   }, [record, form]);
 
   async function handleOk() {
-    const {
-      date,
-      duration,
-      project,
-      task = null,
-      comment = "",
-    } = form.getFieldsValue();
+    const { date, duration, project, comment = "" } = form.getFieldsValue();
     const OK = await updateTime({
       date: date.format("YYYY-MM-DD"),
       membershipId: record.membership.id,
       id: record.id,
       duration,
       projectId: project,
-      taskId: task,
       comment,
     });
     if (OK) {
@@ -130,7 +123,7 @@ export default function TimeEditModal({ record, onClose }: any) {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="task">
+        {/*<Form.Item<FieldType> name="task">
           <Select
             showSearch
             placeholder={"Select..."}
@@ -140,7 +133,7 @@ export default function TimeEditModal({ record, onClose }: any) {
             allowClear
             style={{ width: "100%" }}
           />
-        </Form.Item>
+        </Form.Item>*/}
 
         <Form.Item<FieldType> name="duration">
           <Select
