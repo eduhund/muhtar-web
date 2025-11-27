@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Progress, Typography } from "antd";
+import { Badge, Progress, Tag, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
@@ -91,32 +91,29 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
     dayjs(stage.actualStart),
     "day"
   );
-  const daysDiff = planDuration - actualDuration;
   const hasActualDates = stage.actualStart;
 
   return (
     <div className="ppw-dates-container">
-      <span className="ppw-date-text">
-        {formatDate(stage.planStart, locale)} —{" "}
-        {formatDate(stage.planEnd, locale)}
-      </span>
-      <span className="ppw-date-text ppw-date-text--muted">
-        ({planDuration}d)
-      </span>
-
+      <Text>
+        <span>Plan: </span>
+        <span>{formatDate(stage.planStart, locale)}</span>
+        <span> — </span>
+        <span>{formatDate(stage.planEnd, locale)}</span>
+        <span>({planDuration}d)</span>
+      </Text>
       {hasActualDates && (
         <>
-          <span className="ppw-date-arrow">→</span>
-          <span className="ppw-date-text ppw-date-text--actual">
-            {formatDate(stage.actualStart, locale)} —{" "}
-            {stage.actualEnd ? formatDate(stage.actualEnd, locale) : "..."}
-          </span>
-          {stage.actualEnd && (
-            <span className="ppw-date-text ppw-date-text--muted">
-              ({actualDuration}d)
+          <Text>→</Text>
+          <Text>
+            <span>Actual: </span>
+            <span>{formatDate(stage.actualStart, locale)}</span>
+            <span> — </span>
+            <span>
+              {stage.actualEnd ? formatDate(stage.actualEnd, locale) : "..."}
             </span>
-          )}
-          <DaysDiffBadge daysDiff={daysDiff} />
+            <span>{stage.actualEnd && `(${actualDuration}d)`}</span>
+          </Text>
         </>
       )}
     </div>
