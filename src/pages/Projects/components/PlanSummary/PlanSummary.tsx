@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "antd";
+import { Badge, Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
@@ -16,49 +16,26 @@ export interface ProjectPlanWidgetProps {
   className?: string;
 }
 
-interface StatusConfig {
-  className: string;
-  text: string;
-}
-
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 // ============================================================================
 // UTILITIES
 // ============================================================================
 
-const getStatusConfig = (status: ProjectPlanJob["status"]): StatusConfig => {
+function getBadgeStatus(
+  status: ProjectPlanJob["status"]
+): "success" | "processing" | "default" | "error" | "warning" {
   switch (status) {
     case "completed":
-      return {
-        className: "ppw-status-badge--completed",
-        text: "Completed",
-      };
+      return "success";
     case "inProgress":
-      return {
-        className: "ppw-status-badge--in-progress",
-        text: "In Progress",
-      };
+      return "processing";
     case "canceled":
-      return {
-        className: "ppw-status-badge--canceled",
-        text: "Canceled",
-      };
+      return "error";
     case "backlog":
-      return {
-        className: "ppw-status-badge--not-started",
-        text: "Backlog",
-      };
+      return "default";
   }
-};
-
-const getProgressClassName = (spent: number, budget: number): string => {
-  if (spent > budget) return "ppw-progress-fill--overspend";
-  const percentage = (spent / budget) * 100;
-  if (percentage > 75) return "ppw-progress-fill--high";
-  if (percentage > 50) return "ppw-progress-fill--medium";
-  return "ppw-progress-fill--low";
-};
+}
 
 const formatMoney = (
   amount: number,
@@ -82,19 +59,6 @@ const formatDate = (dateStr: string | null, locale: string): string => {
 // ============================================================================
 // INTERNAL COMPONENTS
 // ============================================================================
-
-interface StatusBadgeProps {
-  status: ProjectPlanJob["status"];
-}
-
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const config = getStatusConfig(status);
-  return (
-    <span className={`ppw-status-badge ${config.className}`}>
-      {config.text}
-    </span>
-  );
-};
 
 interface DaysDiffBadgeProps {
   daysDiff: number;
@@ -172,38 +136,31 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   currency,
   locale,
 }) => {
-  const progressClass = getProgressClassName(totalSpent, totalBudget);
   const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
-  const hasOverspend = totalSpent > totalBudget;
-  const overspendAmount = totalSpent - totalBudget;
+  const hasOverspend = totalSpent > 0; //totalBudget;
+  const overspendAmount = totalSpent - 0; //totalBudget;
   return (
     <div className="ppw-progress-section">
       <div className="ppw-budget-header">
-        <span className="ppw-budget-label">Budget</span>
-        <div className="ppw-budget-amounts">
-          <span className="ppw-budget-spent">
-            {formatMoney(totalSpent, currency, locale)}
-          </span>
-          <span className="ppw-budget-separator">/</span>
-          <span className="ppw-budget-total">
-            {formatMoney(totalBudget, currency, locale)}
-          </span>
-        </div>
-      </div>
-      <div className="ppw-progress-track">
-        <div
-          className={`ppw-progress-fill ${progressClass}`}
-          style={{ width: `${progressPercentage}%` }}
-        />
-        {hasOverspend && <div className="ppw-progress-overlay" />}
-      </div>
-      {hasOverspend && (
-        <div className="ppw-overspend-container">
-          <span className="ppw-overspend-text">
+        <Text>Budget</Text>
+        {hasOverspend && (
+          <Text type="danger">
             Overspending: {formatMoney(overspendAmount, currency, locale)}
-          </span>
+          </Text>
+        )}
+        <div className="ppw-budget-amounts">
+          <Text>{formatMoney(totalSpent, currency, locale)}</Text>
+          <Text type="secondary">/</Text>
+          <Text type="secondary">
+            {formatMoney(totalBudget, currency, locale)}
+          </Text>
         </div>
-      )}
+      </div>
+      <Progress
+        percent={progressPercentage}
+        showInfo={false}
+        status={hasOverspend ? "exception" : "normal"}
+      />
     </div>
   );
 };
@@ -274,8 +231,8 @@ const StageCard: React.FC<StageCardProps> = ({
     <div className="ppw-stage-card">
       {/* Header */}
       <div className="ppw-stage-header">
-        <span className="ppw-stage-name">{stage.name}</span>
-        <StatusBadge status={stage.status} />
+        <Badge status={getBadgeStatus(stage.status)} />
+        <Title level={5}>{stage.name}</Title>
       </div>
 
       {/* Dates */}
