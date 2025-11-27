@@ -97,8 +97,8 @@ export type ProjectPlanRole = {
 export type ProjectPlanJob = {
   id: string;
   name: string;
-  estimatedStart: string;
-  estimatedEnd: string;
+  planStart: string;
+  planEnd: string;
   status: "backlog" | "inProgress" | "completed" | "canceled";
   actualStart: string | null;
   actualEnd: string | null;
@@ -109,8 +109,8 @@ export type ProjectPlanJob = {
 };
 
 export type ProjectPlan = {
-  estimatedStart: string;
-  estimatedEnd: string;
+  planStart: string;
+  planEnd: string;
   actualStart: string | null;
   actualEnd: string | null;
   totalBudget: number;

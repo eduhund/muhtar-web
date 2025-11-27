@@ -122,10 +122,7 @@ interface DatesDisplayProps {
 }
 
 const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
-  const planDuration = dayjs(stage.estimatedEnd).diff(
-    dayjs(stage.estimatedStart),
-    "day"
-  );
+  const planDuration = dayjs(stage.planEnd).diff(dayjs(stage.planStart), "day");
   const actualDuration = dayjs(stage.actualEnd || new Date()).diff(
     dayjs(stage.actualStart),
     "day"
@@ -136,8 +133,8 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
   return (
     <div className="ppw-dates-container">
       <span className="ppw-date-text">
-        {formatDate(stage.estimatedStart, locale)} —{" "}
-        {formatDate(stage.estimatedEnd, locale)}
+        {formatDate(stage.planStart, locale)} —{" "}
+        {formatDate(stage.planEnd, locale)}
       </span>
       <span className="ppw-date-text ppw-date-text--muted">
         ({planDuration}d)
@@ -185,7 +182,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         <span className="ppw-budget-label">Budget</span>
         <div className="ppw-budget-amounts">
           <span className="ppw-budget-spent">
-            {formatMoney(0, currency, locale)}
+            {formatMoney(totalSpent, currency, locale)}
           </span>
           <span className="ppw-budget-separator">/</span>
           <span className="ppw-budget-total">
@@ -235,6 +232,8 @@ const StageCard: React.FC<StageCardProps> = ({
   const userResourceMap: Record<string, { duration: number; cost: number }> =
     {};
 
+  let unknownRoleDuration = 0;
+
   filteredEntries?.forEach((entry) => {
     const membershipId = entry.membership.id;
     const membership = memberships.find(
@@ -245,6 +244,12 @@ const StageCard: React.FC<StageCardProps> = ({
     const cost =
       role?.resources?.find((resource) => resource.type === "time")?.costPerUnit
         .amount || 0;
+
+    if (!role) {
+      unknownRoleDuration += entry.duration;
+      return;
+    }
+
     if (!userResourceMap[membershipId]) {
       userResourceMap[membershipId] = {
         duration: 0,
@@ -283,6 +288,12 @@ const StageCard: React.FC<StageCardProps> = ({
         currency={currency}
         locale={locale}
       />
+
+      {unknownRoleDuration > 0 && (
+        <div className="ppw-stage-warning">
+          Resources without project role: {unknownRoleDuration / 60}h
+        </div>
+      )}
     </div>
   );
 };

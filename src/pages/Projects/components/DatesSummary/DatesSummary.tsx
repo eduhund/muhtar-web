@@ -3,12 +3,13 @@ import { Project } from "../../../../context/AppContext";
 import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
+  console.log(project);
   const now = new Date();
-  const startDate = project.activePlan?.startDate
-    ? new Date(project.activePlan.startDate)
+  const startDate = project.activePlan?.planStart
+    ? new Date(project.activePlan.planStart)
     : null;
-  const deadline = project.activePlan?.endDate
-    ? new Date(project.activePlan.endDate)
+  const deadline = project.activePlan?.planEnd
+    ? new Date(project.activePlan.planEnd)
     : null;
   const daysRemaining = deadline
     ? Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
