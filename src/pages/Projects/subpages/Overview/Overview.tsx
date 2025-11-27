@@ -16,8 +16,8 @@ import { useCallback, useState } from "react";
 import AddToProjectModal from "../../components/AddToProjectModal";
 import ProjectMembership from "../../components/ProjectMembership/ProjectMembership";
 import ProjectContributor from "../../components/ProjectContributor/ProjectContributor";
-import { useTasks } from "../../../../hooks/useTasks";
-import ProjectTask from "../../components/ProjectTask/ProjectTask";
+//import { useTasks } from "../../../../hooks/useTasks";
+//import ProjectTask from "../../components/ProjectTask/ProjectTask";
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 import DatesSummary from "../../components/DatesSummary/DatesSummary";
@@ -44,7 +44,7 @@ export default function Overview({ project }: { project: Project }) {
   });
   const { timetable } = useTimetable();
   const { memberships } = useMemberships();
-  const { tasks } = useTasks();
+  //const { tasks } = useTasks();
   const projectEntries =
     timetable?.filter((item) => item.project.id === project.id) || [];
 
@@ -55,9 +55,11 @@ export default function Overview({ project }: { project: Project }) {
     setModals((prev) => ({ ...prev, [modalName]: false }));
   }
 
+  /*
   const filteredTasks = tasks?.filter(
     (task) => task.project?.id === project.id
   );
+  */
 
   function groupEntriesByDayWithWorkers(entries: typeof projectEntries) {
     const sortedEntries = [...entries].sort((a, b) =>
@@ -243,7 +245,7 @@ export default function Overview({ project }: { project: Project }) {
         {Number(otherDuration).toFixed(0)} hours)
       </p>
       <StackedAreaChart />
-      <div className="ProjectPage-tasks">
+      {/*<div className="ProjectPage-tasks">
         <div className="ProjectPage-block-header">
           <Title level={4}>Tasks</Title>
           <Button type="link" onClick={() => openModal("addTask")}>
@@ -260,7 +262,7 @@ export default function Overview({ project }: { project: Project }) {
         ) : (
           <p>No tasks found for this project.</p>
         )}
-      </div>
+      </div>*/}
       <div className="ProjectPage-block-header">
         <Title level={4}>Core Team</Title>{" "}
         <Button type="link" onClick={() => openModal("addToProject")}>
