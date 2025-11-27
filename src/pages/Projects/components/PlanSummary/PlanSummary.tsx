@@ -95,12 +95,12 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
 
   return (
     <div className="ppw-dates-container">
-      <Text>
+      <Text type={hasActualDates ? "secondary" : undefined}>
         <span>Plan: </span>
         <span>{formatDate(stage.planStart, locale)}</span>
         <span> — </span>
         <span>{formatDate(stage.planEnd, locale)}</span>
-        <span>({planDuration}d)</span>
+        <span>{` (${planDuration}d)`}</span>
       </Text>
       {hasActualDates && (
         <>
@@ -112,7 +112,7 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
             <span>
               {stage.actualEnd ? formatDate(stage.actualEnd, locale) : "..."}
             </span>
-            <span>{stage.actualEnd && `(${actualDuration}d)`}</span>
+            <span>{stage.actualEnd && ` (${actualDuration}d)`}</span>
           </Text>
         </>
       )}
