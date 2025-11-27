@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button, Table, Tag, type TableProps } from "antd";
+import { Button, Table, type TableProps } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -138,13 +138,13 @@ export function Timetable() {
         title: "What",
         dataIndex: "comment",
         key: "comment",
-        render: (_: unknown, { task, comment }: DataType) => (
+        render: (_: unknown, { comment }: DataType) => (
           <div>
-            {task && (
+            {/*task && (
               <Tag color="orange" style={{ marginBottom: 4 }}>
                 {task.name}
               </Tag>
-            )}
+            )*/}
             <div>{comment}</div>
           </div>
         ),

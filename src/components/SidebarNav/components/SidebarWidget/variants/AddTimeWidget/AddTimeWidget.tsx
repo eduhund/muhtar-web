@@ -5,12 +5,12 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget";
 import { dateFormat } from "../../../../../../utils/date";
 import { useProjects } from "../../../../../../hooks/useProjects";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTimetable } from "../../../../../../hooks/useTimetable";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
 import { useUIMessages } from "../../../../../../providers/UIMessageProvider";
-import { useTasks } from "../../../../../../hooks/useTasks";
+//import { useTasks } from "../../../../../../hooks/useTasks";
 
 type FieldType = {
   date: Dayjs;
@@ -24,15 +24,14 @@ const { TextArea } = Input;
 
 export function AddTimeWidget() {
   const [isAddingTime, setIsAddingTime] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
-  );
+  const [, setSelectedProjectId] = useState<string | null>(null);
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
-  const { tasks } = useTasks();
+  //const { tasks } = useTasks();
   const { addTime } = useTimetable();
   const UIMessages = useUIMessages();
 
+  /*
   const filteredTasks = useMemo(
     () =>
       tasks
@@ -40,16 +39,16 @@ export function AddTimeWidget() {
         : [],
     [tasks, selectedProjectId]
   );
+  */
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
-    const { date, duration, project, task = null, comment = "" } = values;
+    const { date, duration, project, comment = "" } = values;
     const newTime = await addTime({
       date: date.format("YYYY-MM-DD"),
       duration,
       membershipId: membership?.id || "",
       projectId: project,
-      taskId: task,
       comment,
     });
     if (newTime) {
@@ -99,7 +98,7 @@ export function AddTimeWidget() {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="task">
+        {/*<Form.Item<FieldType> name="task">
           <Select
             showSearch
             placeholder={
@@ -114,7 +113,7 @@ export function AddTimeWidget() {
             onChange={() => {}}
             disabled={!selectedProjectId}
           />
-        </Form.Item>
+        </Form.Item>*/}
 
         <Form.Item<FieldType> name="duration">
           <Select
