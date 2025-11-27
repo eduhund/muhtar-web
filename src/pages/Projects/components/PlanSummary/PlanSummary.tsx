@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Progress, Tag, Typography } from "antd";
+import { Badge, Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
@@ -59,26 +59,6 @@ const formatDate = (dateStr: string | null, locale: string): string => {
 // ============================================================================
 // INTERNAL COMPONENTS
 // ============================================================================
-
-interface DaysDiffBadgeProps {
-  daysDiff: number;
-}
-
-const DaysDiffBadge: React.FC<DaysDiffBadgeProps> = ({ daysDiff }) => {
-  if (daysDiff === 0) return null;
-
-  const badgeClass =
-    daysDiff > 0
-      ? "ppw-days-diff-badge--positive"
-      : "ppw-days-diff-badge--negative";
-
-  return (
-    <span className={`ppw-days-diff-badge ${badgeClass}`}>
-      {daysDiff > 0 ? "+" : ""}
-      {daysDiff}d
-    </span>
-  );
-};
 
 interface DatesDisplayProps {
   stage: ProjectPlanJob;
