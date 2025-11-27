@@ -11,6 +11,7 @@ export default function BudgetSummary({
   project: Project;
   totalSpent: number;
 }) {
+  console.log(project);
   const currencySymbol = getCurrencySymbol(
     project.activeContract?.budget?.currency ?? "USD"
   );

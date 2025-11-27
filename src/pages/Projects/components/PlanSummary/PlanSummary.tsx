@@ -134,8 +134,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   locale,
 }) => {
   const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
-  const hasOverspend = totalSpent > 0; //totalBudget;
-  const overspendAmount = totalSpent - 0; //totalBudget;
+  const hasOverspend = totalSpent > totalBudget;
+  const overspendAmount = totalSpent - totalBudget;
   return (
     <div className="ppw-progress-section">
       <div className="ppw-budget-header">
