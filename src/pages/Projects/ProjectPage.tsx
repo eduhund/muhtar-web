@@ -33,7 +33,7 @@ export default function ProjectPage({ project }: { project?: Project }) {
     {
       key: "2",
       label: "Project Plan",
-      children: <ProjectPlan plan={currentProject.plan} />,
+      children: <ProjectPlan plan={currentProject.activePlan} />,
     },
   ];
 

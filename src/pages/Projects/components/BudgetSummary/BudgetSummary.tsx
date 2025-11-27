@@ -11,8 +11,10 @@ export default function BudgetSummary({
   project: Project;
   totalSpent: number;
 }) {
-  const currencySymbol = getCurrencySymbol(project.contract?.currency ?? "USD");
-  const budget = project.plan?.totalBudget ?? 0;
+  const currencySymbol = getCurrencySymbol(
+    project.activeContract?.budget?.currency ?? "USD"
+  );
+  const budget = project.activePlan?.totalBudget ?? 0;
   const isWarning = totalSpent > budget * 0.8 && totalSpent <= budget;
   const isAlarm = totalSpent > budget;
   return (
@@ -40,7 +42,7 @@ export default function BudgetSummary({
         </Tooltip>
         <Descriptions size="small" column={1}>
           <Descriptions.Item label="Total budget">
-            {splitNumber(project.plan?.totalBudget ?? 0)} {currencySymbol}
+            {splitNumber(project.activePlan?.totalBudget ?? 0)} {currencySymbol}
           </Descriptions.Item>
           <Descriptions.Item label="Remaining">
             {splitNumber(budget - totalSpent)} {currencySymbol}

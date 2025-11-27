@@ -4,11 +4,11 @@ import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
   const now = new Date();
-  const startDate = project.plan?.startDate
-    ? new Date(project.plan.startDate)
+  const startDate = project.activePlan?.startDate
+    ? new Date(project.activePlan.startDate)
     : null;
-  const deadline = project.plan?.deadline
-    ? new Date(project.plan.deadline)
+  const deadline = project.activePlan?.endDate
+    ? new Date(project.activePlan.endDate)
     : null;
   const daysRemaining = deadline
     ? Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
