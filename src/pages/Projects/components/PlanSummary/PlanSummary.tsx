@@ -1,27 +1,16 @@
 import React from "react";
 import { Typography } from "antd";
 import "./PlanSummary.scss";
+import { Project, ProjectPlanJob } from "../../../../context/AppContext";
+import { useTimetable } from "../../../../hooks/useTimetable";
+import dayjs from "dayjs";
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-export interface ProjectStage {
-  id: string;
-  name: string;
-  plannedStart: string; // ISO date format (YYYY-MM-DD)
-  plannedEnd: string; // ISO date format (YYYY-MM-DD)
-  actualStart?: string; // ISO date format (YYYY-MM-DD)
-  actualEnd?: string; // ISO date format (YYYY-MM-DD)
-  budget: number; // Amount in currency
-  spent: number; // Amount in currency
-  status: "completed" | "inProgress" | "canceled" | "backlog";
-  plannedDays: number;
-  actualDays: number;
-}
-
 export interface ProjectPlanWidgetProps {
-  stages: ProjectStage[];
+  project: Project;
   currency?: string; // Default: 'RUB'
   locale?: string; // Default: 'ru-RU'
   className?: string;
@@ -38,7 +27,7 @@ const { Title } = Typography;
 // UTILITIES
 // ============================================================================
 
-const getStatusConfig = (status: ProjectStage["status"]): StatusConfig => {
+const getStatusConfig = (status: ProjectPlanJob["status"]): StatusConfig => {
   switch (status) {
     case "completed":
       return {
@@ -63,13 +52,8 @@ const getStatusConfig = (status: ProjectStage["status"]): StatusConfig => {
   }
 };
 
-const getProgressClassName = (
-  spent: number,
-  budget: number,
-  status: ProjectStage["status"]
-): string => {
+const getProgressClassName = (spent: number, budget: number): string => {
   if (spent > budget) return "ppw-progress-fill--overspend";
-  if (status === "completed") return "ppw-progress-fill--completed";
   const percentage = (spent / budget) * 100;
   if (percentage > 75) return "ppw-progress-fill--high";
   if (percentage > 50) return "ppw-progress-fill--medium";
@@ -89,7 +73,7 @@ const formatMoney = (
   }).format(amount);
 };
 
-const formatDate = (dateStr: string | undefined, locale: string): string => {
+const formatDate = (dateStr: string | null, locale: string): string => {
   if (!dateStr) return "—";
   const date = new Date(dateStr);
   return date.toLocaleDateString(locale, { day: "2-digit", month: "2-digit" });
@@ -100,7 +84,7 @@ const formatDate = (dateStr: string | undefined, locale: string): string => {
 // ============================================================================
 
 interface StatusBadgeProps {
-  status: ProjectStage["status"];
+  status: ProjectPlanJob["status"];
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
@@ -133,22 +117,30 @@ const DaysDiffBadge: React.FC<DaysDiffBadgeProps> = ({ daysDiff }) => {
 };
 
 interface DatesDisplayProps {
-  stage: ProjectStage;
+  stage: ProjectPlanJob;
   locale: string;
 }
 
 const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
-  const daysDiff = stage.actualDays - stage.plannedDays;
-  const hasActualDates = stage.actualStart && stage.actualStart.length > 0;
+  const planDuration = dayjs(stage.estimatedEnd).diff(
+    dayjs(stage.estimatedStart),
+    "day"
+  );
+  const actualDuration = dayjs(stage.actualEnd || new Date()).diff(
+    dayjs(stage.actualStart),
+    "day"
+  );
+  const daysDiff = planDuration - actualDuration;
+  const hasActualDates = stage.actualStart;
 
   return (
     <div className="ppw-dates-container">
       <span className="ppw-date-text">
-        {formatDate(stage.plannedStart, locale)} —{" "}
-        {formatDate(stage.plannedEnd, locale)}
+        {formatDate(stage.estimatedStart, locale)} —{" "}
+        {formatDate(stage.estimatedEnd, locale)}
       </span>
       <span className="ppw-date-text ppw-date-text--muted">
-        ({stage.plannedDays}d)
+        ({planDuration}d)
       </span>
 
       {hasActualDates && (
@@ -158,9 +150,9 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
             {formatDate(stage.actualStart, locale)} —{" "}
             {stage.actualEnd ? formatDate(stage.actualEnd, locale) : "..."}
           </span>
-          {stage.actualDays > 0 && (
+          {stage.actualEnd && (
             <span className="ppw-date-text ppw-date-text--muted">
-              ({stage.actualDays}d)
+              ({actualDuration}d)
             </span>
           )}
           <DaysDiffBadge daysDiff={daysDiff} />
@@ -171,36 +163,33 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
 };
 
 interface ProgressBarProps {
-  stage: ProjectStage;
+  totalBudget: number;
+  totalSpent: number;
   currency: string;
   locale: string;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
-  stage,
+  totalBudget,
+  totalSpent,
   currency,
   locale,
 }) => {
-  const progressClass = getProgressClassName(
-    stage.spent,
-    stage.budget,
-    stage.status
-  );
-  const progressPercentage = Math.min((stage.spent / stage.budget) * 100, 100);
-  const hasOverspend = stage.spent > stage.budget;
-  const overspendAmount = stage.spent - stage.budget;
-
+  const progressClass = getProgressClassName(totalSpent, totalBudget);
+  const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
+  const hasOverspend = totalSpent > totalBudget;
+  const overspendAmount = totalSpent - totalBudget;
   return (
     <div className="ppw-progress-section">
       <div className="ppw-budget-header">
         <span className="ppw-budget-label">Budget</span>
         <div className="ppw-budget-amounts">
           <span className="ppw-budget-spent">
-            {formatMoney(stage.spent, currency, locale)}
+            {formatMoney(0, currency, locale)}
           </span>
           <span className="ppw-budget-separator">/</span>
           <span className="ppw-budget-total">
-            {formatMoney(stage.budget, currency, locale)}
+            {formatMoney(totalBudget, currency, locale)}
           </span>
         </div>
       </div>
@@ -223,12 +212,59 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 };
 
 interface StageCardProps {
-  stage: ProjectStage;
+  stage: ProjectPlanJob;
+  contract: Project["activeContract"];
+  memberships: Project["memberships"];
   currency: string;
   locale: string;
 }
 
-const StageCard: React.FC<StageCardProps> = ({ stage, currency, locale }) => {
+const StageCard: React.FC<StageCardProps> = ({
+  stage,
+  contract,
+  memberships,
+  currency,
+  locale,
+}) => {
+  const { timetable } = useTimetable();
+  const roles = contract?.roles || [];
+  const filteredEntries = timetable?.filter((entry) => {
+    return entry.target?.type === "job" && entry.target?.id === stage.id;
+  });
+
+  const userResourceMap: Record<string, { duration: number; cost: number }> =
+    {};
+
+  filteredEntries?.forEach((entry) => {
+    const membershipId = entry.membership.id;
+    const membership = memberships.find(
+      (m) => m.membershipId === membershipId || m.membershipId === membershipId
+    );
+    const roleKey = membership?.workRole;
+    const role = roles.find((r) => (r.key || r.name) === roleKey);
+    const cost =
+      role?.resources?.find((resource) => resource.type === "time")?.costPerUnit
+        .amount || 0;
+    if (!userResourceMap[membershipId]) {
+      userResourceMap[membershipId] = {
+        duration: 0,
+        cost,
+      };
+    }
+    userResourceMap[membershipId].duration += entry.duration;
+  });
+
+  const userResources = Object.entries(userResourceMap).map(
+    ([membershipId, { duration, cost }]) => ({
+      membershipId,
+      duration,
+      cost,
+      total: (duration * cost) / 60,
+    })
+  );
+
+  const totalMoney = userResources.reduce((acc, user) => acc + user.total, 0);
+
   return (
     <div className="ppw-stage-card">
       {/* Header */}
@@ -241,7 +277,12 @@ const StageCard: React.FC<StageCardProps> = ({ stage, currency, locale }) => {
       <DatesDisplay stage={stage} locale={locale} />
 
       {/* Progress */}
-      <ProgressBar stage={stage} currency={currency} locale={locale} />
+      <ProgressBar
+        totalBudget={stage.totalBudget}
+        totalSpent={totalMoney}
+        currency={currency}
+        locale={locale}
+      />
     </div>
   );
 };
@@ -251,11 +292,12 @@ const StageCard: React.FC<StageCardProps> = ({ stage, currency, locale }) => {
 // ============================================================================
 
 export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
-  stages,
+  project,
   currency = "RUB",
   locale = "ru-RU",
   className = "",
 }) => {
+  const stages = project?.activePlan?.jobs || [];
   return (
     <div className={`ppw-widget ${className}`}>
       <Title level={4}>Main Stages</Title>
@@ -264,6 +306,8 @@ export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
           <StageCard
             key={stage.id}
             stage={stage}
+            contract={project.activeContract}
+            memberships={project.memberships}
             currency={currency}
             locale={locale}
           />

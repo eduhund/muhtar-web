@@ -22,10 +22,7 @@ import ProjectContributor from "../../components/ProjectContributor/ProjectContr
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 import DatesSummary from "../../components/DatesSummary/DatesSummary";
-import {
-  PlanSummary,
-  ProjectStage,
-} from "../../components/PlanSummary/PlanSummary";
+import { PlanSummary } from "../../components/PlanSummary/PlanSummary";
 
 const { Title } = Typography;
 
@@ -40,70 +37,6 @@ const areaColors = [
   "#a4de6c",
   "#d0ed57",
   "#8dd1e1",
-];
-
-// Example mock data
-const mockProjectData: ProjectStage[] = [
-  {
-    id: "1",
-    name: "Project Initiation",
-    plannedStart: "2024-11-01",
-    plannedEnd: "2024-11-15",
-    actualStart: "2024-11-01",
-    actualEnd: "2024-11-16",
-    budget: 500000,
-    spent: 520000,
-    status: "completed",
-    plannedDays: 15,
-    actualDays: 16,
-  },
-  {
-    id: "2",
-    name: "Architecture Design",
-    plannedStart: "2024-11-16",
-    plannedEnd: "2024-11-30",
-    actualStart: "2024-11-17",
-    actualEnd: "2024-11-29",
-    budget: 800000,
-    spent: 750000,
-    status: "completed",
-    plannedDays: 15,
-    actualDays: 13,
-  },
-  {
-    id: "3",
-    name: "MVP Development",
-    plannedStart: "2024-12-01",
-    plannedEnd: "2024-12-20",
-    actualStart: "2024-11-30",
-    budget: 1500000,
-    spent: 1200000,
-    status: "inProgress",
-    plannedDays: 20,
-    actualDays: 26,
-  },
-  {
-    id: "4",
-    name: "Testing and QA",
-    plannedStart: "2024-12-21",
-    plannedEnd: "2025-01-05",
-    budget: 600000,
-    spent: 0,
-    status: "backlog",
-    plannedDays: 16,
-    actualDays: 0,
-  },
-  {
-    id: "5",
-    name: "Deployment and Launch",
-    plannedStart: "2025-01-06",
-    plannedEnd: "2025-01-15",
-    budget: 400000,
-    spent: 0,
-    status: "backlog",
-    plannedDays: 10,
-    actualDays: 0,
-  },
 ];
 
 export default function Overview({ project }: { project: Project }) {
@@ -123,6 +56,7 @@ export default function Overview({ project }: { project: Project }) {
   function closeModal(modalName: keyof typeof modals) {
     setModals((prev) => ({ ...prev, [modalName]: false }));
   }
+  console.log(project);
 
   /*
   const filteredTasks = tasks?.filter(
@@ -318,7 +252,7 @@ export default function Overview({ project }: { project: Project }) {
           <StackedAreaChart />
         </Col>
         <Col span={12}>
-          <PlanSummary stages={mockProjectData} />
+          <PlanSummary project={project} />
         </Col>
       </Row>
       {/*<div className="ProjectPage-tasks">

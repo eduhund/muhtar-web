@@ -97,16 +97,22 @@ export type ProjectPlanRole = {
 export type ProjectPlanJob = {
   id: string;
   name: string;
-  startDate: string;
-  endDate: string;
-  taskIds: string[];
+  estimatedStart: string;
+  estimatedEnd: string;
+  status: "backlog" | "inProgress" | "completed" | "canceled";
+  actualStart: string | null;
+  actualEnd: string | null;
+  totalBudget: number;
+  totalResources: ProjectPlanResource[];
   roles: ProjectPlanRole[];
   children: ProjectPlanJob[];
 };
 
 export type ProjectPlan = {
-  startDate: string;
-  endDate: string;
+  estimatedStart: string;
+  estimatedEnd: string;
+  actualStart: string | null;
+  actualEnd: string | null;
   totalBudget: number;
   totalResources: ProjectPlanResource[];
   roles: ProjectPlanRole[];
@@ -157,6 +163,8 @@ export interface TimetableItem {
   project: { id: string; name: string; customer: string | null };
   membership: { id: string; name: string };
   date: string; // YYYY-MM-DD
+  type: string;
+  target: { type: "task" | "job" | "other"; id: string | null };
   duration: number; // in minutes
   comment: string;
   isDeleted: boolean;
