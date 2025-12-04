@@ -27,7 +27,7 @@ export default function Home() {
           </Button>
           <Paragraph className="disclaimer">
             or contact us via email{" "}
-            <a href="mailto:we@muhtar.com">we@muhtar.com</a>
+            <a href="mailto:we@muhtar.pro">we@muhtar.pro</a>
           </Paragraph>
         </div>
       </div>
