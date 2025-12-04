@@ -12,8 +12,12 @@ import { AppProvider } from "./providers/AppProvider";
 import { Workers } from "./pages/Workers/Workers";
 import { Projects } from "./pages/Projects/Projects";
 import { MessageProvider } from "./providers/UIMessageProvider";
+import Home from "./promo/pages/Home/Home";
+import { useLogin } from "./hooks/useLogin";
 
 const App = () => {
+  const { isLoggedIn } = useLogin();
+  console.log("App isLoggedIn:", isLoggedIn());
   return (
     <ConfigProvider
       locale={enUS}
@@ -24,26 +28,30 @@ const App = () => {
         <Route
           path="/*"
           element={
-            <AppProvider>
-              <MessageProvider>
-                <div className="App-container">
-                  <div className="App-sidebar">
-                    <SidebarNav />
+            isLoggedIn() ? (
+              <AppProvider>
+                <MessageProvider>
+                  <div className="App-container">
+                    <div className="App-sidebar">
+                      <SidebarNav />
+                    </div>
+                    <div className="App-content">
+                      <Routes>
+                        <Route path="/" element={<Timetable />} />
+                        <Route path="/projects" element={<Projects />} />
+                        <Route
+                          path="/projects/:projectId"
+                          element={<Projects />}
+                        />
+                        <Route path="/workers" element={<Workers />} />
+                      </Routes>
+                    </div>
                   </div>
-                  <div className="App-content">
-                    <Routes>
-                      <Route path="/" element={<Timetable />} />
-                      <Route path="/projects" element={<Projects />} />
-                      <Route
-                        path="/projects/:projectId"
-                        element={<Projects />}
-                      />
-                      <Route path="/workers" element={<Workers />} />
-                    </Routes>
-                  </div>
-                </div>
-              </MessageProvider>
-            </AppProvider>
+                </MessageProvider>
+              </AppProvider>
+            ) : (
+              <Home />
+            )
           }
         />
       </Routes>

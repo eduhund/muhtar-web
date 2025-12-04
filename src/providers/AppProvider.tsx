@@ -11,10 +11,6 @@ import {
 import { membershipStorage, userStorage } from "../utils/storage";
 import { membershipAPI, userAPI } from "../api";
 
-function redirectToLogin() {
-  window.location.replace("/login");
-}
-
 type AppState = {
   user: User | null;
   userLoading: boolean;
@@ -62,7 +58,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       timetable: null,
       memberships: null,
     }));
-    redirectToLogin();
   }
 
   async function initUserData() {
