@@ -17,5 +17,10 @@ export function useLogin() {
     return { OK, data, error };
   }
 
-  return { login, isLoading };
+  function isLoggedIn() {
+    const token = userStorage.getAccessToken();
+    return !!token;
+  }
+
+  return { isLoading, login, isLoggedIn };
 }
