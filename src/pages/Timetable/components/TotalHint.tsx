@@ -28,21 +28,35 @@ export default function TotalHint({
   const { activeProjects } = useProjects();
   const UIMessages = useUIMessages();
 
+  const selectedEntries = useMemo(() => {
+    return filteredData.filter((item: TimetableItem) =>
+      selectedRowKeys.includes(item.id)
+    );
+  }, [selectedRowKeys, filteredData]);
+
   const selectedProjectId = useMemo(() => {
     if (!selectedRowKeys.length) return null;
-    const firstProjectId = data.find(
+    const firstProjectId = selectedEntries.find(
       (item: TimetableItem) => item.id === selectedRowKeys[0]
     )?.project?.id;
     const allSame = selectedRowKeys.every(
-      (item) => data.find((d) => d.id === item)?.project?.id === firstProjectId
+      (item) =>
+        selectedEntries.find((d) => d.id === item)?.project?.id ===
+        firstProjectId
     );
     return allSame ? firstProjectId : null;
-  }, [selectedRowKeys, data]);
+  }, [selectedRowKeys, selectedEntries]);
 
   const selectedProject = useMemo(() => {
     if (!activeProjects || !selectedProjectId) return null;
     return activeProjects.find((project) => project.id === selectedProjectId);
   }, [activeProjects, selectedProjectId]);
+
+  const canEditResources = useMemo(() => {
+    if (!selectedProject) return false;
+    // Here you can add more complex permission logic if needed
+    return true;
+  }, [selectedProject]);
 
   const total = useMemo(() => {
     if (
@@ -52,7 +66,7 @@ export default function TotalHint({
       return null;
     } else if (selectedRowKeys.length > 0) {
       return selectedRowKeys.reduce((prev: number, curr: React.Key) => {
-        const selectedItem = data.find(
+        const selectedItem = selectedEntries.find(
           (item: TimetableItem) => item.id === curr
         );
         return prev + (selectedItem?.duration ?? 0) / 60;
@@ -63,7 +77,7 @@ export default function TotalHint({
         0
       );
     }
-  }, [data, filteredData, filters, selectedRowKeys]);
+  }, [selectedEntries, filteredData, filters, selectedRowKeys]);
 
   const hasSelected = selectedRowKeys.length > 0;
   const hasFiltered = Object.keys(filters).length > 0;
@@ -84,9 +98,9 @@ export default function TotalHint({
             key: job.id,
             label: job.name,
             onClick: async () => {
-              const entires = selectedRowKeys
+              const entries = selectedRowKeys
                 .map((key) => {
-                  const item = filteredData.find((d) => d.id === key);
+                  const item = selectedEntries.find((d) => d.id === key);
                   if (item) {
                     return {
                       id: item.id,
@@ -100,8 +114,8 @@ export default function TotalHint({
                 date: string;
                 target: { type: "job"; id: string };
               }[];
-              const { success, failed } = await updateResources(entires);
-              if (success.length === entires.length) {
+              const { success, failed } = await updateResources(entries);
+              if (success.length === entries.length) {
                 UIMessages?.updateTime.success();
               }
               if (failed.length > 0) {
