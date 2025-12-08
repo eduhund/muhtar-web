@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { TimetableItem } from "../../../context/AppContext";
-import { UpOutlined } from "@ant-design/icons";
 import { useProjects } from "../../../hooks/useProjects";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
 import { useTimetable } from "../../../hooks/useTimetable";
@@ -18,12 +17,7 @@ type Props = {
   };
 };
 
-export default function TotalHint({
-  data,
-  filteredData,
-  filters,
-  selection,
-}: Props) {
+export default function TotalHint({ filteredData, filters, selection }: Props) {
   const { selectedRowKeys, onChange } = selection;
   const { updateResources } = useTimetable();
   const { projects, activeProjects } = useProjects();

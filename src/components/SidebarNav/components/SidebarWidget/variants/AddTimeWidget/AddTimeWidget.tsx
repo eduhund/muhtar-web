@@ -44,12 +44,13 @@ export function AddTimeWidget() {
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
-    const { date, duration, project, comment = "" } = values;
+    const { date, duration, project, target, comment = "" } = values;
     const newTime = await addTime({
       date: date.format("YYYY-MM-DD"),
       duration,
       membershipId: membership?.id || "",
       projectId: project,
+      target: target ? { type: "job", id: target } : null,
       comment,
     });
     if (newTime) {
