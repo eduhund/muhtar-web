@@ -139,30 +139,34 @@ export default function TotalHint({
   ];
 
   return (
-    <div id="totalHint">
+    <div
+      id="totalHint"
+      className={
+        "totalHint" +
+        (hasSelected ? " totalHint-selected" : "") +
+        (hasFiltered ? " totalHint-filtered" : "")
+      }
+    >
       {hasSelected ? (
         <>
           {`Selected ${selectedRowKeys.length} item${
             selectedRowKeys.length !== 1 ? "s" : ""
           }. Spent ${total} hour${total !== 1 ? "s" : ""}`}
-          <Dropdown
-            menu={{ items }}
-            disabled={!canEditResources}
-            placement="topLeft"
-            overlayStyle={{ minWidth: 200 }}
-          >
-            <Button
-              type="link"
-              icon={<UpOutlined />}
-              iconPosition="end"
+          <div className="totalHint-actions">
+            <Dropdown
+              menu={{ items }}
               disabled={!canEditResources}
+              placement="topLeft"
+              overlayStyle={{ minWidth: 200 }}
             >
-              Actions
+              <Button type="link" disabled={!canEditResources}>
+                Actions
+              </Button>
+            </Dropdown>
+            <Button type="link" onClick={resetSelectionHandler}>
+              Reset
             </Button>
-          </Dropdown>
-          <Button type="link" onClick={resetSelectionHandler}>
-            Reset
-          </Button>
+          </div>
         </>
       ) : (
         hasFiltered &&
