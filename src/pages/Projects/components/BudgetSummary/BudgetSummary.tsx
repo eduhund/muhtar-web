@@ -11,10 +11,17 @@ export default function BudgetSummary({
   project: Project;
   totalSpent: number;
 }) {
-  const currencySymbol = getCurrencySymbol(project.contract?.currency ?? "USD");
-  const budget = project.plan?.totalBudget ?? 0;
+  const currencySymbol = getCurrencySymbol(
+    project.activeContract?.budget?.currency ?? "USD"
+  );
+  const budget = project.activePlan?.totalBudget ?? 0;
   const isWarning = totalSpent > budget * 0.8 && totalSpent <= budget;
   const isAlarm = totalSpent > budget;
+
+  const statisticStyle = isAlarm
+    ? { color: "#cf1322" } // Red color for overdue
+    : {};
+
   return (
     <Card variant="borderless" className="ProjectWidget BudgetSummary">
       <div className="ProjectWidget-body">
@@ -31,6 +38,7 @@ export default function BudgetSummary({
           <Statistic
             title="Budget spent"
             value={totalSpent}
+            valueStyle={statisticStyle}
             groupSeparator={" "}
             decimalSeparator={","}
             precision={0}
@@ -40,7 +48,7 @@ export default function BudgetSummary({
         </Tooltip>
         <Descriptions size="small" column={1}>
           <Descriptions.Item label="Total budget">
-            {splitNumber(project.plan?.totalBudget ?? 0)} {currencySymbol}
+            {splitNumber(project.activePlan?.totalBudget ?? 0)} {currencySymbol}
           </Descriptions.Item>
           <Descriptions.Item label="Remaining">
             {splitNumber(budget - totalSpent)} {currencySymbol}

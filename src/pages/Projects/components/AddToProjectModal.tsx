@@ -33,8 +33,8 @@ export default function AddToProjectModal({
   );
 
   const projectRoles =
-    project.roles && project.roles.length > 0
-      ? project.roles.map((role) => ({
+    project.activeContract?.roles && project.activeContract.roles.length > 0
+      ? project.activeContract.roles.map((role) => ({
           value: role.key,
           label: role.name,
         }))

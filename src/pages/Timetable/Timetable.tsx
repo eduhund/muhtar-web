@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
-import { Button, Table, type TableProps } from "antd";
+import { Button, Table, Tag, type TableProps } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   RollbackOutlined,
 } from "@ant-design/icons";
 
-import { TimetableItem } from "../../context/AppContext";
+import { ProjectPlanJob, TimetableItem } from "../../context/AppContext";
 import { useMembership } from "../../hooks/useMembership";
 import { useProjects } from "../../hooks/useProjects";
 import { useSelect } from "../../hooks/useSelect";
@@ -28,10 +28,25 @@ interface DataType {
   ts: number;
   membership: { id: string; name: string };
   project: { id: string; name: string; customer: string | null };
-  task: { id: string; name: string } | null;
+  target: { type: string; id: string } | null;
   duration: number;
   comment: string;
   isDeleted: boolean;
+}
+
+function getTagStatus(
+  status: ProjectPlanJob["status"]
+): "green" | "blue" | "default" {
+  switch (status) {
+    case "completed":
+      return "green";
+    case "inProgress":
+      return "blue";
+    case "canceled":
+      return "default";
+    case "backlog":
+      return "default";
+  }
 }
 
 export function Timetable() {
@@ -45,6 +60,18 @@ export function Timetable() {
   const { rowSelection, onRowClick } = useSelect(timetable);
 
   const isAdmin = membership?.accessRole === "admin";
+
+  const jobs = useMemo(() => {
+    const allJobs =
+      projects?.flatMap((project) => project.activePlan?.jobs || []) || [];
+    const jobsMap: Record<string, (typeof allJobs)[0]> = {};
+    allJobs.forEach((job) => {
+      if (job?.id) {
+        jobsMap[job.id] = job;
+      }
+    });
+    return jobsMap;
+  }, [projects]);
 
   function handleEntryEdit(record: DataType) {
     setEditingEntry(record);
@@ -138,16 +165,22 @@ export function Timetable() {
         title: "What",
         dataIndex: "comment",
         key: "comment",
-        render: (_: unknown, { comment }: DataType) => (
-          <div>
-            {/*task && (
-              <Tag color="orange" style={{ marginBottom: 4 }}>
-                {task.name}
-              </Tag>
-            )*/}
-            <div>{comment}</div>
-          </div>
-        ),
+        render: (_: unknown, { comment, target }: DataType) => {
+          const targetData = jobs[target?.id || ""];
+          return (
+            <div>
+              {targetData && (
+                <Tag
+                  color={getTagStatus(targetData.status)}
+                  style={{ marginBottom: 4 }}
+                >
+                  {targetData.name}
+                </Tag>
+              )}
+              <div>{comment}</div>
+            </div>
+          );
+        },
       },
       {
         title: "",
@@ -201,6 +234,7 @@ export function Timetable() {
     UIMessages.restoreTime,
     deleteTime,
     isAdmin,
+    jobs,
     membership?.id,
     projects,
     restoreTime,

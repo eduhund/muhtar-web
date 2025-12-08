@@ -4,15 +4,21 @@ import dayjs from "dayjs";
 
 export default function DatesSummary({ project }: { project: Project }) {
   const now = new Date();
-  const startDate = project.plan?.startDate
-    ? new Date(project.plan.startDate)
+  const startDate = project.activePlan?.planStart
+    ? new Date(project.activePlan.planStart)
     : null;
-  const deadline = project.plan?.deadline
-    ? new Date(project.plan.deadline)
+  const deadline = project.activePlan?.planEnd
+    ? new Date(project.activePlan.planEnd)
     : null;
   const daysRemaining = deadline
     ? Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     : null;
+
+  const statisticStyle =
+    daysRemaining !== null && daysRemaining < 0
+      ? { color: "#cf1322" } // Red color for overdue
+      : {};
+
   return (
     <Card variant="borderless" className="ProjectWidget DatesSummary">
       <div className="ProjectWidget-body">
@@ -20,6 +26,7 @@ export default function DatesSummary({ project }: { project: Project }) {
           <Statistic
             title="Days remaining"
             value={daysRemaining ?? 0}
+            valueStyle={statisticStyle}
             groupSeparator={" "}
             decimalSeparator={","}
             precision={0}

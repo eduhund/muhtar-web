@@ -97,23 +97,41 @@ export type ProjectPlanRole = {
 export type ProjectPlanJob = {
   id: string;
   name: string;
-  startDate: string;
-  endDate: string;
-  taskIds: string[];
+  planStart: string;
+  planEnd: string;
+  status: "backlog" | "inProgress" | "completed" | "canceled";
+  actualStart: string | null;
+  actualEnd: string | null;
+  totalBudget: number;
+  totalResources: ProjectPlanResource[];
   roles: ProjectPlanRole[];
   children: ProjectPlanJob[];
 };
 
 export type ProjectPlan = {
-  startDate: string;
-  deadline: string;
+  planStart: string;
+  planEnd: string;
+  actualStart: string | null;
+  actualEnd: string | null;
   totalBudget: number;
   totalResources: ProjectPlanResource[];
+  roles: ProjectPlanRole[];
   jobs: ProjectPlanJob[];
 };
 
 type ProjectContract = {
-  currency: string;
+  budget: { amount: number; currency: Currency };
+  roles: {
+    key: string;
+    name: string;
+    resources: {
+      type: string;
+      costPerUnit: {
+        amount: number;
+        currency: Currency;
+      };
+    }[];
+  }[];
 };
 
 export interface Project {
@@ -122,20 +140,14 @@ export interface Project {
   customer: string | null;
   status: "active" | "archived";
   isDeleted: boolean;
-  roles: {
-    key: string;
-    name: string;
-    cost: number;
-    currency: Currency;
-  }[];
   memberships: {
     membershipId: string;
     accessRole: string;
     workRole: string;
     multiplier: number;
   }[];
-  contract: ProjectContract | null;
-  plan: ProjectPlan | null;
+  activeContract: ProjectContract | null;
+  activePlan: ProjectPlan | null;
 }
 
 export interface ProjectMembership {
@@ -151,6 +163,8 @@ export interface TimetableItem {
   project: { id: string; name: string; customer: string | null };
   membership: { id: string; name: string };
   date: string; // YYYY-MM-DD
+  type: string;
+  target: { type: "task" | "job" | "other"; id: string | null };
   duration: number; // in minutes
   comment: string;
   isDeleted: boolean;

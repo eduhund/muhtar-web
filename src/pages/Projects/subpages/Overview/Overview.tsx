@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
 import { Project } from "../../../../context/AppContext";
@@ -21,6 +22,7 @@ import ProjectContributor from "../../components/ProjectContributor/ProjectContr
 import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 import DatesSummary from "../../components/DatesSummary/DatesSummary";
+import { PlanSummary } from "../../components/PlanSummary/PlanSummary";
 
 const { Title } = Typography;
 
@@ -173,9 +175,10 @@ export default function Overview({ project }: { project: Project }) {
   const totalDurationByLastDay = lastDay
     ? lastDay.workers.reduce((acc, worker) => {
         const workerRoleCost =
-          project.roles.find(
-            (role) => (role.key || role.name) === worker.workRole
-          )?.cost || 0;
+          project?.activeContract?.roles
+            ?.find((role) => (role.key || role.name) === worker.workRole)
+            ?.resources?.find((resource) => resource.type === "time")
+            ?.costPerUnit.amount || 0;
         return acc + worker.value * workerRoleCost;
       }, 0)
     : 0;
@@ -187,42 +190,46 @@ export default function Overview({ project }: { project: Project }) {
       )
     );
     return (
-      <AreaChart
-        style={{
-          width: "100%",
-          maxWidth: "700px",
-          maxHeight: "70vh",
-          aspectRatio: 1.618,
-        }}
-        data={chartData}
-        margin={{
-          top: 20,
-          right: 0,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis width="auto" />
-        <Tooltip />
-        {allWorkerIds.map((workerId, idx) => {
-          const workerName =
-            memberships?.find((m) => m.id === workerId)?.name || workerId;
-          const color = areaColors[idx % areaColors.length];
-          return (
-            <Area
-              key={workerId}
-              type="monotone"
-              dataKey={workerId}
-              name={workerName}
-              stackId={1}
-              stroke={color}
-              fill={color}
-            />
-          );
-        })}
-      </AreaChart>
+      <div>
+        <Title level={4}>Time Logged</Title>
+        <ResponsiveContainer width="100%" height={350}>
+          <AreaChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 0,
+              left: 0,
+              bottom: 0,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis width="auto" />
+            <Tooltip />
+            {allWorkerIds.map((workerId, idx) => {
+              const workerName =
+                memberships?.find((m) => m.id === workerId)?.name || workerId;
+              const color = areaColors[idx % areaColors.length];
+              return (
+                <Area
+                  key={workerId}
+                  type="monotone"
+                  dataKey={workerId}
+                  name={workerName}
+                  stackId={1}
+                  stroke={color}
+                  fill={color}
+                />
+              );
+            })}
+          </AreaChart>
+        </ResponsiveContainer>
+        <p>
+          Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core
+          Team: {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
+          {Number(otherDuration).toFixed(0)} hours)
+        </p>
+      </div>
     );
   }, [chartData, groupedEntries, memberships]);
 
@@ -239,12 +246,14 @@ export default function Overview({ project }: { project: Project }) {
           <DatesSummary project={project} />
         </Col>
       </Row>
-      <p>
-        Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core Team:{" "}
-        {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
-        {Number(otherDuration).toFixed(0)} hours)
-      </p>
-      <StackedAreaChart />
+      <Row gutter={16} style={{ marginTop: 32 }}>
+        <Col span={12}>
+          <StackedAreaChart />
+        </Col>
+        <Col span={12}>
+          <PlanSummary project={project} />
+        </Col>
+      </Row>
       {/*<div className="ProjectPage-tasks">
         <div className="ProjectPage-block-header">
           <Title level={4}>Tasks</Title>

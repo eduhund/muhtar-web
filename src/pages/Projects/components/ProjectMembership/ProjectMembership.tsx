@@ -32,10 +32,11 @@ export default function ProjectMembership({
     setIsEditModalOpen(false);
   }
 
-  const projectRoles = project.roles.map((role) => ({
-    value: role.key,
-    label: role.name,
-  }));
+  const projectRoles =
+    project?.activeContract?.roles?.map((role) => ({
+      value: role.key,
+      label: role.name,
+    })) || [];
 
   return (
     <div className="ProjectMembership">
