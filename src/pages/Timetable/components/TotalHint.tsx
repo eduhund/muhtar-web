@@ -6,6 +6,7 @@ import { UpOutlined } from "@ant-design/icons";
 import { useProjects } from "../../../hooks/useProjects";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
 import { useTimetable } from "../../../hooks/useTimetable";
+import { useMembership } from "../../../hooks/useMembership";
 
 type Props = {
   data: TimetableItem[];
@@ -25,7 +26,8 @@ export default function TotalHint({
 }: Props) {
   const { selectedRowKeys, onChange } = selection;
   const { updateResources } = useTimetable();
-  const { activeProjects } = useProjects();
+  const { projects, activeProjects } = useProjects();
+  const { membership } = useMembership();
   const UIMessages = useUIMessages();
 
   const selectedEntries = useMemo(() => {
@@ -53,10 +55,19 @@ export default function TotalHint({
   }, [activeProjects, selectedProjectId]);
 
   const canEditResources = useMemo(() => {
-    if (!selectedProject) return false;
-    // Here you can add more complex permission logic if needed
-    return true;
-  }, [selectedProject]);
+    if (membership?.accessRole === "admin") return true;
+    selectedEntries.forEach((entry) => {
+      if (entry.membership.id !== membership?.id) {
+        const project = projects?.find((proj) => proj.id === entry.project?.id);
+        const isAdmin =
+          project?.memberships.find((m) => m.membershipId === membership?.id)
+            ?.accessRole === "admin";
+        if (!isAdmin) return false;
+      }
+
+      return true;
+    });
+  }, [membership, selectedEntries, projects]);
 
   const total = useMemo(() => {
     if (
@@ -136,10 +147,16 @@ export default function TotalHint({
           }. Spent ${total} hour${total !== 1 ? "s" : ""}`}
           <Dropdown
             menu={{ items }}
+            disabled={!canEditResources}
             placement="topLeft"
             overlayStyle={{ minWidth: 200 }}
           >
-            <Button type="link" icon={<UpOutlined />} iconPosition="end">
+            <Button
+              type="link"
+              icon={<UpOutlined />}
+              iconPosition="end"
+              disabled={!canEditResources}
+            >
               Actions
             </Button>
           </Dropdown>
