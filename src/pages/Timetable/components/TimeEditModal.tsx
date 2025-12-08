@@ -13,7 +13,7 @@ type FieldType = {
   date: Dayjs;
   duration: string;
   project: string;
-  target?: { type: string; id: string } | null;
+  target?: string | null;
   comment?: string;
 };
 
