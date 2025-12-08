@@ -164,7 +164,7 @@ export interface TimetableItem {
   membership: { id: string; name: string };
   date: string; // YYYY-MM-DD
   type: string;
-  target: { type: "task" | "job" | "other"; id: string | null };
+  target: { type: "task" | "job" | "other"; id: string } | null;
   duration: number; // in minutes
   comment: string;
   isDeleted: boolean;
