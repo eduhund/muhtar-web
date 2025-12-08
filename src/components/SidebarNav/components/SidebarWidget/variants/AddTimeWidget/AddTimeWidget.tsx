@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget";
 import { dateFormat } from "../../../../../../utils/date";
 import { useProjects } from "../../../../../../hooks/useProjects";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTimetable } from "../../../../../../hooks/useTimetable";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
@@ -16,7 +16,7 @@ type FieldType = {
   date: Dayjs;
   duration: number;
   project: string;
-  task?: string;
+  target?: string;
   comment?: string;
 };
 
@@ -24,22 +24,23 @@ const { TextArea } = Input;
 
 export function AddTimeWidget() {
   const [isAddingTime, setIsAddingTime] = useState(false);
-  const [, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null
+  );
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
-  //const { tasks } = useTasks();
   const { addTime } = useTimetable();
   const UIMessages = useUIMessages();
 
-  /*
-  const filteredTasks = useMemo(
-    () =>
-      tasks
-        ? tasks.filter((task) => task.project.id === selectedProjectId)
-        : [],
-    [tasks, selectedProjectId]
-  );
-  */
+  const projectJobs = useMemo(() => {
+    if (!activeProjects) return null;
+
+    const selectedProject = activeProjects.find(
+      (project) => project.id === selectedProjectId
+    );
+    if (!selectedProject?.activePlan) return [];
+    return selectedProject.activePlan.jobs;
+  }, [activeProjects, selectedProjectId]);
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -98,22 +99,22 @@ export function AddTimeWidget() {
           />
         </Form.Item>
 
-        {/*<Form.Item<FieldType> name="task">
+        <Form.Item<FieldType> name="target">
           <Select
             showSearch
             placeholder={
               !selectedProjectId ? "Select project first" : "Select..."
             }
-            options={filteredTasks}
+            options={projectJobs || []}
             value={{}}
             fieldNames={{ label: "name", value: "id" }}
-            prefix="Task"
+            prefix="Job"
             allowClear={false}
             style={{ width: "100%" }}
             onChange={() => {}}
             disabled={!selectedProjectId}
           />
-        </Form.Item>*/}
+        </Form.Item>
 
         <Form.Item<FieldType> name="duration">
           <Select

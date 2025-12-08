@@ -5,36 +5,36 @@ import TextArea from "antd/es/input/TextArea";
 import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTimetable } from "../../../hooks/useTimetable";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
-//import { useTasks } from "../../../hooks/useTasks";
 
 type FieldType = {
   date: Dayjs;
   duration: string;
   project: string;
-  task?: string;
+  target?: string | null;
   comment?: string;
 };
 
 export default function TimeEditModal({ record, onClose }: any) {
   const { updateTime } = useTimetable();
   const { activeProjects, isLoading } = useProjects();
-  //const { tasks } = useTasks();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
-  const [, setSelectedProjectId] = useState<string | null>(null);
-
-  /*
-  const filteredTasks = useMemo(
-    () =>
-      tasks && selectedProjectId
-        ? tasks.filter((task) => task.project.id === selectedProjectId)
-        : [],
-    [tasks, selectedProjectId]
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null
   );
-  */
+
+  const projectJobs = useMemo(() => {
+    if (!activeProjects) return null;
+
+    const selectedProject = activeProjects.find(
+      (project) => project.id === selectedProjectId
+    );
+    if (!selectedProject?.activePlan) return [];
+    return selectedProject.activePlan.jobs;
+  }, [activeProjects, selectedProjectId]);
 
   useEffect(() => {
     if (record) {
@@ -43,20 +43,27 @@ export default function TimeEditModal({ record, onClose }: any) {
         date: dayjs(record.date),
         project: record.project.id,
         duration: record.duration,
-        task: record.task ? record.task.id : null,
+        target: record.target ? record.target.id : null,
         comment: record.comment,
       });
     }
   }, [record, form]);
 
   async function handleOk() {
-    const { date, duration, project, comment = "" } = form.getFieldsValue();
+    const {
+      date,
+      duration,
+      project,
+      target,
+      comment = "",
+    } = form.getFieldsValue();
     const OK = await updateTime({
       date: date.format("YYYY-MM-DD"),
       membershipId: record.membership.id,
       id: record.id,
       duration,
       projectId: project,
+      target: target ? { type: "job", id: target } : null,
       comment,
     });
     if (OK) {
@@ -118,22 +125,22 @@ export default function TimeEditModal({ record, onClose }: any) {
             isLoading={isLoading}
             onChange={(value) => {
               setSelectedProjectId(value);
-              form.setFieldValue("task", null); // Сбросить выбранную задачу
+              form.setFieldValue("target", null);
             }}
           />
         </Form.Item>
 
-        {/*<Form.Item<FieldType> name="task">
+        <Form.Item<FieldType> name="target">
           <Select
             showSearch
             placeholder={"Select..."}
-            options={filteredTasks}
+            options={projectJobs || []}
             fieldNames={{ label: "name", value: "id" }}
-            prefix="Task"
+            prefix="Job"
             allowClear
             style={{ width: "100%" }}
           />
-        </Form.Item>*/}
+        </Form.Item>
 
         <Form.Item<FieldType> name="duration">
           <Select

@@ -21,7 +21,7 @@ export type AddTimeEntry = {
   duration: number;
   membershipId: string;
   projectId: string;
-  taskId?: string | null;
+  target?: { type: string; id: string } | null;
   comment?: string;
 };
 
