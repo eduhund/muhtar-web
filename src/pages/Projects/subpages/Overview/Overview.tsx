@@ -225,11 +225,6 @@ export default function Overview({ project }: { project: Project }) {
             })}
           </AreaChart>
         </ResponsiveContainer>
-        <p>
-          Total Time Logged: {Number(totalDuration).toFixed(0)} hours (Core
-          Team: {Number(coreTeamDuration).toFixed(0)} hours, Others:{" "}
-          {Number(otherDuration).toFixed(0)} hours)
-        </p>
       </div>
     );
   }, [chartData, groupedEntries, memberships]);

@@ -22,18 +22,19 @@ const { Text, Title } = Typography;
 // UTILITIES
 // ============================================================================
 
-function getBadgeStatus(
-  status: ProjectPlanJob["status"]
-): "success" | "processing" | "default" | "error" | "warning" {
+function getBadgeStatus(status: ProjectPlanJob["status"]): {
+  text: string;
+  color: string;
+} {
   switch (status) {
     case "completed":
-      return "success";
+      return { text: "Completed", color: "green" };
     case "inProgress":
-      return "processing";
+      return { text: "In Progress", color: "blue" };
     case "canceled":
-      return "error";
+      return { text: "Canceled", color: "red" };
     case "backlog":
-      return "default";
+      return { text: "Backlog", color: "rgba(200, 200, 200, 1)" };
   }
 }
 
@@ -103,6 +104,7 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
 interface ProgressBarProps {
   totalBudget: number;
   totalSpent: number;
+  status: ProjectPlanJob["status"];
   currency: string;
   locale: string;
 }
@@ -110,18 +112,20 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = ({
   totalBudget,
   totalSpent,
+  status,
   currency,
   locale,
 }) => {
   const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
   const hasOverspend = totalSpent > totalBudget;
   const overspendAmount = totalSpent - totalBudget;
+  const isCriticalOverspend = totalSpent > totalBudget * 1.2;
   return (
     <div className="ppw-progress-section">
       <div className="ppw-budget-header">
         <Text>Budget</Text>
         {hasOverspend && (
-          <Text type="danger">
+          <Text type={isCriticalOverspend ? "danger" : undefined}>
             Overspending: {formatMoney(overspendAmount, currency, locale)}
           </Text>
         )}
@@ -136,7 +140,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       <Progress
         percent={progressPercentage}
         showInfo={false}
-        status={hasOverspend ? "exception" : "normal"}
+        status={
+          isCriticalOverspend
+            ? "exception"
+            : status === "completed"
+            ? "success"
+            : "normal"
+        }
       />
     </div>
   );
@@ -205,30 +215,32 @@ const StageCard: React.FC<StageCardProps> = ({
   const totalMoney = userResources.reduce((acc, user) => acc + user.total, 0);
 
   return (
-    <div className="ppw-stage-card">
-      {/* Header */}
-      <div className="ppw-stage-header">
-        <Badge status={getBadgeStatus(stage.status)} />
-        <Title level={5}>{stage.name}</Title>
-      </div>
-
-      {/* Dates */}
-      <DatesDisplay stage={stage} locale={locale} />
-
-      {/* Progress */}
-      <ProgressBar
-        totalBudget={stage.totalBudget}
-        totalSpent={totalMoney}
-        currency={currency}
-        locale={locale}
-      />
-
-      {unknownRoleDuration > 0 && (
-        <div className="ppw-stage-warning">
-          Resources without project role: {unknownRoleDuration / 60}h
+    <Badge.Ribbon {...getBadgeStatus(stage.status)}>
+      <div className="ppw-stage-card">
+        {/* Header */}
+        <div className="ppw-stage-header">
+          <Title level={5}>{stage.name}</Title>
         </div>
-      )}
-    </div>
+
+        {/* Dates */}
+        <DatesDisplay stage={stage} locale={locale} />
+
+        {/* Progress */}
+        <ProgressBar
+          totalBudget={stage.totalBudget}
+          totalSpent={totalMoney}
+          status={stage.status}
+          currency={currency}
+          locale={locale}
+        />
+
+        {unknownRoleDuration > 0 && (
+          <div className="ppw-stage-warning">
+            Resources without project role: {unknownRoleDuration / 60}h
+          </div>
+        )}
+      </div>
+    </Badge.Ribbon>
   );
 };
 
