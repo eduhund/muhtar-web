@@ -67,6 +67,38 @@ export function useTimetable() {
     return OK;
   }
 
+  async function updateResources(entries: UpdateTimeEntry[]) {
+    if (!timetable) return { success: [], failed: entries.map((e) => e.id) };
+    const results = await Promise.allSettled(
+      entries.map((entry) => membershipAPI.updateTime(entry))
+    );
+    const successIds: string[] = [];
+    const failedIds: string[] = [];
+    let newTimetable = [...timetable];
+
+    entries.forEach((entry, idx) => {
+      const result = results[idx];
+      if (result.status === "fulfilled" && result.value?.OK) {
+        const entryRecord = newTimetable.find((item) => item.id === entry.id);
+        if (entryRecord) {
+          newTimetable = updateTimetableItem(newTimetable, {
+            ...entryRecord,
+            ...entry,
+          });
+          successIds.push(entry.id);
+        }
+      } else {
+        failedIds.push(entry.id);
+      }
+    });
+
+    if (successIds.length) {
+      updateState({ timetable: newTimetable });
+    }
+
+    return { success: successIds, failed: failedIds };
+  }
+
   async function deleteTime(entry: { id: string }) {
     const { OK } = await membershipAPI.deleteTime(entry);
     if (OK && timetable) {
@@ -99,6 +131,7 @@ export function useTimetable() {
     getTime,
     addTime,
     updateTime,
+    updateResources,
     deleteTime,
     restoreTime,
   };
