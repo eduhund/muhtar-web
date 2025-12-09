@@ -103,6 +103,7 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
 interface ProgressBarProps {
   totalBudget: number;
   totalSpent: number;
+  status: ProjectPlanJob["status"];
   currency: string;
   locale: string;
 }
@@ -110,6 +111,7 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = ({
   totalBudget,
   totalSpent,
+  status,
   currency,
   locale,
 }) => {
@@ -137,7 +139,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       <Progress
         percent={progressPercentage}
         showInfo={false}
-        status={hasOverspend ? "exception" : "normal"}
+        status={
+          isCriticalOverspend
+            ? "exception"
+            : status === "completed"
+            ? "success"
+            : "normal"
+        }
       />
     </div>
   );
@@ -220,6 +228,7 @@ const StageCard: React.FC<StageCardProps> = ({
       <ProgressBar
         totalBudget={stage.totalBudget}
         totalSpent={totalMoney}
+        status={stage.status}
         currency={currency}
         locale={locale}
       />
