@@ -11,8 +11,8 @@ import {
 interface GanttItem {
   id: string;
   name: string;
-  startDate?: string;
-  dueDate?: string;
+  planStart?: string;
+  planEnd?: string;
   prevJob?: string;
   tasks?: string[];
   roles?: ProjectPlanRole[] | string[];
@@ -27,8 +27,8 @@ interface GanttChartProps {
 interface FlatItem {
   id: string;
   name: string;
-  startDate: Date;
-  dueDate: Date;
+  planStart: Date;
+  planEnd: Date;
   resources: number; // total minutes
   level: number;
   hasChildren: boolean;
@@ -37,6 +37,7 @@ interface FlatItem {
 }
 
 export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
+  console.log("Rendering Timeline with plan:", plan);
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{
@@ -60,8 +61,8 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
   const calculateMetrics = (
     item: GanttItem
   ): {
-    startDate: Date;
-    dueDate: Date;
+    planStart: Date;
+    planEnd: Date;
     resources: number;
     roles: ProjectPlanRole[];
   } => {
@@ -73,19 +74,19 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
         0
       );
       return {
-        startDate: new Date(item.startDate!),
-        dueDate: new Date(item.dueDate!),
+        planStart: new Date(item.planStart!),
+        planEnd: new Date(item.planEnd!),
         resources,
         roles,
       };
     } else {
       // Parent node - aggregate from children
       const childMetrics = item.children.map(calculateMetrics);
-      const startDate = new Date(
-        Math.min(...childMetrics.map((m) => m.startDate.getTime()))
+      const planStart = new Date(
+        Math.min(...childMetrics.map((m) => m.planStart.getTime()))
       );
-      const dueDate = new Date(
-        Math.max(...childMetrics.map((m) => m.dueDate.getTime()))
+      const planEnd = new Date(
+        Math.max(...childMetrics.map((m) => m.planEnd.getTime()))
       );
       const resources = childMetrics.reduce((sum, m) => sum + m.resources, 0);
 
@@ -108,7 +109,7 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
         })
       );
 
-      return { startDate, dueDate, resources, roles };
+      return { planStart, planEnd, resources, roles };
     }
   };
 
@@ -127,8 +128,8 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
       result.push({
         id: item.id,
         name: item.name,
-        startDate: metrics.startDate,
-        dueDate: metrics.dueDate,
+        planStart: metrics.planStart,
+        planEnd: metrics.planEnd,
         resources: metrics.resources,
         level,
         hasChildren: !!item.children && item.children.length > 0,
@@ -160,10 +161,10 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
       return { minDate: new Date(), maxDate: new Date() };
     }
     const minDate = new Date(
-      Math.min(...flatData.map((item) => item.startDate.getTime()))
+      Math.min(...flatData.map((item) => item.planStart.getTime()))
     );
     const maxDate = new Date(
-      Math.max(...flatData.map((item) => item.dueDate.getTime()))
+      Math.max(...flatData.map((item) => item.planEnd.getTime()))
     );
     return { minDate, maxDate };
   }, [flatData]);
@@ -203,11 +204,11 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
   // Calculate bar dimensions
   const getBarDimensions = (item: FlatItem) => {
     const daysSinceStart = Math.floor(
-      (item.startDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
+      (item.planStart.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     const resourcesDays =
       Math.ceil(
-        (item.dueDate.getTime() - item.startDate.getTime()) /
+        (item.planEnd.getTime() - item.planStart.getTime()) /
           (1000 * 60 * 60 * 24)
       ) || 1;
 
@@ -426,7 +427,7 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
             const { left, width, barHeight, rowHeight } =
               getBarDimensions(item);
             const isCollapsed = collapsedItems.has(item.id);
-            const days = calculateDays(item.startDate, item.dueDate);
+            const days = calculateDays(item.planStart, item.planEnd);
 
             return (
               <div
@@ -465,7 +466,7 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
                     className="text-[9px] text-gray-500"
                     style={{ paddingLeft: "16px" }}
                   >
-                    {formatDate(item.startDate)} - {formatDate(item.dueDate)} •{" "}
+                    {formatDate(item.planStart)} - {formatDate(item.planEnd)} •{" "}
                     {days}d • {formatDuration(item.resources)}
                   </div>
                 </div>
@@ -507,8 +508,8 @@ export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
                           {item.name}
                         </div>
                         <div className="text-[9px] text-gray-600 mt-0.5">
-                          {formatDate(item.startDate)} -{" "}
-                          {formatDate(item.dueDate)} • {days}d •{" "}
+                          {formatDate(item.planStart)} -{" "}
+                          {formatDate(item.planEnd)} • {days}d •{" "}
                           {formatDuration(item.resources)}
                         </div>
                       </div>
