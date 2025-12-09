@@ -20,6 +20,7 @@
 .ppw-stage-header {
   display: flex;
   gap: 8px;
+  max-width: calc(100% - 80px);
 
   & span {
     margin-top: 1px;
