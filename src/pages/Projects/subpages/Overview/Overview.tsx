@@ -23,6 +23,7 @@ import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
 import BudgetSummary from "../../components/BudgetSummary/BudgetSummary";
 import DatesSummary from "../../components/DatesSummary/DatesSummary";
 import { PlanSummary } from "../../components/PlanSummary/PlanSummary";
+import ResourcesSummary from "../../components/ResourcesSummary/ResourcesSummary";
 
 const { Title } = Typography;
 
@@ -236,13 +237,16 @@ export default function Overview({ project }: { project: Project }) {
   return (
     <div className="ProjectPage-overview">
       <Row gutter={16}>
-        <Col span={12}>
+        <Col span={8}>
           <BudgetSummary
             project={project}
             totalSpent={totalDurationByLastDay}
           />
         </Col>
-        <Col span={12}>
+        <Col span={8}>
+          <ResourcesSummary project={project} totalSpent={totalDuration} />
+        </Col>
+        <Col span={8}>
           <DatesSummary project={project} />
         </Col>
       </Row>
