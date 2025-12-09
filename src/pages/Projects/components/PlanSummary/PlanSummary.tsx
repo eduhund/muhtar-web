@@ -122,7 +122,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       <div className="ppw-budget-header">
         <Text>Budget</Text>
         {hasOverspend && (
-          <Text type={isCriticalOverspend ? "danger" : "default"}>
+          <Text type={isCriticalOverspend ? "danger" : undefined}>
             Overspending: {formatMoney(overspendAmount, currency, locale)}
           </Text>
         )}
