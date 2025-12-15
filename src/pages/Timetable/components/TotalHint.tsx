@@ -50,17 +50,17 @@ export default function TotalHint({ filteredData, filters, selection }: Props) {
 
   const canEditResources = useMemo(() => {
     if (membership?.accessRole === "admin") return true;
+    let isAdmin = true;
     selectedEntries.forEach((entry) => {
       if (entry.membership.id !== membership?.id) {
         const project = projects?.find((proj) => proj.id === entry.project?.id);
-        const isAdmin =
+        isAdmin =
           project?.memberships.find((m) => m.membershipId === membership?.id)
             ?.accessRole === "admin";
-        if (!isAdmin) return false;
       }
-
       return true;
     });
+    return isAdmin;
   }, [membership, selectedEntries, projects]);
 
   const total = useMemo(() => {
