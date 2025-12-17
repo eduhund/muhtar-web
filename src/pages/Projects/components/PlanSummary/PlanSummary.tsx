@@ -288,7 +288,7 @@ const StageCard: React.FC<StageCardProps> = ({
                 size="small"
                 color="default"
                 variant="link"
-                icon={isExpanded ? <DownOutlined /> : <UpOutlined />}
+                icon={isExpanded ? <UpOutlined /> : <DownOutlined />}
                 onClick={() => setIsExpanded(!isExpanded)}
               />
             )}
