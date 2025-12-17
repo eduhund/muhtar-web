@@ -223,26 +223,27 @@ const StageCard: React.FC<StageCardProps> = ({
   const totalMoney = userResources.reduce((acc, user) => acc + user.total, 0);
 
   return (
-    <div className="ppw-stage-card">
+    <div className="StageCard">
       <StageStatus stage={stage} />
-      {/* Header */}
-      <div className="ppw-stage-header">
-        <Title level={5}>{stage.name}</Title>
-      </div>
-
-      {/* Progress */}
-      <ProgressBar
-        totalBudget={stage.totalBudget}
-        totalSpent={totalMoney}
-        status={stage.status}
-        currency={currency}
-      />
-
-      {unknownRoleDuration > 0 && (
-        <div className="ppw-stage-warning">
-          Resources without project role: {unknownRoleDuration / 60}h
+      <div className="StageCard-content">
+        <div className="ppw-stage-header">
+          <Title level={5}>{stage.name}</Title>
         </div>
-      )}
+
+        {/* Progress */}
+        <ProgressBar
+          totalBudget={stage.totalBudget}
+          totalSpent={totalMoney}
+          status={stage.status}
+          currency={currency}
+        />
+
+        {unknownRoleDuration > 0 && (
+          <div className="ppw-stage-warning">
+            Resources without project role: {unknownRoleDuration / 60}h
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,12 @@
 .StageCard {
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  background-color: #ffffff;
+
+  overflow: hidden;
+
   &-status {
-    padding: 10px 12px;
+    padding: 8px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -29,6 +35,14 @@
       color: #dc2626;
     }
   }
+
+  &-content {
+    padding: 8px 12px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 /* Widget Container */
@@ -36,16 +50,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-/* Stage Card */
-.ppw-stage-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  background-color: #ffffff;
 }
 
 /* Header */
