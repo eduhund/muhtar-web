@@ -231,17 +231,22 @@ const StageCard: React.FC<StageCardProps> = ({
       <StageStatus stage={stage} />
       <div className="StageCard-content">
         <div className="StageCard-header">
-          <Title level={5}>{stage.name}</Title>
-          {stage.status !== "inProgress" && (
-            <Button
-              className="StageCard-header-expandButton"
-              size="small"
-              color="default"
-              variant="link"
-              icon={isExpanded ? <DownOutlined /> : <UpOutlined />}
-              onClick={() => setIsExpanded(!isExpanded)}
-            />
-          )}
+          <div className="StageCard-header-title">
+            <Title level={5}>{stage.name}</Title>
+            {stage.status !== "inProgress" && (
+              <Button
+                className="StageCard-header-expandButton"
+                size="small"
+                color="default"
+                variant="link"
+                icon={isExpanded ? <DownOutlined /> : <UpOutlined />}
+                onClick={() => setIsExpanded(!isExpanded)}
+              />
+            )}
+          </div>
+          <Button type="link" onClick={() => {}}>
+            Actions
+          </Button>
         </div>
 
         {/* Progress */}
