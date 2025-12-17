@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Progress, Typography } from "antd";
+import { Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
@@ -63,10 +63,10 @@ const formatDate = (dateStr: string | null, locale: string): string => {
 
 interface DatesDisplayProps {
   stage: ProjectPlanJob;
-  locale: string;
 }
 
-const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
+const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage }) => {
+  const locale = "ru-RU";
   const planDuration = dayjs(stage.planEnd).diff(dayjs(stage.planStart), "day");
   const actualDuration = dayjs(stage.actualEnd || new Date()).diff(
     dayjs(stage.actualStart),
@@ -106,7 +106,6 @@ interface ProgressBarProps {
   totalSpent: number;
   status: ProjectPlanJob["status"];
   currency: string;
-  locale: string;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -114,8 +113,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   totalSpent,
   status,
   currency,
-  locale,
 }) => {
+  const locale = "ru-RU";
   const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
   const hasOverspend = totalSpent > totalBudget;
   const overspendAmount = totalSpent - totalBudget;
@@ -152,12 +151,22 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
+function StageStatus({ stage }: { stage: ProjectPlanJob }) {
+  return (
+    <div className={`StageCard-status _${stage.status}`}>
+      <span className="StageCard-status-label">
+        {getBadgeStatus(stage.status).text}
+      </span>
+      <DatesDisplay stage={stage} />
+    </div>
+  );
+}
+
 interface StageCardProps {
   stage: ProjectPlanJob;
   contract: Project["activeContract"];
   memberships: Project["memberships"];
   currency: string;
-  locale: string;
 }
 
 const StageCard: React.FC<StageCardProps> = ({
@@ -165,7 +174,6 @@ const StageCard: React.FC<StageCardProps> = ({
   contract,
   memberships,
   currency,
-  locale,
 }) => {
   const { timetable } = useTimetable();
   const roles = contract?.roles || [];
@@ -215,32 +223,27 @@ const StageCard: React.FC<StageCardProps> = ({
   const totalMoney = userResources.reduce((acc, user) => acc + user.total, 0);
 
   return (
-    <Badge.Ribbon {...getBadgeStatus(stage.status)}>
-      <div className="ppw-stage-card">
-        {/* Header */}
-        <div className="ppw-stage-header">
-          <Title level={5}>{stage.name}</Title>
-        </div>
-
-        {/* Dates */}
-        <DatesDisplay stage={stage} locale={locale} />
-
-        {/* Progress */}
-        <ProgressBar
-          totalBudget={stage.totalBudget}
-          totalSpent={totalMoney}
-          status={stage.status}
-          currency={currency}
-          locale={locale}
-        />
-
-        {unknownRoleDuration > 0 && (
-          <div className="ppw-stage-warning">
-            Resources without project role: {unknownRoleDuration / 60}h
-          </div>
-        )}
+    <div className="ppw-stage-card">
+      <StageStatus stage={stage} />
+      {/* Header */}
+      <div className="ppw-stage-header">
+        <Title level={5}>{stage.name}</Title>
       </div>
-    </Badge.Ribbon>
+
+      {/* Progress */}
+      <ProgressBar
+        totalBudget={stage.totalBudget}
+        totalSpent={totalMoney}
+        status={stage.status}
+        currency={currency}
+      />
+
+      {unknownRoleDuration > 0 && (
+        <div className="ppw-stage-warning">
+          Resources without project role: {unknownRoleDuration / 60}h
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -251,7 +254,6 @@ const StageCard: React.FC<StageCardProps> = ({
 export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
   project,
   currency = "RUB",
-  locale = "ru-RU",
   className = "",
 }) => {
   const stages = project?.activePlan?.jobs || [];
@@ -266,7 +268,6 @@ export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
             contract={project.activeContract}
             memberships={project.memberships}
             currency={currency}
-            locale={locale}
           />
         ))}
       </div>
