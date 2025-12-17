@@ -102,14 +102,14 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage }) => {
   );
 };
 
-interface ProgressBarProps {
+interface BudgetProps {
   totalBudget: number;
   totalSpent: number;
   status: ProjectPlanJob["status"];
   currency: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
+const Budget: React.FC<BudgetProps> = ({
   totalBudget,
   totalSpent,
   status,
@@ -159,6 +159,45 @@ function StageStatus({ stage }: { stage: ProjectPlanJob }) {
         {getBadgeStatus(stage.status).text}
       </span>
       <DatesDisplay stage={stage} />
+    </div>
+  );
+}
+
+function StageItem({ item }: { item: { name: string } }) {
+  return (
+    <div className="StageCard-outcome">
+      <div>{item.name}</div>
+    </div>
+  );
+}
+
+function StageDetails({ stage }: { stage: ProjectPlanJob }) {
+  console.log(stage);
+  return (
+    <div className="StageCard-details">
+      <div className="StageCard-details-item StageCard-outcomes">
+        <div>
+          <Text strong>Outcomes</Text>
+        </div>
+        {stage.children && stage.children.length > 0 ? (
+          stage.children.map((item) => <StageItem key={item.id} item={item} />)
+        ) : (
+          <Text type="secondary">No expected outcomes</Text>
+        )}
+      </div>
+      <div className="StageCard-details-separator" />
+      <div className="StageCard-details-item StageCard-resources">
+        <div>
+          <Text strong>Resources</Text>
+        </div>
+        {stage.totalResources && stage.totalResources.length > 0 ? (
+          stage.totalResources.map((item, i) => (
+            <StageItem key={i} item={{ name: item.type }} />
+          ))
+        ) : (
+          <Text type="secondary">No planned resources</Text>
+        )}
+      </div>
     </div>
   );
 }
@@ -250,13 +289,13 @@ const StageCard: React.FC<StageCardProps> = ({
         </div>
         {(isExpanded || stage.status === "inProgress") && (
           <div className="StageCard-expandedContent">
-            <ProgressBar
+            <Budget
               totalBudget={stage.totalBudget}
               totalSpent={totalMoney}
               status={stage.status}
               currency={currency}
             />
-
+            <StageDetails stage={stage} />
             {unknownRoleDuration > 0 && (
               <div className="ppw-stage-warning">
                 Resources without project role: {unknownRoleDuration / 60}h
