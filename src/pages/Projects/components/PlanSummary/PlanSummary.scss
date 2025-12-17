@@ -101,6 +101,12 @@
       width: 1px;
       background-color: #f0f0f0;
     }
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
   }
 }
 

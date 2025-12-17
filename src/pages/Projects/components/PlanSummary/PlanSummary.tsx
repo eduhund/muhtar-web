@@ -5,6 +5,10 @@ import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
 import dayjs from "dayjs";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import {
+  getResourceName,
+  getResourceValue,
+} from "../../../../utils/projectResources";
 
 // ============================================================================
 // TYPES
@@ -163,16 +167,16 @@ function StageStatus({ stage }: { stage: ProjectPlanJob }) {
   );
 }
 
-function StageItem({ item }: { item: { name: string } }) {
+function StageItem({ name, value }: { name: string; value?: number }) {
   return (
-    <div className="StageCard-outcome">
-      <div>{item.name}</div>
+    <div className="StageCard-details-row">
+      <div className="StageCard-details-row-name">{name}</div>
+      <div className="StageCard-details-row-value">{value}</div>
     </div>
   );
 }
 
 function StageDetails({ stage }: { stage: ProjectPlanJob }) {
-  console.log(stage);
   return (
     <div className="StageCard-details">
       <div className="StageCard-details-item StageCard-outcomes">
@@ -180,7 +184,9 @@ function StageDetails({ stage }: { stage: ProjectPlanJob }) {
           <Text strong>Outcomes</Text>
         </div>
         {stage.children && stage.children.length > 0 ? (
-          stage.children.map((item) => <StageItem key={item.id} item={item} />)
+          stage.children.map((item) => (
+            <StageItem key={item.id} name={item.name} />
+          ))
         ) : (
           <Text type="secondary">No expected outcomes</Text>
         )}
@@ -192,7 +198,11 @@ function StageDetails({ stage }: { stage: ProjectPlanJob }) {
         </div>
         {stage.totalResources && stage.totalResources.length > 0 ? (
           stage.totalResources.map((item, i) => (
-            <StageItem key={i} item={{ name: item.type }} />
+            <StageItem
+              key={i}
+              name={getResourceName(item)}
+              value={getResourceValue(item)}
+            />
           ))
         ) : (
           <Text type="secondary">No planned resources</Text>
