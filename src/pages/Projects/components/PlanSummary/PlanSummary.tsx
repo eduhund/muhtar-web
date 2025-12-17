@@ -121,7 +121,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   const overspendAmount = totalSpent - totalBudget;
   const isCriticalOverspend = totalSpent > totalBudget * 1.2;
   return (
-    <div className="ppw-progress-section">
+    <div className="StageCard-budget">
       <div className="ppw-budget-header">
         <Text>Budget</Text>
         {hasOverspend && (
