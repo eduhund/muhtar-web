@@ -104,6 +104,7 @@ export type ProjectPlanJob = {
   actualEnd: string | null;
   totalBudget: number;
   totalResources: ProjectPlanResource[];
+  outcomes?: any[];
   roles: ProjectPlanRole[];
   children: ProjectPlanJob[];
 };

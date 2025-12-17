@@ -183,8 +183,8 @@ function StageDetails({ stage }: { stage: ProjectPlanJob }) {
         <div>
           <Text strong>Outcomes</Text>
         </div>
-        {stage.children && stage.children.length > 0 ? (
-          stage.children.map((item) => (
+        {stage.outcomes && stage.outcomes.length > 0 ? (
+          stage.outcomes.map((item) => (
             <StageItem key={item.id} name={item.name} />
           ))
         ) : (
