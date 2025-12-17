@@ -64,10 +64,14 @@
     }
   }
 
+  &-expandedContent {
+    padding-bottom: 6px;
+  }
+
   &-budget {
-    padding: 8px;
+    padding: 8px 12px;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
     background-color: #f5f5f5;
 
     .ppw-budget-header {

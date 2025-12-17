@@ -249,7 +249,7 @@ const StageCard: React.FC<StageCardProps> = ({
           </Button>
         </div>
         {(isExpanded || stage.status === "inProgress") && (
-          <div>
+          <div className="StageCard-expandedContent">
             <ProgressBar
               totalBudget={stage.totalBudget}
               totalSpent={totalMoney}
