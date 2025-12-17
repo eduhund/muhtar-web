@@ -1,9 +1,10 @@
 import React from "react";
-import { Progress, Typography } from "antd";
+import { Button, Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
 import dayjs from "dayjs";
+import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
 // ============================================================================
 // TYPES
@@ -175,6 +176,9 @@ const StageCard: React.FC<StageCardProps> = ({
   memberships,
   currency,
 }) => {
+  const [isExpanded, setIsExpanded] = React.useState(
+    stage.status === "inProgress"
+  );
   const { timetable } = useTimetable();
   const roles = contract?.roles || [];
   const filteredEntries = timetable?.filter((entry) => {
@@ -226,8 +230,18 @@ const StageCard: React.FC<StageCardProps> = ({
     <div className="StageCard">
       <StageStatus stage={stage} />
       <div className="StageCard-content">
-        <div className="ppw-stage-header">
+        <div className="StageCard-header">
           <Title level={5}>{stage.name}</Title>
+          {stage.status !== "inProgress" && (
+            <Button
+              className="StageCard-header-expandButton"
+              size="small"
+              color="default"
+              variant="link"
+              icon={isExpanded ? <DownOutlined /> : <UpOutlined />}
+              onClick={() => setIsExpanded(!isExpanded)}
+            />
+          )}
         </div>
 
         {/* Progress */}
