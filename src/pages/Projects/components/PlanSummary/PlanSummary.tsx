@@ -248,18 +248,20 @@ const StageCard: React.FC<StageCardProps> = ({
             Actions
           </Button>
         </div>
+        {(isExpanded || stage.status === "inProgress") && (
+          <div>
+            <ProgressBar
+              totalBudget={stage.totalBudget}
+              totalSpent={totalMoney}
+              status={stage.status}
+              currency={currency}
+            />
 
-        {/* Progress */}
-        <ProgressBar
-          totalBudget={stage.totalBudget}
-          totalSpent={totalMoney}
-          status={stage.status}
-          currency={currency}
-        />
-
-        {unknownRoleDuration > 0 && (
-          <div className="ppw-stage-warning">
-            Resources without project role: {unknownRoleDuration / 60}h
+            {unknownRoleDuration > 0 && (
+              <div className="ppw-stage-warning">
+                Resources without project role: {unknownRoleDuration / 60}h
+              </div>
+            )}
           </div>
         )}
       </div>
