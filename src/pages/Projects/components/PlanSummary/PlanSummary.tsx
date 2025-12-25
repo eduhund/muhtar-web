@@ -293,9 +293,10 @@ const StageCard: React.FC<StageCardProps> = ({
               />
             )}
           </div>
-          <Button type="link" onClick={() => {}}>
+          {/*<Button type="link" onClick={() => {}}>
             Actions
           </Button>
+          */}
         </div>
         {(isExpanded || stage.status === "inProgress") && (
           <div className="StageCard-expandedContent">
