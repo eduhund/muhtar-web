@@ -1,40 +1,120 @@
+.StageCard {
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  background-color: #ffffff;
+
+  overflow: hidden;
+
+  &-status {
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+
+    &-label {
+      font-weight: 600;
+    }
+
+    &._backlog {
+      color: rgba(0, 0, 0, 0.8);
+      background-color: #f5f5f5;
+    }
+
+    &._inProgress {
+      color: #1677ff;
+      background-color: #e6f4ff;
+    }
+
+    &._completed {
+      color: #52c41a;
+      background-color: #f6ffed;
+    }
+
+    &._canceled {
+      color: #dc2626;
+    }
+  }
+
+  &-content {
+    padding: 8px 12px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-title {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      h5 {
+        margin: 0;
+      }
+    }
+
+    &-expandButton {
+      margin-top: 2px;
+    }
+  }
+
+  &-expandedContent {
+    padding-bottom: 6px;
+  }
+
+  &-budget {
+    padding: 8px 12px;
+    width: 100%;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+
+    .ppw-budget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ppw-budget-amounts {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+
+  &-details {
+    margin-top: 8px;
+    display: flex;
+    gap: 16px;
+
+    &-item {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    &-separator {
+      width: 1px;
+      background-color: #f0f0f0;
+    }
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+  }
+}
+
 /* Widget Container */
 .ppw-stages-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-/* Stage Card */
-.ppw-stage-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 8px 12px;
-  background-color: #ffffff;
-}
-
-/* Header */
-.ppw-stage-header {
-  display: flex;
-  gap: 8px;
-  max-width: calc(100% - 80px);
-
-  & span {
-    margin-top: 1px;
-  }
-
-  & h5 {
-    margin: 0;
-  }
-}
-
-.ppw-stage-name {
-  color: #111827;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
 }
 
 .ppw-stage-warning {
@@ -55,21 +135,4 @@
   gap: 0.5rem;
   color: #4b5563;
   flex-wrap: wrap;
-}
-
-/* Progress Bar Section */
-.ppw-progress-section {
-  width: 100%;
-}
-
-.ppw-budget-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ppw-budget-amounts {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
 }

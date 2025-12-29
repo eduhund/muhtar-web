@@ -1,9 +1,14 @@
 import React from "react";
-import { Badge, Progress, Typography } from "antd";
+import { Button, Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
 import { useTimetable } from "../../../../hooks/useTimetable";
 import dayjs from "dayjs";
+import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import {
+  getResourceName,
+  getResourceValue,
+} from "../../../../utils/projectResources";
 
 // ============================================================================
 // TYPES
@@ -63,10 +68,10 @@ const formatDate = (dateStr: string | null, locale: string): string => {
 
 interface DatesDisplayProps {
   stage: ProjectPlanJob;
-  locale: string;
 }
 
-const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
+const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage }) => {
+  const locale = "ru-RU";
   const planDuration = dayjs(stage.planEnd).diff(dayjs(stage.planStart), "day");
   const actualDuration = dayjs(stage.actualEnd || new Date()).diff(
     dayjs(stage.actualStart),
@@ -101,27 +106,26 @@ const DatesDisplay: React.FC<DatesDisplayProps> = ({ stage, locale }) => {
   );
 };
 
-interface ProgressBarProps {
+interface BudgetProps {
   totalBudget: number;
   totalSpent: number;
   status: ProjectPlanJob["status"];
   currency: string;
-  locale: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
+const Budget: React.FC<BudgetProps> = ({
   totalBudget,
   totalSpent,
   status,
   currency,
-  locale,
 }) => {
+  const locale = "ru-RU";
   const progressPercentage = Math.min((totalSpent / totalBudget) * 100, 100);
   const hasOverspend = totalSpent > totalBudget;
   const overspendAmount = totalSpent - totalBudget;
   const isCriticalOverspend = totalSpent > totalBudget * 1.2;
   return (
-    <div className="ppw-progress-section">
+    <div className="StageCard-budget">
       <div className="ppw-budget-header">
         <Text>Budget</Text>
         {hasOverspend && (
@@ -152,12 +156,67 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
+function StageStatus({ stage }: { stage: ProjectPlanJob }) {
+  return (
+    <div className={`StageCard-status _${stage.status}`}>
+      <span className="StageCard-status-label">
+        {getBadgeStatus(stage.status).text}
+      </span>
+      <DatesDisplay stage={stage} />
+    </div>
+  );
+}
+
+function StageItem({ name, value }: { name: string; value?: number }) {
+  return (
+    <div className="StageCard-details-row">
+      <div className="StageCard-details-row-name">{name}</div>
+      <div className="StageCard-details-row-value">{value}</div>
+    </div>
+  );
+}
+
+function StageDetails({ stage }: { stage: ProjectPlanJob }) {
+  return (
+    <div className="StageCard-details">
+      <div className="StageCard-details-item StageCard-outcomes">
+        <div>
+          <Text strong>Outcomes</Text>
+        </div>
+        {stage.outcomes && stage.outcomes.length > 0 ? (
+          stage.outcomes.map((item) => (
+            <StageItem key={item.id} name={item.name} />
+          ))
+        ) : (
+          <Text type="secondary">No expected outcomes</Text>
+        )}
+      </div>
+      <div className="StageCard-details-separator" />
+      <div className="StageCard-details-item StageCard-resources">
+        <div>
+          <Text strong>Resources</Text>
+        </div>
+        {stage.totalResources && stage.totalResources.length > 0 ? (
+          stage.totalResources.map((item, i) => (
+            <StageItem
+              key={i}
+              name={getResourceName(item)}
+              value={getResourceValue(item)}
+            />
+          ))
+        ) : (
+          <Text type="secondary">No planned resources</Text>
+        )}
+      </div>
+    </div>
+  );
+}
+
 interface StageCardProps {
   stage: ProjectPlanJob;
   contract: Project["activeContract"];
   memberships: Project["memberships"];
   currency: string;
-  locale: string;
 }
 
 const StageCard: React.FC<StageCardProps> = ({
@@ -165,8 +224,10 @@ const StageCard: React.FC<StageCardProps> = ({
   contract,
   memberships,
   currency,
-  locale,
 }) => {
+  const [isExpanded, setIsExpanded] = React.useState(
+    stage.status === "inProgress"
+  );
   const { timetable } = useTimetable();
   const roles = contract?.roles || [];
   const filteredEntries = timetable?.filter((entry) => {
@@ -215,32 +276,46 @@ const StageCard: React.FC<StageCardProps> = ({
   const totalMoney = userResources.reduce((acc, user) => acc + user.total, 0);
 
   return (
-    <Badge.Ribbon {...getBadgeStatus(stage.status)}>
-      <div className="ppw-stage-card">
-        {/* Header */}
-        <div className="ppw-stage-header">
-          <Title level={5}>{stage.name}</Title>
+    <div className="StageCard">
+      <StageStatus stage={stage} />
+      <div className="StageCard-content">
+        <div className="StageCard-header">
+          <div className="StageCard-header-title">
+            <Title level={5}>{stage.name}</Title>
+            {stage.status !== "inProgress" && (
+              <Button
+                className="StageCard-header-expandButton"
+                size="small"
+                color="default"
+                variant="link"
+                icon={isExpanded ? <UpOutlined /> : <DownOutlined />}
+                onClick={() => setIsExpanded(!isExpanded)}
+              />
+            )}
+          </div>
+          {/*<Button type="link" onClick={() => {}}>
+            Actions
+          </Button>
+          */}
         </div>
-
-        {/* Dates */}
-        <DatesDisplay stage={stage} locale={locale} />
-
-        {/* Progress */}
-        <ProgressBar
-          totalBudget={stage.totalBudget}
-          totalSpent={totalMoney}
-          status={stage.status}
-          currency={currency}
-          locale={locale}
-        />
-
-        {unknownRoleDuration > 0 && (
-          <div className="ppw-stage-warning">
-            Resources without project role: {unknownRoleDuration / 60}h
+        {(isExpanded || stage.status === "inProgress") && (
+          <div className="StageCard-expandedContent">
+            <Budget
+              totalBudget={stage.totalBudget}
+              totalSpent={totalMoney}
+              status={stage.status}
+              currency={currency}
+            />
+            <StageDetails stage={stage} />
+            {unknownRoleDuration > 0 && (
+              <div className="ppw-stage-warning">
+                Resources without project role: {unknownRoleDuration / 60}h
+              </div>
+            )}
           </div>
         )}
       </div>
-    </Badge.Ribbon>
+    </div>
   );
 };
 
@@ -251,7 +326,6 @@ const StageCard: React.FC<StageCardProps> = ({
 export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
   project,
   currency = "RUB",
-  locale = "ru-RU",
   className = "",
 }) => {
   const stages = project?.activePlan?.jobs || [];
@@ -266,7 +340,6 @@ export const PlanSummary: React.FC<ProjectPlanWidgetProps> = ({
             contract={project.activeContract}
             memberships={project.memberships}
             currency={currency}
-            locale={locale}
           />
         ))}
       </div>
