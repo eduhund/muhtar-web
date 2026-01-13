@@ -6,11 +6,11 @@ import {
   RollbackOutlined,
 } from "@ant-design/icons";
 
-import { ProjectPlanJob, TimetableItem } from "../../context/AppContext";
+import { ProjectPlanJob, Resource } from "../../context/AppContext";
 import { useMembership } from "../../hooks/useMembership";
 import { useProjects } from "../../hooks/useProjects";
 import { useSelect } from "../../hooks/useSelect";
-import { useTimetable } from "../../hooks/useTimetable";
+import { useResources } from "../../hooks/useResources";
 import { useTimetableFilters } from "../../hooks/useTimetableFilters";
 import { useUIMessages } from "../../providers/UIMessageProvider";
 
@@ -51,13 +51,14 @@ function getTagStatus(
 
 export function Timetable() {
   const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
-  const { timetable, isLoading, deleteTime, restoreTime } = useTimetable();
+  const { resources, isLoading, deleteResource, restoreResource } =
+    useResources();
   const { projects } = useProjects();
   const { membership } = useMembership();
-  const timetableFilters = useTimetableFilters(timetable || []);
+  const timetableFilters = useTimetableFilters(resources || []);
   const UIMessages = useUIMessages();
 
-  const { rowSelection, onRowClick } = useSelect(timetable);
+  const { rowSelection, onRowClick } = useSelect(resources);
 
   const isAdmin = membership?.accessRole === "admin";
 
@@ -88,7 +89,7 @@ export function Timetable() {
     }
 
     async function handleEntryDelete(record: DataType) {
-      const OK = await deleteTime({ id: record.id });
+      const OK = await deleteResource({ id: record.id });
       if (OK) {
         UIMessages.deleteTime.success();
       } else {
@@ -97,7 +98,7 @@ export function Timetable() {
     }
 
     async function handleEntryRestore(record: DataType) {
-      const OK = await restoreTime({ id: record.id });
+      const OK = await restoreResource({ id: record.id });
       if (OK) {
         UIMessages.restoreTime.success();
       } else {
@@ -155,10 +156,10 @@ export function Timetable() {
         ),
       },
       {
-        title: "How long",
-        dataIndex: "duration",
-        key: "duration",
-        width: 80,
+        title: "How much",
+        dataIndex: "consumed",
+        key: "consumed",
+        width: 100,
         render: (duration: number) => String(duration / 60).replace(".", ","),
       },
       {
@@ -232,12 +233,12 @@ export function Timetable() {
   }, [
     UIMessages.deleteTime,
     UIMessages.restoreTime,
-    deleteTime,
+    deleteResource,
     isAdmin,
     jobs,
     membership?.id,
     projects,
-    restoreTime,
+    restoreResource,
   ]);
 
   return (
@@ -258,7 +259,7 @@ export function Timetable() {
           pageSize: 200,
         }}
         dataSource={(timetableFilters.filteredList || []).map(
-          (item: TimetableItem) => {
+          (item: Resource) => {
             return { key: item.id, ...item };
           }
         )}
@@ -272,7 +273,7 @@ export function Timetable() {
         loading={isLoading}
       />
       <TotalHint
-        data={timetable || []}
+        data={resources || []}
         filteredData={timetableFilters.filteredList || []}
         filters={timetableFilters.filters || {}}
         selection={rowSelection}

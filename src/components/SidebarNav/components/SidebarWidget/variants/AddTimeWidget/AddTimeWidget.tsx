@@ -6,7 +6,7 @@ import { SidebarWidget } from "../../SidebarWidget";
 import { dateFormat } from "../../../../../../utils/date";
 import { useProjects } from "../../../../../../hooks/useProjects";
 import { useMemo, useState } from "react";
-import { useTimetable } from "../../../../../../hooks/useTimetable";
+import { useResources } from "../../../../../../hooks/useResources";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
 import { useUIMessages } from "../../../../../../providers/UIMessageProvider";
@@ -14,7 +14,7 @@ import { useUIMessages } from "../../../../../../providers/UIMessageProvider";
 
 type FieldType = {
   date: Dayjs;
-  duration: number;
+  consumed: number;
   project: string;
   target?: string;
   comment?: string;
@@ -29,7 +29,7 @@ export function AddTimeWidget() {
   );
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
-  const { addTime } = useTimetable();
+  const { spendResource } = useResources();
   const UIMessages = useUIMessages();
 
   const projectJobs = useMemo(() => {
@@ -44,10 +44,10 @@ export function AddTimeWidget() {
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
-    const { date, duration, project, target, comment = "" } = values;
-    const newTime = await addTime({
+    const { date, consumed, project, target, comment = "" } = values;
+    const newTime = await spendResource({
       date: date.format("YYYY-MM-DD"),
-      duration,
+      consumed,
       membershipId: membership?.id || "",
       projectId: project,
       target: target ? { type: "job", id: target } : null,
@@ -64,9 +64,9 @@ export function AddTimeWidget() {
   const today = dayjs(new Date());
 
   return (
-    <SidebarWidget title="Track the time" icon={<PlusCircleOutlined />}>
+    <SidebarWidget title="Track resources" icon={<PlusCircleOutlined />}>
       <Form
-        name="trackTime"
+        name="trackResources"
         layout="vertical"
         onFinish={onFinish}
         requiredMark={false}
@@ -117,7 +117,7 @@ export function AddTimeWidget() {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="duration">
+        <Form.Item<FieldType> name="consumed">
           <Select
             showSearch
             placeholder="0"
@@ -148,7 +148,7 @@ export function AddTimeWidget() {
             loading={isAddingTime}
             style={{ width: "100%" }}
           >
-            Add Time
+            Track it
           </Button>
         </Form.Item>
       </Form>

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 import { Project } from "../../../../context/AppContext";
-import { useTimetable } from "../../../../hooks/useTimetable";
+import { useResources } from "../../../../hooks/useResources";
 import { useMemberships } from "../../../../hooks/useMemberships";
 import dayjs from "dayjs";
 import { useCallback, useState } from "react";
@@ -45,12 +45,11 @@ export default function Overview({ project }: { project: Project }) {
     addToProject: false,
     addTask: false,
   });
-  const { timetable } = useTimetable();
+  const { resources } = useResources();
   const { memberships } = useMemberships();
   //const { tasks } = useTasks();
   const projectEntries =
-    timetable?.filter((item) => item.project.id === project.id) || [];
-
+    resources?.filter((item) => item.project.id === project.id) || [];
   function openModal(modalName: keyof typeof modals) {
     setModals((prev) => ({ ...prev, [modalName]: true }));
   }
@@ -94,7 +93,7 @@ export default function Overview({ project }: { project: Project }) {
           project.memberships.find((m) => m.membershipId === membershipId)
             ?.multiplier || 1;
         if (!runningTotals[membershipId]) runningTotals[membershipId] = 0;
-        runningTotals[membershipId] += (entry.duration / 60) * multiplier;
+        runningTotals[membershipId] += (entry.consumed / 60) * multiplier;
         runningTotals[membershipId] =
           Math.round(runningTotals[membershipId] * 2) / 2;
       });

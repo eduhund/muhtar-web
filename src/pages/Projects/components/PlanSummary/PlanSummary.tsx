@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Progress, Typography } from "antd";
 import "./PlanSummary.scss";
 import { Project, ProjectPlanJob } from "../../../../context/AppContext";
-import { useTimetable } from "../../../../hooks/useTimetable";
+import { useResources } from "../../../../hooks/useResources";
 import dayjs from "dayjs";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import {
@@ -228,9 +228,9 @@ const StageCard: React.FC<StageCardProps> = ({
   const [isExpanded, setIsExpanded] = React.useState(
     stage.status === "inProgress"
   );
-  const { timetable } = useTimetable();
+  const { resources } = useResources();
   const roles = contract?.roles || [];
-  const filteredEntries = timetable?.filter((entry) => {
+  const filteredEntries = resources?.filter((entry) => {
     return entry.target?.type === "job" && entry.target?.id === stage.id;
   });
 
@@ -251,7 +251,7 @@ const StageCard: React.FC<StageCardProps> = ({
         .amount || 0;
 
     if (!role) {
-      unknownRoleDuration += entry.duration;
+      unknownRoleDuration += entry.consumed;
       return;
     }
 
@@ -261,7 +261,7 @@ const StageCard: React.FC<StageCardProps> = ({
         cost,
       };
     }
-    userResourceMap[membershipId].duration += entry.duration;
+    userResourceMap[membershipId].duration += entry.consumed;
   });
 
   const userResources = Object.entries(userResourceMap).map(

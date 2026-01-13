@@ -1,5 +1,5 @@
 import { Descriptions, DescriptionsProps, Statistic, Typography } from "antd";
-import { Membership, TimetableItem } from "../../../../context/AppContext";
+import { Membership, Resource } from "../../../../context/AppContext";
 import dayjs from "dayjs";
 
 import "./Salary.scss";
@@ -21,19 +21,19 @@ function combineCurrency(value: number = 0, currency: string = "USD") {
 
 function getMonthlyEarnings(
   membership: Membership,
-  timetable: TimetableItem[],
+  resources: Resource[],
   monthsAgo: number
 ): number {
   const contract = membership.contract[membership.contract.length - 1];
   const targetMonth = dayjs().subtract(monthsAgo, "month");
-  const filteredTimetable = timetable.filter(
+  const filteredResources = resources.filter(
     (item) =>
       item.membership.id === membership.id &&
       dayjs(item.date).isSame(targetMonth, "month")
   );
   const hourlyRate = contract.rate?.value || 0;
   return (
-    (filteredTimetable.reduce((acc, item) => acc + item.duration, 0) / 60) *
+    (filteredResources.reduce((acc, item) => acc + item.consumed, 0) / 60) *
     hourlyRate
   );
 }
@@ -42,7 +42,7 @@ function EmployeeSalary({
   membership,
 }: {
   membership: Membership;
-  timetable: TimetableItem[];
+  resources: Resource[];
 }) {
   const contract = membership.contract[membership.contract.length - 1];
   const items: DescriptionsProps["items"] = [
@@ -63,22 +63,22 @@ function EmployeeSalary({
 
 function FreelanceSalary({
   membership,
-  timetable,
+  resources,
 }: {
   membership: Membership;
-  timetable: TimetableItem[];
+  resources: Resource[];
 }) {
   const contract = membership.contract[membership.contract.length - 1];
   const currency = contract.rate?.currency || "USD";
   // Current month
   const currentMonthLabel = dayjs().format("MMMM");
-  const currentMonthEarnings = getMonthlyEarnings(membership, timetable, 0);
+  const currentMonthEarnings = getMonthlyEarnings(membership, resources, 0);
   // Previous three months
   const prevMonthLabels = [1, 2, 3].map((m) =>
     dayjs().subtract(m, "month").format("MMMM")
   );
   const prevMonthEarnings = [1, 2, 3].map((m) =>
-    getMonthlyEarnings(membership, timetable, m)
+    getMonthlyEarnings(membership, resources, m)
   );
   const descItems = prevMonthLabels.map((label, idx) => ({
     key: label,
@@ -99,10 +99,10 @@ function FreelanceSalary({
 
 export default function Salary({
   membership,
-  timetable,
+  resources,
 }: {
   membership: Membership;
-  timetable: TimetableItem[];
+  resources: Resource[];
 }) {
   const contract = membership.contract[membership.contract.length - 1];
   console.log(contract);
@@ -111,9 +111,9 @@ export default function Salary({
     <div className="Salary">
       <Title level={3}>Salary</Title>
       {isEmployee ? (
-        <EmployeeSalary membership={membership} timetable={timetable} />
+        <EmployeeSalary membership={membership} resources={resources} />
       ) : (
-        <FreelanceSalary membership={membership} timetable={timetable} />
+        <FreelanceSalary membership={membership} resources={resources} />
       )}
     </div>
   );
