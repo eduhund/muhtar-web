@@ -4,7 +4,7 @@ import {
   Membership,
   Team,
   Project,
-  Timetable,
+  Resources,
   AppContext,
   Task,
 } from "../context/AppContext";
@@ -22,8 +22,8 @@ type AppState = {
   teamLoading: boolean;
   projects: Project[] | null;
   projectsLoading: boolean;
-  timetable: Timetable | null;
-  timetableLoading: boolean;
+  resources: Resources | null;
+  resourcesLoading: boolean;
   tasks?: Task[] | null;
   tasksLoading?: boolean;
 };
@@ -40,8 +40,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     teamLoading: false,
     projects: null,
     projectsLoading: false,
-    timetable: null,
-    timetableLoading: false,
+    resources: null,
+    resourcesLoading: false,
     tasks: null,
     tasksLoading: false,
   });
@@ -102,13 +102,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function initTimetable() {
-    setState((prev) => ({ ...prev, timetableLoading: true }));
-    const { data } = await membershipAPI.getTimetable({});
+  async function initResources() {
+    setState((prev) => ({ ...prev, resourcesLoading: true }));
+    const { data } = await membershipAPI.getResources({});
     setState((prev) => ({
       ...prev,
-      timetable: data || null,
-      timetableLoading: false,
+      resources: data || null,
+      resourcesLoading: false,
     }));
   }
 
@@ -132,7 +132,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       membershipAPI.setToken(membershipToken);
     }
     initUserData();
-    initTimetable();
+    initResources();
     initTasks();
   }
 

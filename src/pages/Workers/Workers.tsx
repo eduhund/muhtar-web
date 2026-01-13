@@ -4,8 +4,8 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { useMemberships } from "../../hooks/useMemberships";
-import { Membership, TimetableItem } from "../../context/AppContext";
-import { useTimetable } from "../../hooks/useTimetable";
+import { Membership, Resource } from "../../context/AppContext";
+import { useResources } from "../../hooks/useResources";
 import { useMembership } from "../../hooks/useMembership";
 import { Navigate } from "react-router-dom";
 
@@ -25,10 +25,7 @@ const { Title, Paragraph } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
-function filterByPeriod(
-  entries: TimetableItem[],
-  period: Period
-): TimetableItem[] {
+function filterByPeriod(entries: Resource[], period: Period): Resource[] {
   const today = dayjs();
   let start: dayjs.Dayjs, end: dayjs.Dayjs;
 
@@ -66,17 +63,17 @@ function WorkerRow({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const { timetable } = useTimetable();
+  const { resources } = useResources();
 
   const membershipEntries =
-    timetable?.filter((item) => item.membership.id === membership.id) || [];
+    resources?.filter((item) => item.membership.id === membership.id) || [];
 
   const thisWeekEntries = filterByPeriod(membershipEntries, "thisWeek");
   const thisMonthEntries = filterByPeriod(membershipEntries, "thisMonth");
   const totalWeekDuration =
-    thisWeekEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
+    thisWeekEntries.reduce((acc, item) => acc + item.consumed, 0) / 60; // in hours
   const totalMonthDuration =
-    thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
+    thisMonthEntries.reduce((acc, item) => acc + item.consumed, 0) / 60; // in hours
 
   return (
     <div

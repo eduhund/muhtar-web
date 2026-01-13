@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 
 import { Membership } from "../../context/AppContext";
-import { useTimetable } from "../../hooks/useTimetable";
+import { useResources } from "../../hooks/useResources";
 
 import Overview from "./components/Overview/Overview";
 import Salary from "./components/Salary/Salary";
@@ -9,16 +9,16 @@ import Salary from "./components/Salary/Salary";
 const { Title } = Typography;
 
 export default function WorkerPage({ membership }: { membership: Membership }) {
-  const { timetable } = useTimetable();
+  const { resources } = useResources();
   const membershipEntries =
-    timetable?.filter((item) => item.membership.id === membership.id) || [];
+    resources?.filter((item) => item.membership.id === membership.id) || [];
 
   return (
     <div>
       <Title level={2}>{membership.name}</Title>
       <div>
         <Overview entries={membershipEntries} />
-        <Salary membership={membership} timetable={timetable || []} />
+        <Salary membership={membership} resources={resources || []} />
       </div>
     </div>
   );

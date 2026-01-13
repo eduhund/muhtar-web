@@ -1,4 +1,4 @@
-import { Timetable, TimetableItem } from "../context/AppContext";
+import { Resources, Resource } from "../context/AppContext";
 import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
@@ -14,20 +14,20 @@ type LoginResponseDataType = {
   };
 };
 
-type GetTimetableResponseDataType = Timetable;
+type GetResourcesResponseDataType = Resources;
 
-export type AddTimeEntry = {
+export type AddResourceEntry = {
   date: string;
-  duration: number;
+  consumed: number;
   membershipId: string;
   projectId: string;
   target: { type: "task" | "job" | "other"; id: string } | null;
   comment?: string;
 };
 
-export type UpdateTimeEntry = {
+export type UpdateResourceEntry = {
   id: string;
-} & Partial<AddTimeEntry>;
+} & Partial<AddResourceEntry>;
 
 const apiController = new APIController(BASE_URI);
 
@@ -98,60 +98,64 @@ class MembershipAPI extends privateAPI {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.get(`${this.prefix}/getTime`, this.token, query);
+    return this.controller.get(`${this.prefix}/getResource`, this.token, query);
   }
 
-  async getTimetable(query: {
+  async getResources(query: {
     [key: string]: string;
-  }): Promise<ApiResponse<GetTimetableResponseDataType>> {
+  }): Promise<ApiResponse<GetResourcesResponseDataType>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
     return this.controller.get(
-      `${this.prefix}/getTimetable`,
+      `${this.prefix}/getResources`,
       this.token,
       query
     );
   }
 
-  async addTime(entry: AddTimeEntry): Promise<ApiResponse<TimetableItem>> {
+  async spendResource(entry: AddResourceEntry): Promise<ApiResponse<Resource>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.post(`${this.prefix}/addTime`, this.token, entry);
+    return this.controller.post(
+      `${this.prefix}/spendResource`,
+      this.token,
+      entry
+    );
   }
 
-  async updateTime(
-    entry: UpdateTimeEntry
-  ): Promise<ApiResponse<TimetableItem>> {
+  async updateResource(
+    entry: UpdateResourceEntry
+  ): Promise<ApiResponse<Resource>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.post(`${this.prefix}/updateTime`, this.token, entry);
+    return this.controller.post(
+      `${this.prefix}/updateResource`,
+      this.token,
+      entry
+    );
   }
 
-  async deleteTime({
-    id,
-  }: {
-    id: string;
-  }): Promise<ApiResponse<TimetableItem>> {
+  async deleteResource({ id }: { id: string }): Promise<ApiResponse<Resource>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.post(`${this.prefix}/archiveTime`, this.token, {
+    return this.controller.post(`${this.prefix}/archiveResource`, this.token, {
       id,
     });
   }
 
-  async restoreTime({
+  async restoreResource({
     id,
   }: {
     id: string;
-  }): Promise<ApiResponse<TimetableItem>> {
+  }): Promise<ApiResponse<Resource>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
-    return this.controller.post(`${this.prefix}/restoreTime`, this.token, {
+    return this.controller.post(`${this.prefix}/restoreResource`, this.token, {
       id,
     });
   }

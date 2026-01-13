@@ -2,9 +2,9 @@ import { Typography } from "antd";
 import { useProjects } from "../../hooks/useProjects";
 import Page from "../../components/Page/Page";
 import SideList from "../../components/SideList/SideList";
-import { Project, TimetableItem } from "../../context/AppContext";
+import { Project, Resource } from "../../context/AppContext";
 import ProjectPage from "./ProjectPage";
-import { useTimetable } from "../../hooks/useTimetable";
+import { useResources } from "../../hooks/useResources";
 import QuickSummaryItem from "../Workers/components/QuickSummaryItem/QuickSummaryItem";
 import dayjs from "dayjs";
 
@@ -16,10 +16,7 @@ const { Title, Paragraph } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
-function filterByPeriod(
-  entries: TimetableItem[],
-  period: Period
-): TimetableItem[] {
+function filterByPeriod(entries: Resource[], period: Period): Resource[] {
   const today = dayjs();
   let start: dayjs.Dayjs, end: dayjs.Dayjs;
 
@@ -57,16 +54,16 @@ function ProjectRow({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const { timetable } = useTimetable();
+  const { resources } = useResources();
 
   const projectEntries =
-    timetable?.filter((item) => item.project.id === project.id) || [];
+    resources?.filter((item) => item.project.id === project.id) || [];
 
   const thisMonthEntries = filterByPeriod(projectEntries, "thisMonth");
   const totalDuration =
-    projectEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
+    projectEntries.reduce((acc, item) => acc + item.consumed, 0) / 60; // in hours
   const totalMonthDuration =
-    thisMonthEntries.reduce((acc, item) => acc + item.duration, 0) / 60; // in hours
+    thisMonthEntries.reduce((acc, item) => acc + item.consumed, 0) / 60; // in hours
 
   return (
     <div
