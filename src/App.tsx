@@ -7,7 +7,7 @@ import Login from "./pages/Login/Login";
 
 import "./App.scss";
 import { SidebarNav } from "./components/SidebarNav/SidebarNav";
-import { Timetable } from "./pages/Timetable";
+import { Resources } from "./pages/Resources";
 import { AppProvider } from "./providers/AppProvider";
 import { Workers } from "./pages/Workers/Workers";
 import { Projects } from "./pages/Projects/Projects";
@@ -37,7 +37,7 @@ const App = () => {
                     </div>
                     <div className="App-content">
                       <Routes>
-                        <Route path="/" element={<Timetable />} />
+                        <Route path="/" element={<Resources />} />
                         <Route path="/projects" element={<Projects />} />
                         <Route
                           path="/projects/:projectId"

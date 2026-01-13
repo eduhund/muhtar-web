@@ -1,7 +1,7 @@
 import { Segmented, Typography } from "antd";
 import { BarChart, Bar, Tooltip, TooltipContentProps, YAxis } from "recharts";
 import dayjs from "dayjs";
-import { TimetableItem } from "../../../../context/AppContext";
+import { Resource } from "../../../../context/AppContext";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ dayjs.extend(isoWeek);
 const { Title } = Typography;
 
 function getDailyEntries(
-  entries: TimetableItem[]
+  entries: Resource[]
 ): { date: string; duration: number }[] {
   const result: {
     date: string;
@@ -24,7 +24,7 @@ function getDailyEntries(
     const date = dayjs().subtract(i, "day").format("YYYY-MM-DD");
     const duration = entries
       .filter((e) => e.date === date)
-      .reduce((acc, e) => (acc += e.duration || 0), 0);
+      .reduce((acc, e) => (acc += e.consumed || 0), 0);
     result.unshift({ date, duration });
   }
   const formattedResult = result.map((item) => ({
@@ -35,7 +35,7 @@ function getDailyEntries(
 }
 
 function getWeeklyEntries(
-  entries: TimetableItem[]
+  entries: Resource[]
 ): { date: string; duration: number }[] {
   const result: {
     startDate: string;
@@ -50,7 +50,7 @@ function getWeeklyEntries(
     const endDate = weekEnd.format("YYYY-MM-DD");
     const duration = entries
       .filter((entry) => entry.date >= startDate && entry.date <= endDate)
-      .reduce((acc, entry) => acc + (entry.duration || 0), 0);
+      .reduce((acc, entry) => acc + (entry.consumed || 0), 0);
 
     result.unshift({
       startDate,
@@ -68,7 +68,7 @@ function getWeeklyEntries(
 }
 
 function getMonthlyEntries(
-  entries: TimetableItem[]
+  entries: Resource[]
 ): { date: string; duration: number }[] {
   const result: { date: string; duration: number }[] = [];
   const now = dayjs();
@@ -84,7 +84,7 @@ function getMonthlyEntries(
 
     const duration = entries
       .filter((entry) => entry.date >= startOfMonth && entry.date <= endOfMonth)
-      .reduce((acc, entry) => acc + (entry.duration || 0), 0);
+      .reduce((acc, entry) => acc + (entry.consumed || 0), 0);
 
     result.push({
       date: month.format("MMMM YYYY"),
@@ -94,10 +94,7 @@ function getMonthlyEntries(
   return result;
 }
 
-function getEntriesByPeriod(
-  entries: TimetableItem[],
-  period: Period = "Daily"
-) {
+function getEntriesByPeriod(entries: Resource[], period: Period = "Daily") {
   switch (period) {
     case "Monthly":
       return getMonthlyEntries(entries);
@@ -108,7 +105,7 @@ function getEntriesByPeriod(
   }
 }
 
-export default function Overview({ entries }: { entries: TimetableItem[] }) {
+export default function Overview({ entries }: { entries: Resource[] }) {
   const [selectedPeriod, setSelectedPeriod] = useState<Period>("Daily");
   const groupedEntries = getEntriesByPeriod(entries, selectedPeriod);
 
