@@ -11,7 +11,7 @@ import { useMembership } from "../../hooks/useMembership";
 import { useProjects } from "../../hooks/useProjects";
 import { useSelect } from "../../hooks/useSelect";
 import { useResources } from "../../hooks/useResources";
-import { useTimetableFilters } from "../../hooks/useTimetableFilters";
+import { useResourcesFilters } from "../../hooks/useResourcesFilters";
 import { useUIMessages } from "../../providers/UIMessageProvider";
 
 import Filters from "./components/Filters";
@@ -19,7 +19,7 @@ import Page from "../../components/Page/Page";
 import TimeEditModal from "./components/TimeEditModal";
 import TotalHint from "./components/TotalHint";
 
-import "./Timetable.scss";
+import "./Resources.scss";
 
 interface DataType {
   key: string;
@@ -49,13 +49,13 @@ function getTagStatus(
   }
 }
 
-export function Timetable() {
+export function Resources() {
   const [editingEntry, setEditingEntry] = useState<DataType | null>(null);
   const { resources, isLoading, deleteResource, restoreResource } =
     useResources();
   const { projects } = useProjects();
   const { membership } = useMembership();
-  const timetableFilters = useTimetableFilters(resources || []);
+  const timetableFilters = useResourcesFilters(resources || []);
   const UIMessages = useUIMessages();
 
   const { rowSelection, onRowClick } = useSelect(resources);
@@ -243,8 +243,8 @@ export function Timetable() {
 
   return (
     <Page
-      className="Timetable"
-      title="Timetable"
+      className="Resources"
+      title="Resources"
       actions={<Filters timetableFilters={timetableFilters} />}
     >
       <TimeEditModal
@@ -266,7 +266,7 @@ export function Timetable() {
         columns={columns}
         rowSelection={rowSelection}
         rowClassName={(record) =>
-          record.isDeleted ? "Timetable-row-deleted" : ""
+          record.isDeleted ? "Resources-row-deleted" : ""
         }
         onRow={onRowClick}
         size="small"
