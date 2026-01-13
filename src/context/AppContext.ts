@@ -158,7 +158,7 @@ export interface ProjectMembership {
   multiplier: number;
 }
 
-export interface TimetableItem {
+export interface Resource {
   id: string;
   ts: number; // timestamp
   project: { id: string; name: string; customer: string | null };
@@ -166,12 +166,12 @@ export interface TimetableItem {
   date: string; // YYYY-MM-DD
   type: string;
   target: { type: "task" | "job" | "other"; id: string } | null;
-  duration: number; // in minutes
+  consumed: number; // in minutes
   comment: string;
   isDeleted: boolean;
 }
 
-export type Timetable = TimetableItem[];
+export type Resources = Resource[];
 
 export interface AppContext {
   user: User | null;
@@ -184,8 +184,8 @@ export interface AppContext {
   membershipsLoading?: boolean;
   projects?: Project[] | null;
   projectsLoading?: boolean;
-  timetable?: Timetable | null;
-  timetableLoading?: boolean;
+  resources?: Resources | null;
+  resourcesLoading?: boolean;
   tasks?: Task[] | null;
   tasksLoading?: boolean;
   updateState: (state: Partial<AppContext>) => void;

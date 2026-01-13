@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { TimetableItem } from "../../../context/AppContext";
+import { Resource } from "../../../context/AppContext";
 import { useProjects } from "../../../hooks/useProjects";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
-import { useTimetable } from "../../../hooks/useTimetable";
+import { useResources } from "../../../hooks/useResources";
 import { useMembership } from "../../../hooks/useMembership";
 
 type Props = {
-  data: TimetableItem[];
-  filteredData: TimetableItem[];
+  data: Resource[];
+  filteredData: Resource[];
   filters: { [key: string]: unknown };
   selection: {
     selectedRowKeys: React.Key[];
@@ -19,13 +19,13 @@ type Props = {
 
 export default function TotalHint({ filteredData, filters, selection }: Props) {
   const { selectedRowKeys, onChange } = selection;
-  const { updateResources } = useTimetable();
+  const { updateResources } = useResources();
   const { projects, activeProjects } = useProjects();
   const { membership } = useMembership();
   const UIMessages = useUIMessages();
 
   const selectedEntries = useMemo(() => {
-    return filteredData.filter((item: TimetableItem) =>
+    return filteredData.filter((item: Resource) =>
       selectedRowKeys.includes(item.id)
     );
   }, [selectedRowKeys, filteredData]);
@@ -33,7 +33,7 @@ export default function TotalHint({ filteredData, filters, selection }: Props) {
   const selectedProjectId = useMemo(() => {
     if (!selectedRowKeys.length) return null;
     const firstProjectId = selectedEntries.find(
-      (item: TimetableItem) => item.id === selectedRowKeys[0]
+      (item: Resource) => item.id === selectedRowKeys[0]
     )?.project?.id;
     const allSame = selectedRowKeys.every(
       (item) =>
@@ -72,13 +72,13 @@ export default function TotalHint({ filteredData, filters, selection }: Props) {
     } else if (selectedRowKeys.length > 0) {
       return selectedRowKeys.reduce((prev: number, curr: React.Key) => {
         const selectedItem = selectedEntries.find(
-          (item: TimetableItem) => item.id === curr
+          (item: Resource) => item.id === curr
         );
-        return prev + (selectedItem?.duration ?? 0) / 60;
+        return prev + (selectedItem?.consumed ?? 0) / 60;
       }, 0);
     } else {
       return filteredData.reduce(
-        (prev: number, curr: TimetableItem) => prev + curr.duration / 60,
+        (prev: number, curr: Resource) => prev + curr.consumed / 60,
         0
       );
     }

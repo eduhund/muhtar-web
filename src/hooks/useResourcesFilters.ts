@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Timetable, TimetableItem } from "../context/AppContext";
+import { Resources, Resource } from "../context/AppContext";
 import { dateOnlyISOString } from "../utils/date";
 
 type Filters = {
@@ -8,10 +8,10 @@ type Filters = {
   memberships?: string[];
 };
 
-export function useTimetableFilters(data: Timetable) {
+export function useResourcesFilters(data: Resources) {
   const [filters, setFilters] = useState<Filters | null>(null);
 
-  function filterByDate(entry: TimetableItem, date?: [Date, Date]) {
+  function filterByDate(entry: Resource, date?: [Date, Date]) {
     if (!date) return true;
     const [from, to] = date;
     const fromDate = new Date(from);
@@ -25,19 +25,19 @@ export function useTimetableFilters(data: Timetable) {
     return true;
   }
 
-  function filterByMemberships(entry: TimetableItem, memberships?: string[]) {
+  function filterByMemberships(entry: Resource, memberships?: string[]) {
     if (!memberships || memberships.length === 0) return true;
     return memberships.includes(entry.membership?.id);
   }
 
-  function filterByProjects(entry: TimetableItem, projects?: string[]) {
+  function filterByProjects(entry: Resource, projects?: string[]) {
     if (!projects || projects.length === 0) return true;
     return projects.includes(entry.project?.id);
   }
 
   const filteredList = useMemo(() => {
     if (!filters) return data;
-    return data.filter((entry: TimetableItem) => {
+    return data.filter((entry: Resource) => {
       return (
         filterByDate(entry, filters.date) &&
         filterByMemberships(entry, filters.memberships) &&
@@ -49,7 +49,7 @@ export function useTimetableFilters(data: Timetable) {
   const filteredMembershipList = useMemo(() => {
     const seen = new Set<string>();
     const result: { id: string; name: string }[] = [];
-    data.forEach((item: TimetableItem) => {
+    data.forEach((item: Resource) => {
       if (
         item.project.id &&
         item.membership.name &&
@@ -65,7 +65,7 @@ export function useTimetableFilters(data: Timetable) {
   const filteredProjectList = useMemo(() => {
     const seen = new Set<string>();
     const result: { id: string; name: string }[] = [];
-    data.forEach((item: TimetableItem) => {
+    data.forEach((item: Resource) => {
       if (item.project.id && item.project.name && !seen.has(item.project.id)) {
         seen.add(item.project.id);
         result.push(item.project);

@@ -6,19 +6,19 @@ import { dateFormat } from "../../../utils/date";
 import dayjs, { Dayjs } from "dayjs";
 import { useProjects } from "../../../hooks/useProjects";
 import { useEffect, useMemo, useState } from "react";
-import { useTimetable } from "../../../hooks/useTimetable";
+import { useResources } from "../../../hooks/useResources";
 import { useUIMessages } from "../../../providers/UIMessageProvider";
 
 type FieldType = {
   date: Dayjs;
-  duration: string;
+  consumed: string;
   project: string;
   target?: string | null;
   comment?: string;
 };
 
 export default function TimeEditModal({ record, onClose }: any) {
-  const { updateTime } = useTimetable();
+  const { updateResource } = useResources();
   const { activeProjects, isLoading } = useProjects();
   const [form] = Form.useForm();
   const UIMessages = useUIMessages();
@@ -52,16 +52,16 @@ export default function TimeEditModal({ record, onClose }: any) {
   async function handleOk() {
     const {
       date,
-      duration,
+      consumed,
       project,
       target,
       comment = "",
     } = form.getFieldsValue();
-    const OK = await updateTime({
+    const OK = await updateResource({
       date: date.format("YYYY-MM-DD"),
       membershipId: record.membership.id,
       id: record.id,
-      duration,
+      consumed: consumed,
       projectId: project,
       target: target ? { type: "job", id: target } : null,
       comment,
@@ -90,7 +90,7 @@ export default function TimeEditModal({ record, onClose }: any) {
     >
       <Form
         className="TimeEditModal-form"
-        name="updateTime"
+        name="updateResource"
         layout="vertical"
         requiredMark={false}
         form={form}
@@ -142,11 +142,11 @@ export default function TimeEditModal({ record, onClose }: any) {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="duration">
+        <Form.Item<FieldType> name="consumed">
           <Select
             showSearch
             placeholder="0"
-            value={record ? record.duration : null}
+            value={record ? record.consumed : null}
             prefix="Hours"
             filterOption={(input, option) =>
               String(option?.key ?? "")
