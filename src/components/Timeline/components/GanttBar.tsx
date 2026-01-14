@@ -45,7 +45,9 @@ export const GanttBar = React.memo(
     viewMode,
   }: GanttBarProps) => {
     const statusStyles = getStatusStyles(item.status, isVisualLeaf);
-    const days = calculateWorkingDays(item.startDate, item.dueDate);
+    const planStart = new Date(item.planStart);
+    const planEnd = new Date(item.planEnd);
+    const days = calculateWorkingDays(planStart, planEnd);
 
     const minWidthForText = 120;
     const minHeightForText = 35;
@@ -85,7 +87,7 @@ export const GanttBar = React.memo(
         item.actualStartDate,
         effectiveActualDueDate
       );
-      const plannedDays = calculateWorkingDays(item.startDate, item.dueDate);
+      const plannedDays = calculateWorkingDays(planStart, planEnd);
       const timePercent = (actualDays / plannedDays) * 100;
 
       if (timePercent > 100) {
@@ -158,8 +160,8 @@ export const GanttBar = React.memo(
 
       // Check if delayed or ahead of schedule
       if (item.status === "completed") {
-        isDelayed = actualDue.getTime() > item.dueDate.getTime();
-        isAheadOfSchedule = actualDue.getTime() < item.dueDate.getTime();
+        isDelayed = actualDue.getTime() > planEnd.getTime();
+        isAheadOfSchedule = actualDue.getTime() < planEnd.getTime();
       }
     } else if (item.actualStartDate && item.status === "inProgress") {
       // Show partial progress for in-progress tasks
@@ -200,7 +202,7 @@ export const GanttBar = React.memo(
       };
 
       // Check if currently delayed (past due date)
-      isDelayed = now.getTime() > item.dueDate.getTime();
+      isDelayed = now.getTime() > planEnd.getTime();
     }
 
     return (
@@ -282,8 +284,8 @@ export const GanttBar = React.memo(
                 {item.name}
               </div>
               <div className="timeline-bar-details">
-                {formatDate(item.startDate)} - {formatDate(item.dueDate)} •{" "}
-                {days}d • {formatDuration(item.resources.get("time") || 0)}
+                {formatDate(planStart)} - {formatDate(planEnd)} • {days}d •{" "}
+                {formatDuration(item.resources.get("time") || 0)}
               </div>
             </div>
           )}
@@ -319,8 +321,8 @@ export const GanttBar = React.memo(
               {item.name}
             </div>
             <div className="timeline-bar-details">
-              {formatDate(item.startDate)} - {formatDate(item.dueDate)} • {days}
-              d • {formatDuration(item.resources.get("time") || 0)}
+              {formatDate(planStart)} - {formatDate(planEnd)} • {days}d •{" "}
+              {formatDuration(item.resources.get("time") || 0)}
             </div>
           </div>
         )}

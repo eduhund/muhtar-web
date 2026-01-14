@@ -98,12 +98,12 @@ export function Projects() {
   );
 
   const projectsWithPlans = (projects || [])
-    .map((project) =>
-      project?.activePlan
-        ? { name: project.name, ...project?.activePlan }
-        : null
-    )
-    .filter((project) => project);
+    .filter((project) => project?.activePlan)
+    .map((project) => ({
+      name: project.name,
+      status: project.status,
+      ...project?.activePlan,
+    }));
   return (
     <Page title="Projects">
       <div className="Projects">

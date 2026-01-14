@@ -8,13 +8,13 @@ export interface Role {
   resources: Resource[];
 }
 
-export type TaskStatus = 'backlog' | 'inProgress' | 'completed' | 'canceled';
+export type TaskStatus = "backlog" | "inProgress" | "completed" | "canceled";
 
 export interface GanttItem {
   id: string;
   name: string;
-  startDate?: string;
-  dueDate?: string;
+  planStart?: string;
+  planEnd?: string;
   prevJob?: string;
   tasks?: string[];
   roles?: Role[] | string[];
@@ -29,8 +29,8 @@ export interface GanttItem {
 export interface FlatItem {
   id: string;
   name: string;
-  startDate: Date;
-  dueDate: Date;
+  planStart: Date;
+  planEnd: Date;
   resources: Map<string, number>; // total minutes
   level: number;
   hasChildren: boolean;
@@ -44,7 +44,7 @@ export interface FlatItem {
   actualRoles?: Role[];
 }
 
-export type ViewMode = 'day' | 'week';
+export type ViewMode = "day" | "week";
 
 export interface TimelineWeek {
   start: Date;

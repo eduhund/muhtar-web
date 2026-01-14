@@ -25,7 +25,7 @@ const DAY_WIDTH = 40;
 
 export function Timeline({
   data,
-  viewMode = "day",
+  viewMode = "week",
   onDataChange,
 }: TimelineProps) {
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -57,10 +57,10 @@ export function Timeline({
       return { minDate: new Date(), maxDate: new Date() };
     }
     const minDate = new Date(
-      Math.min(...flatData.map((item) => item.startDate.getTime()))
+      Math.min(...flatData.map((item) => new Date(item.planStart).getTime()))
     );
     const maxDate = new Date(
-      Math.max(...flatData.map((item) => item.dueDate.getTime()))
+      Math.max(...flatData.map((item) => new Date(item.planEnd).getTime()))
     );
     return { minDate, maxDate };
   }, [flatData]);
@@ -115,30 +115,29 @@ export function Timeline({
   // Calculate bar dimensions
   const getBarDimensions = useCallback(
     (item: (typeof flatData)[0]): BarDimensions => {
+      const planStart = new Date(item.planStart);
+      const planEnd = new Date(item.planEnd);
       let left: number, width: number;
 
       if (viewMode === "week") {
         const weekStart = timelineWeeks[0]?.start || minDate;
         const daysSinceStart =
-          (item.startDate.getTime() - weekStart.getTime()) /
-          (1000 * 60 * 60 * 24);
+          (planStart.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24);
         const weeksSinceStart = daysSinceStart / 7;
 
         const durationDays =
-          (item.dueDate.getTime() - item.startDate.getTime()) /
-          (1000 * 60 * 60 * 24);
+          (planEnd.getTime() - planStart.getTime()) / (1000 * 60 * 60 * 24);
         const durationWeeks = durationDays / 7;
 
         left = weeksSinceStart * unitWidth;
         width = Math.max(durationWeeks * unitWidth, unitWidth * 0.2);
       } else {
         const daysSinceStart = Math.floor(
-          (item.startDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
+          (planStart.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
         );
         const durationDays =
           Math.ceil(
-            (item.dueDate.getTime() - item.startDate.getTime()) /
-              (1000 * 60 * 60 * 24)
+            (planEnd.getTime() - planStart.getTime()) / (1000 * 60 * 60 * 24)
           ) || 1;
 
         left = daysSinceStart * unitWidth;

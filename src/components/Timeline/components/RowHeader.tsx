@@ -18,7 +18,9 @@ export const RowHeader = React.memo(
     onToggleCollapse,
     onStatusMenuOpen,
   }: RowHeaderProps) => {
-    const days = calculateWorkingDays(item.startDate, item.dueDate);
+    const planStart = new Date(item.planStart);
+    const planEnd = new Date(item.planEnd);
+    const days = calculateWorkingDays(planStart, planEnd);
 
     return (
       <div
@@ -47,7 +49,7 @@ export const RowHeader = React.memo(
           <StatusBadge status={item.status} onClick={onStatusMenuOpen} />
         </div>
         <div className="timeline-row-info">
-          {formatDate(item.startDate)} - {formatDate(item.dueDate)} • {days}d •{" "}
+          {formatDate(planStart)} - {formatDate(planEnd)} • {days}d •{" "}
           {formatDuration(item.resources.get("time") || 0)}
         </div>
       </div>

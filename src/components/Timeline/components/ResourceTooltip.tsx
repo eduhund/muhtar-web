@@ -11,6 +11,9 @@ interface ResourceTooltipProps {
 
 export const ResourceTooltip = React.memo(
   ({ item, position, currentDate = new Date() }: ResourceTooltipProps) => {
+    const planStart = new Date(item.planStart);
+    const planEnd = new Date(item.planEnd);
+
     const hasActualData =
       item.actualStartDate || item.actualDueDate || item.actualResources;
 
@@ -30,7 +33,7 @@ export const ResourceTooltip = React.memo(
         item.actualStartDate,
         effectiveActualDueDate
       );
-      const plannedDays = calculateWorkingDays(item.startDate, item.dueDate);
+      const plannedDays = calculateWorkingDays(planEnd, planEnd);
       const timePercent = (actualDays / plannedDays) * 100;
 
       if (timePercent > 100) {
@@ -134,7 +137,7 @@ export const ResourceTooltip = React.memo(
             <div className="timeline-tooltip-resource">
               <span className="timeline-tooltip-resource-type">Planned:</span>
               <span className="timeline-tooltip-resource-value">
-                {formatDate(item.startDate)} - {formatDate(item.dueDate)}
+                {formatDate(planEnd)} - {formatDate(planEnd)}
               </span>
             </div>
             {hasActualData &&
@@ -157,8 +160,7 @@ export const ResourceTooltip = React.memo(
                       d actual
                     </span>
                     {" / "}
-                    {calculateWorkingDays(item.startDate, item.dueDate)}d
-                    planned
+                    {calculateWorkingDays(planStart, planEnd)}d planned
                   </span>
                 </div>
               )}

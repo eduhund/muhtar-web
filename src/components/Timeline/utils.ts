@@ -100,13 +100,13 @@ export const hasYearChange = (start: Date, end: Date): boolean => {
 };
 
 export const calculateWorkingDays = (
-  startDate: Date,
-  dueDate: Date
+  planStart: Date,
+  planEnd: Date
 ): number => {
   let workingDays = 0;
-  const currentDate = new Date(startDate);
+  const currentDate = new Date(planStart);
 
-  while (currentDate < dueDate) {
+  while (currentDate < planEnd) {
     if (!isWeekend(currentDate)) {
       workingDays++;
     }
@@ -120,8 +120,8 @@ export const calculateWorkingDays = (
 export const calculateMetrics = (
   item: GanttItem
 ): {
-  startDate: Date;
-  dueDate: Date;
+  planStart: Date;
+  planEnd: Date;
   resources: Map<string, number>;
   roles: Role[];
   actualStartDate?: Date;
@@ -202,8 +202,8 @@ export const calculateMetrics = (
     }
 
     return {
-      startDate: new Date(item.startDate!),
-      dueDate: new Date(item.dueDate!),
+      planStart: new Date(item.planStart!),
+      planEnd: new Date(item.planEnd!),
       resources,
       roles,
       actualStartDate,
@@ -214,11 +214,11 @@ export const calculateMetrics = (
   } else {
     // Parent node - aggregate from children
     const childMetrics = item.children.map(calculateMetrics);
-    const startDate = new Date(
-      Math.min(...childMetrics.map((m) => m.startDate.getTime()))
+    const planStart = new Date(
+      Math.min(...childMetrics.map((m) => m.planStart.getTime()))
     );
-    const dueDate = new Date(
-      Math.max(...childMetrics.map((m) => m.dueDate.getTime()))
+    const planEnd = new Date(
+      Math.max(...childMetrics.map((m) => m.planEnd.getTime()))
     );
 
     // Aggregate resources from all children
@@ -343,8 +343,8 @@ export const calculateMetrics = (
     }
 
     return {
-      startDate,
-      dueDate,
+      planStart,
+      planEnd,
       resources,
       roles,
       actualStartDate,
@@ -429,8 +429,8 @@ export const flattenData = (
     result.push({
       id: item.id,
       name: item.name,
-      startDate: metrics.startDate,
-      dueDate: metrics.dueDate,
+      planStart: metrics.planStart,
+      planEnd: metrics.planEnd,
       resources: metrics.resources,
       level,
       hasChildren: !!item.children && item.children.length > 0,
