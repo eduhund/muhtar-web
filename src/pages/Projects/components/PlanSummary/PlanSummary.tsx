@@ -189,7 +189,7 @@ function StageDetails({
   resources,
 }: {
   stage: ProjectPlanJob;
-  resources: any[];
+  resources?: any[];
 }) {
   return (
     <div className="StageCard-details">
@@ -219,8 +219,10 @@ function StageDetails({
               spend={getResourceValue({
                 type: item.type,
                 value: resources
-                  .filter((res) => res.type === item.type)
-                  .reduce((acc, res) => acc + res.consumed, 0),
+                  ? resources
+                      .filter((res) => res.type === item.type)
+                      .reduce((acc, res) => acc + res.consumed, 0)
+                  : 0,
               })}
             />
           ))
