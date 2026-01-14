@@ -167,16 +167,30 @@ function StageStatus({ stage }: { stage: ProjectPlanJob }) {
   );
 }
 
-function StageItem({ name, value }: { name: string; value?: number }) {
+function StageItem({
+  name,
+  value,
+  spend,
+}: {
+  name: string;
+  value?: number;
+  spend?: number;
+}) {
   return (
     <div className="StageCard-details-row">
       <div className="StageCard-details-row-name">{name}</div>
-      <div className="StageCard-details-row-value">{value}</div>
+      <div className="StageCard-details-row-value">{`${spend} / ${value}`}</div>
     </div>
   );
 }
 
-function StageDetails({ stage }: { stage: ProjectPlanJob }) {
+function StageDetails({
+  stage,
+  resources,
+}: {
+  stage: ProjectPlanJob;
+  resources: any[];
+}) {
   return (
     <div className="StageCard-details">
       <div className="StageCard-details-item StageCard-outcomes">
@@ -202,6 +216,12 @@ function StageDetails({ stage }: { stage: ProjectPlanJob }) {
               key={i}
               name={getResourceName(item)}
               value={getResourceValue(item)}
+              spend={getResourceValue({
+                type: item.type,
+                value: resources
+                  .filter((res) => res.type === item.type)
+                  .reduce((acc, res) => acc + res.consumed, 0),
+              })}
             />
           ))
         ) : (
@@ -306,7 +326,7 @@ const StageCard: React.FC<StageCardProps> = ({
               status={stage.status}
               currency={currency}
             />
-            <StageDetails stage={stage} />
+            <StageDetails stage={stage} resources={filteredEntries} />
             {unknownRoleDuration > 0 && (
               <div className="ppw-stage-warning">
                 Resources without project role: {unknownRoleDuration / 60}h
