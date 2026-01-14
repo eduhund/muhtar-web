@@ -139,7 +139,7 @@ export interface Project {
   id: string;
   name: string;
   customer: string | null;
-  status: "active" | "archived";
+  status: "backlog" | "inProgress" | "completed" | "archived";
   isDeleted: boolean;
   memberships: {
     membershipId: string;

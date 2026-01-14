@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 
 import "./Projects.scss";
 import { useParams, useNavigate } from "react-router-dom";
+import { Timeline } from "../../components/Timeline/Timeline";
 
 const { Title, Paragraph } = Typography;
 
@@ -93,9 +94,16 @@ export function Projects() {
     : null;
 
   const activeProjects = (projects || [])?.filter(
-    (project) => project.status === "active"
+    (project) => project.status === "inProgress"
   );
 
+  const projectsWithPlans = (projects || [])
+    .filter((project) => project?.activePlan)
+    .map((project) => ({
+      name: project.name,
+      status: project.status,
+      ...project?.activePlan,
+    }));
   return (
     <Page title="Projects">
       <div className="Projects">
@@ -121,10 +129,7 @@ export function Projects() {
           ) : (
             <div>
               <Title level={2}>Select a Project</Title>
-              <Paragraph>
-                Please select a project from the list to view detailed
-                statistics.
-              </Paragraph>
+              <Timeline data={projectsWithPlans || []} />
             </div>
           )}
         </div>
