@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 
 import "./Projects.scss";
 import { useParams, useNavigate } from "react-router-dom";
-import Timeline from "./subpages/ProjectPlan/ProjectPlan";
+import { Timeline } from "../../components/Timeline/Timeline";
 
 const { Title, Paragraph } = Typography;
 
@@ -129,7 +129,7 @@ export function Projects() {
           ) : (
             <div>
               <Title level={2}>Select a Project</Title>
-              <Timeline plan={projectsWithPlans || []} />
+              <Timeline data={projectsWithPlans || []} />
             </div>
           )}
         </div>

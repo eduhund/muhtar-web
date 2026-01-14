@@ -37,7 +37,6 @@ interface FlatItem {
 }
 
 export default function Timeline({ plan, dayWidth = 40 }: GanttChartProps) {
-  console.log("Rendering Timeline with plan:", plan);
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{
