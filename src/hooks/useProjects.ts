@@ -10,7 +10,8 @@ export function useProjects() {
   const { projects, projectsLoading, updateState } = context;
 
   const activeProjects = useMemo(
-    () => (projects || [])?.filter((project) => project.status === "active"),
+    () =>
+      (projects || [])?.filter((project) => project.status === "inProgress"),
     [projects]
   );
 

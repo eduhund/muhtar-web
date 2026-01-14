@@ -62,8 +62,8 @@ export const GanttBar = React.memo(
       height?: number;
     } | null = null;
     let hasActualData = false;
-    let isDelayed = false;
-    let isAheadOfSchedule = false;
+    //let isDelayed = false;
+    //let isAheadOfSchedule = false;
 
     // Calculate schedule and resource status
     let scheduleStatus: "on-time" | "delayed" | "ahead" | null = null;
@@ -160,8 +160,8 @@ export const GanttBar = React.memo(
 
       // Check if delayed or ahead of schedule
       if (item.status === "completed") {
-        isDelayed = actualDue.getTime() > planEnd.getTime();
-        isAheadOfSchedule = actualDue.getTime() < planEnd.getTime();
+        //isDelayed = actualDue.getTime() > planEnd.getTime();
+        //isAheadOfSchedule = actualDue.getTime() < planEnd.getTime();
       }
     } else if (item.actualStartDate && item.status === "inProgress") {
       // Show partial progress for in-progress tasks
@@ -202,7 +202,7 @@ export const GanttBar = React.memo(
       };
 
       // Check if currently delayed (past due date)
-      isDelayed = now.getTime() > planEnd.getTime();
+      //isDelayed = now.getTime() > planEnd.getTime();
     }
 
     return (

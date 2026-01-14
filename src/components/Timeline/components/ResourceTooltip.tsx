@@ -25,9 +25,10 @@ export const ResourceTooltip = React.memo(
         : null);
 
     // Calculate schedule status and color
-    let scheduleStatus: "on-time" | "delayed" | "ahead" = "on-time";
-    let scheduleColor: "red" | "yellow" | "green" | "gray" | null = null;
+    //let scheduleStatus: "on-time" | "delayed" | "ahead" = "on-time";
+    //let scheduleColor: "red" | "yellow" | "green" | "gray" | null = null;
 
+    /*
     if (hasActualData && item.actualStartDate && effectiveActualDueDate) {
       const actualDays = calculateWorkingDays(
         item.actualStartDate,
@@ -47,10 +48,11 @@ export const ResourceTooltip = React.memo(
         scheduleColor = item.status === "inProgress" ? "gray" : "yellow";
       }
     }
+  */
 
     // Calculate resource status and color
-    let resourceStatus: "on-budget" | "over-budget" | "under-budget" =
-      "on-budget";
+    //let resourceStatus: "on-budget" | "over-budget" | "under-budget" =
+    //  "on-budget";
     let resourceColor: "red" | "yellow" | "green" | "gray" | null = null;
 
     if (hasActualData && item.actualResources) {
@@ -59,13 +61,13 @@ export const ResourceTooltip = React.memo(
       const resourcePercent = (actualTimeResource / timeResource) * 100;
 
       if (resourcePercent > 100) {
-        resourceStatus = "over-budget";
+        //resourceStatus = "over-budget";
         resourceColor = "red";
       } else if (resourcePercent >= 50) {
-        resourceStatus = "on-budget";
+        //resourceStatus = "on-budget";
         resourceColor = item.status === "inProgress" ? "gray" : "green";
       } else {
-        resourceStatus = "under-budget";
+        //resourceStatus = "under-budget";
         resourceColor = item.status === "inProgress" ? "gray" : "yellow";
       }
     }
@@ -105,9 +107,9 @@ export const ResourceTooltip = React.memo(
             style={{ display: "flex", alignItems: "center", gap: "6px" }}
           >
             <CalendarOutlined
-              className={
-                scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
-              }
+              //className={
+              //scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
+              //}
               style={{ flexShrink: 0, fontSize: 18 }}
             />
             Schedule:
@@ -120,9 +122,9 @@ export const ResourceTooltip = React.memo(
                     Actual:
                   </span>
                   <span
-                    className={`timeline-tooltip-resource-value ${
-                      scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
-                    }`}
+                  //className={`timeline-tooltip-resource-value ${
+                  //  scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
+                  //}`}
                   >
                     {item.actualStartDate
                       ? formatDate(item.actualStartDate)
@@ -149,9 +151,9 @@ export const ResourceTooltip = React.memo(
                   </span>
                   <span className="timeline-tooltip-resource-value">
                     <span
-                      className={
-                        scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
-                      }
+                    //className={
+                    //  scheduleColor ? `timeline-tooltip-${scheduleColor}` : ""
+                    //}
                     >
                       {calculateWorkingDays(
                         item.actualStartDate,

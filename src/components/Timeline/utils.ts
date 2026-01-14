@@ -1,11 +1,4 @@
-import {
-  GanttItem,
-  FlatItem,
-  Role,
-  Resource,
-  TaskStatus,
-  StatusStyles,
-} from "./types";
+import { GanttItem, FlatItem, Role, TaskStatus, StatusStyles } from "./types";
 
 // Date utilities
 export const getWeekNumber = (date: Date): number => {
