@@ -193,7 +193,6 @@
 .timeline-row {
   display: flex;
   border-bottom: 1px solid var(--timeline-border-color);
-  box-sizing: border-box;
 }
 
 .timeline-row-header {
@@ -319,7 +318,8 @@
   left: 0;
   top: 0;
   bottom: 0;
-  border-radius: var(--timeline-border-radius) 0 0 var(--timeline-border-radius);
+  border-radius: calc(var(--timeline-border-radius) - 1px) 0 0
+    calc(var(--timeline-border-radius) - 1px);
   width: var(--timeline-stripe-width);
 }
 
