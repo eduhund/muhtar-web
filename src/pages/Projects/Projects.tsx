@@ -94,7 +94,7 @@ export function Projects() {
     : null;
 
   const activeProjects = (projects || [])?.filter(
-    (project) => project.status === "active"
+    (project) => project.status === "inProgress"
   );
 
   const projectsWithPlans = (projects || [])
