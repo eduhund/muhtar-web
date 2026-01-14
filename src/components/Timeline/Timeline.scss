@@ -181,12 +181,12 @@
 
 .timeline-current-indicator {
   position: absolute;
-  top: -60px;
+  top: -4px;
   bottom: 0;
   width: 1px;
   background-color: var(--timeline-current-indicator);
   pointer-events: none;
-  z-index: 10;
+  z-index: 100;
 }
 
 /* Row */
