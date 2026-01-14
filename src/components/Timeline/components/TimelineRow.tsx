@@ -60,7 +60,10 @@ export const TimelineRow = React.memo(
     const isVisualLeaf = !item.hasSubJobs || isCollapsed;
 
     return (
-      <div className="timeline-row" style={{ height: dimensions.rowHeight }}>
+      <div
+        className="timeline-row"
+        style={{ height: dimensions.rowHeight + 2 }}
+      >
         <RowHeader
           item={item}
           isCollapsed={isCollapsed}
