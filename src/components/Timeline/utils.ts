@@ -129,7 +129,7 @@ export const calculateMetrics = (
   actualResources?: Map<string, number>;
   actualRoles?: Role[];
 } => {
-  if (!item.children || item.children.length === 0) {
+  if (!item.jobs || item.jobs.length === 0) {
     // Leaf node
     const itemRoles = item.roles || [];
     const roles: Role[] = [];
@@ -212,8 +212,8 @@ export const calculateMetrics = (
       actualRoles,
     };
   } else {
-    // Parent node - aggregate from children
-    const childMetrics = item.children.map(calculateMetrics);
+    // Parent node - aggregate from jobs
+    const childMetrics = item.jobs.map(calculateMetrics);
     const planStart = new Date(
       Math.min(...childMetrics.map((m) => m.planStart.getTime()))
     );
@@ -221,7 +221,7 @@ export const calculateMetrics = (
       Math.max(...childMetrics.map((m) => m.planEnd.getTime()))
     );
 
-    // Aggregate resources from all children
+    // Aggregate resources from all jobs
     const resources = new Map<string, number>();
     childMetrics.forEach((cm) => {
       cm.resources.forEach((value, type) => {
@@ -230,7 +230,7 @@ export const calculateMetrics = (
       });
     });
 
-    // Aggregate roles from all children
+    // Aggregate roles from all jobs
     const rolesMap = new Map<string, Role>();
     childMetrics.forEach((cm) => {
       cm.roles.forEach((role) => {
@@ -261,17 +261,17 @@ export const calculateMetrics = (
 
     const roles: Role[] = Array.from(rolesMap.values());
 
-    // Aggregate actual data if any children have it
+    // Aggregate actual data if any jobs have it
     let actualStartDate: Date | undefined;
     let actualDueDate: Date | undefined;
     let actualResources: Map<string, number> | undefined;
     let actualRoles: Role[] | undefined;
 
-    const childrenWithActuals = childMetrics.filter(
+    const jobsWithActuals = childMetrics.filter(
       (cm) => cm.actualStartDate || cm.actualDueDate || cm.actualResources
     );
 
-    if (childrenWithActuals.length > 0) {
+    if (jobsWithActuals.length > 0) {
       const actualStartDates = childMetrics
         .map((cm) => cm.actualStartDate)
         .filter((d): d is Date => d !== undefined);
@@ -433,7 +433,7 @@ export const flattenData = (
       planEnd: metrics.planEnd,
       resources: metrics.resources,
       level,
-      hasChildren: !!item.children && item.children.length > 0,
+      hasSubJobs: !!item.jobs && item.jobs.length > 0,
       path: itemPath,
       roles: metrics.roles,
       status: item.status || "backlog",
@@ -443,13 +443,9 @@ export const flattenData = (
       actualRoles: metrics.actualRoles,
     });
 
-    if (
-      item.children &&
-      item.children.length > 0 &&
-      !collapsedItems.has(item.id)
-    ) {
+    if (item.jobs && item.jobs.length > 0 && !collapsedItems.has(item.id)) {
       result.push(
-        ...flattenData(item.children, collapsedItems, level + 1, itemPath)
+        ...flattenData(item.jobs, collapsedItems, level + 1, itemPath)
       );
     }
   });
@@ -460,7 +456,7 @@ export const flattenData = (
 // Row height calculation
 export const getRowHeight = (
   resources: Map<string, number>,
-  hasChildren: boolean,
+  hasSubJobs: boolean,
   isCollapsed: boolean,
   maxDuration: number,
   actualResources?: Map<string, number>
@@ -468,7 +464,7 @@ export const getRowHeight = (
   const minHeight = 40;
   const maxHeight = 120;
 
-  if (hasChildren && !isCollapsed) {
+  if (hasSubJobs && !isCollapsed) {
     return { rowHeight: minHeight, barHeight: minHeight };
   }
 

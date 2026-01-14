@@ -57,7 +57,7 @@ export const TimelineRow = React.memo(
       [item.id, onMouseEnter]
     );
 
-    const isVisualLeaf = !item.hasChildren || isCollapsed;
+    const isVisualLeaf = !item.hasSubJobs || isCollapsed;
 
     return (
       <div className="timeline-row" style={{ height: dimensions.rowHeight }}>

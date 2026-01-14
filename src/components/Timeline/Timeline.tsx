@@ -147,7 +147,7 @@ export function Timeline({
       const isCollapsed = collapsedItems.has(item.id);
       const heightResult = getRowHeight(
         item.resources,
-        item.hasChildren,
+        item.hasSubJobs,
         isCollapsed,
         maxDuration,
         item.actualResources

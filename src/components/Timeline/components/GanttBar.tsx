@@ -278,7 +278,7 @@ export const GanttBar = React.memo(
             <div className="timeline-bar-text-inside">
               <div
                 className={`timeline-bar-name ${
-                  item.hasChildren ? "has-children" : ""
+                  item.hasSubJobs ? "has-children" : ""
                 }`}
               >
                 {item.name}
@@ -315,7 +315,7 @@ export const GanttBar = React.memo(
           >
             <div
               className={`timeline-bar-name ${
-                item.hasChildren ? "has-children" : ""
+                item.hasSubJobs ? "has-children" : ""
               }`}
             >
               {item.name}

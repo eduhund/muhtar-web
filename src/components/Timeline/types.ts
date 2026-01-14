@@ -19,7 +19,7 @@ export interface GanttItem {
   tasks?: string[];
   roles?: Role[] | string[];
   status?: TaskStatus;
-  children?: GanttItem[];
+  jobs?: GanttItem[];
   // Actual data
   actualStartDate?: string;
   actualDueDate?: string;
@@ -33,7 +33,7 @@ export interface FlatItem {
   planEnd: Date;
   resources: Map<string, number>; // total minutes
   level: number;
-  hasChildren: boolean;
+  hasSubJobs: boolean;
   path: string;
   roles: Role[];
   status: TaskStatus;

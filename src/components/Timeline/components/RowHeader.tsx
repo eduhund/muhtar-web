@@ -28,7 +28,7 @@ export const RowHeader = React.memo(
         style={{ paddingLeft: `${8 + item.level * 16}px` }}
       >
         <div className="timeline-row-header-content">
-          {item.hasChildren ? (
+          {item.hasSubJobs ? (
             <button onClick={onToggleCollapse} className="timeline-row-toggle">
               {isCollapsed ? (
                 <RightOutlined className="w-3 h-3" />
@@ -41,7 +41,7 @@ export const RowHeader = React.memo(
           )}
           <div
             className={`timeline-row-name ${
-              item.hasChildren ? "has-children" : ""
+              item.hasSubJobs ? "has-subJobs" : ""
             }`}
           >
             {item.name}

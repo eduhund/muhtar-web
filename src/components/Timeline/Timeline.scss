@@ -8,36 +8,36 @@
   --timeline-bg-gray-50: #f9fafb;
   --timeline-bg-gray-100: #f3f4f6;
   --timeline-bg-gray-200: #e5e7eb;
-  
+
   --timeline-text-primary: #1f2937;
   --timeline-text-secondary: #374151;
   --timeline-text-tertiary: #4b5563;
   --timeline-text-muted: #6b7280;
   --timeline-text-light: #9ca3af;
-  
+
   --timeline-current-indicator: #ef4444;
-  
+
   /* Status colors */
   --timeline-status-backlog-bg: #f3f4f6;
   --timeline-status-backlog-text: #4b5563;
   --timeline-status-backlog-border: #d1d5db;
   --timeline-status-backlog-stripe: #9ca3af;
-  
+
   --timeline-status-in-progress-bg: #e0f2fe;
   --timeline-status-in-progress-text: #0369a1;
   --timeline-status-in-progress-border: #7dd3fc;
   --timeline-status-in-progress-stripe: #3b82f6;
-  
+
   --timeline-status-completed-bg: #d1fae5;
   --timeline-status-completed-text: #047857;
   --timeline-status-completed-border: #6ee7b7;
   --timeline-status-completed-stripe: #10b981;
-  
+
   --timeline-status-canceled-bg: #fee2e2;
   --timeline-status-canceled-text: #dc2626;
   --timeline-status-canceled-border: #fca5a5;
   --timeline-status-canceled-stripe: #000000;
-  
+
   /* Sizes */
   --timeline-header-left-width: 256px;
   --timeline-header-min-height: 60px;
@@ -75,6 +75,7 @@
 
 .timeline-header-left {
   width: var(--timeline-header-left-width);
+  box-sizing: border-box;
   flex-shrink: 0;
   padding: 12px 16px;
   border-right: 1px solid var(--timeline-border-color);
@@ -93,6 +94,7 @@
 
 /* Header cells */
 .timeline-header-cell {
+  box-sizing: border-box;
   flex-shrink: 0;
   border-right: 1px solid var(--timeline-border-color);
   display: flex;
@@ -157,7 +159,7 @@
   position: absolute;
   left: var(--timeline-header-left-width);
   right: 0;
-  top: 80px;
+  top: 64px;
   bottom: 0;
   pointer-events: none;
 }
@@ -191,10 +193,12 @@
 .timeline-row {
   display: flex;
   border-bottom: 1px solid var(--timeline-border-color);
+  box-sizing: border-box;
 }
 
 .timeline-row-header {
   width: var(--timeline-header-left-width);
+  box-sizing: border-box;
   flex-shrink: 0;
   padding-left: 8px;
   padding-right: 8px;
@@ -246,7 +250,7 @@
   font-size: 12px;
 }
 
-.timeline-row-name.has-children {
+.timeline-row-name.has-subJobs {
   font-weight: 500;
 }
 
@@ -360,7 +364,7 @@
   line-height: 1.3;
 }
 
-.timeline-bar-name.has-children {
+.timeline-bar-name.has-subJobs {
   font-weight: 500;
 }
 
@@ -389,23 +393,43 @@
 }
 
 .timeline-actual-bar-backlog {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.08) 0%, rgba(107, 114, 128, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(107, 114, 128, 0.08) 0%,
+    rgba(107, 114, 128, 0.15) 100%
+  );
 }
 
 .timeline-actual-bar-inProgress {
-  background: linear-gradient(135deg, rgba(3, 105, 161, 0.15) 0%, rgba(3, 105, 161, 0.25) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(3, 105, 161, 0.15) 0%,
+    rgba(3, 105, 161, 0.25) 100%
+  );
 }
 
 .timeline-actual-bar-completed {
-  background: linear-gradient(135deg, rgba(4, 120, 87, 0.08) 0%, rgba(4, 120, 87, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(4, 120, 87, 0.08) 0%,
+    rgba(4, 120, 87, 0.15) 100%
+  );
 }
 
 .timeline-actual-bar-canceled {
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(220, 38, 38, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.08) 0%,
+    rgba(220, 38, 38, 0.15) 100%
+  );
 }
 
 .timeline-actual-bar-parent {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.10) 0%, rgba(107, 114, 128, 0.18) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(107, 114, 128, 0.1) 0%,
+    rgba(107, 114, 128, 0.18) 100%
+  );
 }
 
 /* Variance indicators */
