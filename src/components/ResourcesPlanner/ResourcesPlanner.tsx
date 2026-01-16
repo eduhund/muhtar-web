@@ -33,7 +33,7 @@ interface WeekData {
   year: number;
 }
 
-type ViewType = "workers" | "roles";
+type UnitToShow = "workers" | "roles";
 type ResourceType = "time" | string;
 
 // Weekly capacity for each worker (in hours)
@@ -110,7 +110,7 @@ const getResourceForWeek = (
   weekStart: Date,
   weekEnd: Date,
   resourceType: string,
-  viewType: ViewType,
+  unitToShow: UnitToShow,
   resourceOverrides: ResourceOverride
 ): number => {
   // Check if project overlaps with the week
@@ -120,7 +120,7 @@ const getResourceForWeek = (
 
   let totalResource = 0;
 
-  if (viewType === "roles") {
+  if (unitToShow === "roles") {
     // Roles view: just sum up the role's resources
     const role = project.roles.find((r) => r.key === workerOrRole);
     if (role) {
@@ -200,7 +200,7 @@ const getResourceForWeek = (
   // Apply resource overrides
   if (resourceOverrides[project.id]) {
     if (
-      viewType === "roles" &&
+      unitToShow === "roles" &&
       resourceOverrides[project.id].roles &&
       resourceOverrides[project.id].roles[workerOrRole]
     ) {
@@ -210,7 +210,7 @@ const getResourceForWeek = (
         totalResource = override;
       }
     } else if (
-      viewType === "workers" &&
+      unitToShow === "workers" &&
       resourceOverrides[project.id].workers &&
       resourceOverrides[project.id].workers[workerOrRole]
     ) {
@@ -260,7 +260,7 @@ const generateWeeks = (
 };
 
 export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
-  const [unitToShow, setUnitToShow] = useState<"workers" | "roles">("workers");
+  const [unitToShow, setUnitToShow] = useState<UnitToShow>("workers");
 
   const currentDate = useMemo(() => new Date(), []);
 
@@ -308,7 +308,6 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
   );
 
   // State
-  const [viewType, setViewType] = useState<ViewType>("workers");
   const [selectedWeekIndex, setSelectedWeekIndex] = useState<number>(8); // Center week
   const [selectedResourceType, setSelectedResourceType] =
     useState<ResourceType>("time");
@@ -352,7 +351,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
           updated[projectId] = {};
         }
 
-        if (viewType === "workers") {
+        if (unitToShow === "workers") {
           // Editing a worker's value
           const worker = column;
 
@@ -515,7 +514,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
         return updated;
       });
     },
-    [projects, viewType, selectedResourceType, selectedWeek, roundValue]
+    [projects, unitToShow, selectedResourceType, selectedWeek, roundValue]
   );
 
   // Start editing a cell
@@ -606,9 +605,9 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
   // Get list of workers or roles based on view type
   const columns = useMemo(() => {
     const list =
-      viewType === "workers" ? Array.from(workers) : Array.from(roles);
+      unitToShow === "workers" ? Array.from(workers) : Array.from(roles);
     return list.sort();
-  }, [viewType, workers, roles]);
+  }, [unitToShow, workers, roles]);
 
   // Calculate cell values
   const getCellValue = useCallback(
@@ -619,11 +618,11 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
         selectedWeek.weekStart,
         selectedWeek.weekEnd,
         selectedResourceType,
-        viewType,
+        unitToShow,
         resourceOverrides
       );
     },
-    [selectedWeek, selectedResourceType, viewType, resourceOverrides]
+    [selectedWeek, selectedResourceType, unitToShow, resourceOverrides]
   );
 
   // Calculate column totals
@@ -642,7 +641,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
   // Calculate original planned values (without overrides) for roles
   const columnPlannedValues = useMemo(() => {
     const planned = new Map<string, number>();
-    if (viewType === "roles") {
+    if (unitToShow === "roles") {
       columns.forEach((column) => {
         const total = projects.reduce((sum, project) => {
           // Get original value without overrides
@@ -654,7 +653,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
               selectedWeek.weekStart,
               selectedWeek.weekEnd,
               selectedResourceType,
-              viewType,
+              unitToShow,
               {}
             )
           );
@@ -663,7 +662,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
       });
     }
     return planned;
-  }, [columns, projects, viewType, selectedWeek, selectedResourceType]);
+  }, [columns, projects, unitToShow, selectedWeek, selectedResourceType]);
 
   // Week navigation
   const goToPreviousWeek = () => {
@@ -720,7 +719,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
       totalMinutes: number
     ): "overloaded" | "underutilized" | "normal" => {
       // Only check capacity for workers view and time resource
-      if (viewType !== "workers" || selectedResourceType !== "time") {
+      if (unitToShow !== "workers" || selectedResourceType !== "time") {
         return "normal";
       }
 
@@ -742,13 +741,13 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
 
       return "normal";
     },
-    [viewType, selectedResourceType]
+    [unitToShow, selectedResourceType]
   );
 
   // Get header style based on capacity status
   const getHeaderStyle = useCallback(
     (column: string): React.CSSProperties => {
-      if (viewType !== "workers" || selectedResourceType !== "time") {
+      if (unitToShow !== "workers" || selectedResourceType !== "time") {
         return {};
       }
 
@@ -771,13 +770,13 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
 
       return {};
     },
-    [viewType, selectedResourceType, columnTotals, getCapacityStatus]
+    [unitToShow, selectedResourceType, columnTotals, getCapacityStatus]
   );
 
   // Get total cell style based on capacity status
   const getTotalCellStyle = useCallback(
     (column: string): React.CSSProperties => {
-      if (viewType !== "workers" || selectedResourceType !== "time") {
+      if (unitToShow !== "workers" || selectedResourceType !== "time") {
         return {};
       }
 
@@ -802,7 +801,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
 
       return {};
     },
-    [viewType, selectedResourceType, columnTotals, getCapacityStatus]
+    [unitToShow, selectedResourceType, columnTotals, getCapacityStatus]
   );
 
   const maxColumnValue = Math.max(...Array.from(columnTotals.values()));
@@ -887,12 +886,12 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
                   let capacityInfo: { capacity: number } | null = null;
 
                   if (selectedResourceType === "time") {
-                    if (viewType === "workers") {
+                    if (unitToShow === "workers") {
                       const capacity = WORKERS_WEEKLY_CAPACITY[column];
                       if (capacity) {
                         capacityInfo = { capacity };
                       }
-                    } else if (viewType === "roles") {
+                    } else if (unitToShow === "roles") {
                       const planned = columnPlannedValues.get(column) || 0;
                       const plannedHours = planned / 60;
                       if (plannedHours > 0) {
@@ -1004,7 +1003,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
                   let remainingInfo: { remaining: number } | null = null;
 
                   if (selectedResourceType === "time") {
-                    if (viewType === "workers") {
+                    if (unitToShow === "workers") {
                       const capacity = WORKERS_WEEKLY_CAPACITY[column];
                       if (capacity) {
                         const totalHours = total / 60;
@@ -1012,7 +1011,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
                           remaining: capacity - totalHours,
                         };
                       }
-                    } else if (viewType === "roles") {
+                    } else if (unitToShow === "roles") {
                       const planned = columnPlannedValues.get(column) || 0;
                       const totalHours = total / 60;
                       const plannedHours = planned / 60;
