@@ -26,7 +26,7 @@ const { Title, Paragraph } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
 
-// Test data
+/*
 const testData = [
   {
     id: "phase1",
@@ -175,6 +175,7 @@ const testData = [
     ],
   },
 ];
+*/
 
 function filterByPeriod(entries: Resource[], period: Period): Resource[] {
   const today = dayjs();
@@ -329,7 +330,7 @@ export function Workers() {
           ) : (
             <div>
               <Title level={2}>Select a worker</Title>
-              <ResourcesPlanner data={testData} />
+              <ResourcesPlanner />
             </div>
           )}
         </div>

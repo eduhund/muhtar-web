@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Button, DatePicker, Form, Radio, Select } from "antd";
+import { Button, Form, Radio, Select } from "antd";
 import { GanttItem, Role, ProjectAssignment } from "./types";
 import {
   calculateMetrics,
@@ -10,11 +10,7 @@ import {
 
 import "./ResourcePlanner.scss";
 import { CheckboxGroupProps } from "antd/lib/checkbox/Group";
-
-interface ResourcesPlannerProps {
-  data: GanttItem[];
-  currentDate?: Date;
-}
+import { useProjects } from "../../hooks/useProjects";
 
 interface ProjectData {
   id: string;
@@ -69,14 +65,14 @@ const options: CheckboxGroupProps<string>["options"] = [
   { label: "Roles", value: "roles" },
 ];
 
-// Helper to get all unique workers/roles from projects
+// Helper to get all unique workers/roles from projectsData
 const extractWorkersAndRoles = (
-  projects: ProjectData[]
+  projectsData: ProjectData[]
 ): { workers: Set<string>; roles: Set<string> } => {
   const workers = new Set<string>();
   const roles = new Set<string>();
 
-  projects.forEach((project) => {
+  projectsData.forEach((project) => {
     project.roles.forEach((role) => {
       roles.add(role.key);
     });
@@ -88,11 +84,11 @@ const extractWorkersAndRoles = (
   return { workers, roles };
 };
 
-// Helper to get resource types from projects
-const extractResourceTypes = (projects: ProjectData[]): string[] => {
+// Helper to get resource types from projectsData
+const extractResourceTypes = (projectsData: ProjectData[]): string[] => {
   const types = new Set<string>();
 
-  projects.forEach((project) => {
+  projectsData.forEach((project) => {
     project.roles.forEach((role) => {
       role.resources.forEach((resource) => {
         types.add(resource.type);
@@ -259,47 +255,23 @@ const generateWeeks = (
   return weeks;
 };
 
-export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
+export function ResourcesPlanner() {
   const [unitToShow, setUnitToShow] = useState<UnitToShow>("workers");
 
-  const currentDate = useMemo(() => new Date(), []);
+  const { activeProjects } = useProjects();
 
-  // Extract top-level projects only (no nested children)
-  const projects = useMemo((): ProjectData[] => {
-    const result: ProjectData[] = [];
-
-    data.forEach((item) => {
-      const companyName = item.name; // Company name from top level
-
-      // Recursively flatten all nested children
-      const flattenChildren = (children: GanttItem[]): void => {
-        children.forEach((child) => {
-          if (child.children && child.children.length > 0) {
-            // This is a group (like Sprint 1, Sprint 2), continue recursing
-            flattenChildren(child.children);
-          } else {
-            // This is an actual task/project
-            const metrics = calculateMetrics(child);
-            result.push({
-              id: child.id,
-              name: child.name,
-              companyName: companyName,
-              startDate: metrics.startDate,
-              dueDate: metrics.dueDate,
-              roles: metrics.roles,
-              assignments: metrics.assignments,
-            });
-          }
-        });
+  const projectsData = useMemo(() => {
+    return (activeProjects || []).map((proj) => {
+      return {
+        id: proj.id,
+        name: proj.customer ? `${proj.customer} - ${proj.name}` : proj.name,
       };
-
-      if (item.children && item.children.length > 0) {
-        flattenChildren(item.children);
-      }
     });
+  }, [activeProjects]);
 
-    return result;
-  }, [data]);
+  console.log("Projects Data:", projectsData);
+
+  const currentDate = useMemo(() => new Date(), []);
 
   // Generate all weeks
   const allWeeks = useMemo(
@@ -339,7 +311,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
   // Handle cell value change
   const handleCellChange = useCallback(
     (projectId: string, column: string, newValue: number) => {
-      const project = projects.find((p) => p.id === projectId);
+      const project = projectsData.find((p) => p.id === projectId);
       if (!project) return;
 
       const rounded = roundValue(newValue, selectedResourceType);
@@ -514,7 +486,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
         return updated;
       });
     },
-    [projects, unitToShow, selectedResourceType, selectedWeek, roundValue]
+    [projectsData, unitToShow, selectedResourceType, selectedWeek, roundValue]
   );
 
   // Start editing a cell
@@ -594,12 +566,12 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
 
   // Extract workers, roles, and resource types
   const { workers, roles } = useMemo(
-    () => extractWorkersAndRoles(projects),
-    [projects]
+    () => extractWorkersAndRoles(projectsData),
+    [projectsData]
   );
   const resourceTypes = useMemo(
-    () => extractResourceTypes(projects),
-    [projects]
+    () => extractResourceTypes(projectsData),
+    [projectsData]
   );
 
   // Get list of workers or roles based on view type
@@ -629,21 +601,21 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
   const columnTotals = useMemo(() => {
     const totals = new Map<string, number>();
     columns.forEach((column) => {
-      const total = projects.reduce(
+      const total = projectsData.reduce(
         (sum, project) => sum + getCellValue(project, column),
         0
       );
       totals.set(column, total);
     });
     return totals;
-  }, [columns, projects, getCellValue]);
+  }, [columns, projectsData, getCellValue]);
 
   // Calculate original planned values (without overrides) for roles
   const columnPlannedValues = useMemo(() => {
     const planned = new Map<string, number>();
     if (unitToShow === "roles") {
       columns.forEach((column) => {
-        const total = projects.reduce((sum, project) => {
+        const total = projectsData.reduce((sum, project) => {
           // Get original value without overrides
           return (
             sum +
@@ -662,7 +634,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
       });
     }
     return planned;
-  }, [columns, projects, unitToShow, selectedWeek, selectedResourceType]);
+  }, [columns, projectsData, unitToShow, selectedWeek, selectedResourceType]);
 
   // Week navigation
   const goToPreviousWeek = () => {
@@ -924,7 +896,7 @@ export function ResourcesPlanner({ data }: ResourcesPlannerProps) {
               </tr>
             </thead>
             <tbody>
-              {projects.map((project) => {
+              {projectsData.map((project) => {
                 const rowTotal = columns.reduce(
                   (sum, column) => sum + getCellValue(project, column),
                   0
