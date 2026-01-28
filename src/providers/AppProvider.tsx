@@ -20,6 +20,8 @@ type AppState = {
   membershipsLoading: boolean;
   team: Team | null;
   teamLoading: boolean;
+  teams: Team[] | null;
+  teamsLoading: boolean;
   projects: Project[] | null;
   projectsLoading: boolean;
   resources: Resources | null;
@@ -38,6 +40,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     membershipsLoading: false,
     team: null,
     teamLoading: false,
+    teams: null,
+    teamsLoading: false,
     projects: null,
     projectsLoading: false,
     resources: null,
@@ -56,6 +60,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       team: null,
       projects: null,
       timetable: null,
+      teams: null,
       memberships: null,
     }));
   }
@@ -90,6 +95,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           workRoles: data.activeTeam?.workRoles || [],
         },
         memberships: data.activeTeam?.memberships || [],
+        teams: data.teams || [],
         projects: data.activeTeam?.projects || [],
         userLoading: false,
         membershipLoading: false,

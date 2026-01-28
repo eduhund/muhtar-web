@@ -1,0 +1,50 @@
+.TeamSelector {
+  &-button {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+    padding: 5px 12px;
+    border: 1px solid transparent;
+    border-left-color: #cccccc;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      border-color: #cccccc;
+      border-radius: 12px;
+
+      .TeamSelector-button-icon {
+        display: block;
+      }
+    }
+
+    .TeamSelector-button-text {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .TeamSelector-button-icon {
+      display: none;
+      font-size: 14px;
+      color: #999;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 12px;
+    }
+
+    &._open {
+      background-color: #ffffff;
+      border-color: #999999;
+      border-radius: 12px;
+
+      .TeamSelector-button-icon {
+        display: block;
+        color: #999999;
+      }
+    }
+  }
+}
