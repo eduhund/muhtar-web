@@ -25,6 +25,10 @@
     text-decoration: none;
 
     box-shadow: -12px 4px 8px 12px #fff6f0;
+
+    & > a {
+      height: 40px;
+    }
   }
 
   &-logo {
