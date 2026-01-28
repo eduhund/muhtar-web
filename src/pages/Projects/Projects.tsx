@@ -94,7 +94,7 @@ export function Projects() {
     : null;
 
   const activeProjects = (projects || [])?.filter(
-    (project) => project.status === "inProgress"
+    (project) => project.status === "inProgress",
   );
 
   const projectsWithPlans = (projects || [])
@@ -129,7 +129,10 @@ export function Projects() {
           ) : (
             <div>
               <Title level={2}>Select a Project</Title>
-              <Timeline data={projectsWithPlans || []} />
+              <Timeline
+                data={projectsWithPlans || []}
+                defaultCollapsed={true}
+              />
             </div>
           )}
         </div>

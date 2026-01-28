@@ -18,6 +18,7 @@ import "./Timeline.scss";
 interface TimelineProps {
   data: any[];
   viewMode?: ViewMode;
+  defaultCollapsed?: boolean;
   onDataChange?: (data: any[]) => void;
 }
 
@@ -26,6 +27,7 @@ const DAY_WIDTH = 40;
 export function Timeline({
   data,
   viewMode = "week",
+  defaultCollapsed = false,
   onDataChange,
 }: TimelineProps) {
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -44,6 +46,27 @@ export function Timeline({
   const dayWidth = DAY_WIDTH;
 
   const unitWidth = viewMode === "week" ? 100 : dayWidth;
+
+  // Initialize collapsed items based on `defaultCollapsed` prop.
+  // When true, collapse all parent items so only top-level rows are shown.
+  useEffect(() => {
+    if (!defaultCollapsed) return;
+
+    const parentIds = new Set<string>();
+
+    const collectParents = (items: any[]) => {
+      if (!items || items.length === 0) return;
+      items.forEach((it) => {
+        if (it.jobs && it.jobs.length > 0) {
+          parentIds.add(it.id);
+          collectParents(it.jobs);
+        }
+      });
+    };
+
+    collectParents(data);
+    setCollapsedItems(parentIds);
+  }, [data, defaultCollapsed]);
 
   // Flatten data
   const flatData = useMemo(
