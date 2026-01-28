@@ -39,7 +39,6 @@
   --timeline-status-canceled-stripe: #000000;
 
   /* Sizes */
-  --timeline-header-left-width: 256px;
   --timeline-header-min-height: 60px;
   --timeline-row-min-height: 40px;
   --timeline-stripe-width: 4px;
@@ -71,20 +70,6 @@
   position: sticky;
   top: 0;
   z-index: 20;
-}
-
-.timeline-header-left {
-  width: var(--timeline-header-left-width);
-  box-sizing: border-box;
-  flex-shrink: 0;
-  padding: 12px 16px;
-  border-right: 1px solid var(--timeline-border-color);
-  background: var(--timeline-bg-white);
-  position: sticky;
-  left: 0;
-  z-index: 30;
-  font-weight: 500;
-  color: var(--timeline-text-secondary);
 }
 
 .timeline-header-timeline {
@@ -157,7 +142,7 @@
 /* Grid background */
 .timeline-grid {
   position: absolute;
-  left: var(--timeline-header-left-width);
+  left: 0;
   right: 0;
   top: 64px;
   bottom: 0;
@@ -193,70 +178,6 @@
 .timeline-row {
   display: flex;
   border-bottom: 1px solid var(--timeline-border-color);
-}
-
-.timeline-row-header {
-  width: var(--timeline-header-left-width);
-  box-sizing: border-box;
-  flex-shrink: 0;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  border-right: 1px solid var(--timeline-border-color);
-  background: var(--timeline-bg-white);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: sticky;
-  left: 0;
-  z-index: 10;
-}
-
-.timeline-row-header-content {
-  display: flex;
-  align-items: center;
-}
-
-.timeline-row-toggle {
-  margin-right: 4px;
-  width: 12px;
-  height: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--timeline-text-muted);
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.timeline-row-toggle:hover {
-  color: var(--timeline-text-secondary);
-}
-
-.timeline-row-spacer {
-  width: 12px;
-  margin-right: 4px;
-  flex-shrink: 0;
-}
-
-.timeline-row-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
-}
-
-.timeline-row-name.has-subJobs {
-  font-weight: 500;
-}
-
-.timeline-row-info {
-  font-size: 9px;
-  color: var(--timeline-text-muted);
-  padding-left: 16px;
 }
 
 .timeline-row-chart {
