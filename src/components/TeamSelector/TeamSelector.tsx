@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTeams } from "../../hooks/useTeams";
+//import { useTeams } from "../../hooks/useTeams";
 import Title from "antd/lib/typography/Title";
 import { useTeam } from "../../hooks/useTeam";
 
@@ -8,7 +8,7 @@ import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
 export default function TeamSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { teams } = useTeams();
+  //const { teams } = useTeams();
   const { team } = useTeam();
 
   return (

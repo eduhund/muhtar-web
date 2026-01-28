@@ -6,7 +6,7 @@ import { AddTimeWidget } from "./components/SidebarWidget/variants/AddTimeWidget
 
 import { useMembership } from "../../hooks/useMembership";
 import { WorkersWidget } from "./components/SidebarWidget/variants/WorkersWidget/WorkersWidget";
-import { useTeam } from "../../hooks/useTeam";
+//import { useTeam } from "../../hooks/useTeam";
 import { Link } from "react-router-dom";
 import { ProjectsWidget } from "./components/SidebarWidget/variants/ProjectsWidget/ProjectsWidget";
 import { useSidebarExpanded } from "./hooks/useSidebarExpanded";
@@ -67,7 +67,7 @@ function ExpandedSidebar() {
   const { user } = useUser();
   const { membership } = useMembership();
   const { projects } = useProjects();
-  const { team } = useTeam();
+  //const { team } = useTeam();
   const isAdmin = membership?.accessRole === "admin";
   const hasAdminProjects = projects?.some((p) =>
     p.memberships.some((m) => m.accessRole === "admin"),
