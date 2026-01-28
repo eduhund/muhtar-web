@@ -18,6 +18,7 @@ interface GanttBarProps {
   isVisualLeaf: boolean;
   isHovered: boolean;
   isMenuOpen: boolean;
+  onClick: (itemId: string) => void;
   onMouseEnter: (e: React.MouseEvent) => void;
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseLeave: () => void;
@@ -35,6 +36,7 @@ export const GanttBar = React.memo(
     isVisualLeaf,
     isHovered,
     isMenuOpen,
+    onClick,
     onMouseEnter,
     onMouseMove,
     onMouseLeave,
@@ -85,7 +87,7 @@ export const GanttBar = React.memo(
       // Calculate schedule status
       const actualDays = calculateWorkingDays(
         item.actualStartDate,
-        effectiveActualDueDate
+        effectiveActualDueDate,
       );
       const plannedDays = calculateWorkingDays(planStart, planEnd);
       const timePercent = (actualDays / plannedDays) * 100;
@@ -142,10 +144,10 @@ export const GanttBar = React.memo(
       } else {
         const daysFromStart = Math.floor(
           (actualStart.getTime() - timelineStart.getTime()) /
-            (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24),
         );
         const actualDuration = Math.floor(
-          (actualDue.getTime() - actualStart.getTime()) / (1000 * 60 * 60 * 24)
+          (actualDue.getTime() - actualStart.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         left = daysFromStart * dayWidth;
@@ -185,10 +187,10 @@ export const GanttBar = React.memo(
       } else {
         const daysFromStart = Math.floor(
           (actualStart.getTime() - timelineStart.getTime()) /
-            (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24),
         );
         const actualDuration = Math.floor(
-          (now.getTime() - actualStart.getTime()) / (1000 * 60 * 60 * 24)
+          (now.getTime() - actualStart.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         left = daysFromStart * dayWidth;
@@ -218,6 +220,7 @@ export const GanttBar = React.memo(
           onMouseEnter={onMouseEnter}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
+          onClick={() => onClick(item.id)}
         >
           {/* Status stripe */}
           <div className={`timeline-stripe ${statusStyles.stripeColor}`} />
@@ -243,8 +246,8 @@ export const GanttBar = React.memo(
                     scheduleStatus === "delayed"
                       ? "Delayed"
                       : scheduleStatus === "ahead"
-                      ? "Ahead"
-                      : "On time"
+                        ? "Ahead"
+                        : "On time"
                   }`}
                 >
                   <CalendarOutlined
@@ -260,8 +263,8 @@ export const GanttBar = React.memo(
                     resourceStatus === "over-budget"
                       ? "Over budget"
                       : resourceStatus === "under-budget"
-                      ? "Under budget"
-                      : "On budget"
+                        ? "Under budget"
+                        : "On budget"
                   }`}
                 >
                   <WalletOutlined
@@ -328,7 +331,7 @@ export const GanttBar = React.memo(
         )}
       </>
     );
-  }
+  },
 );
 
 GanttBar.displayName = "GanttBar";

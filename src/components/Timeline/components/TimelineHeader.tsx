@@ -36,10 +36,6 @@ export const TimelineHeader = React.memo(
   }: TimelineHeaderProps) => {
     return (
       <div className="timeline-header">
-        <div className="timeline-header-left">
-          <span>Task Information</span>
-        </div>
-
         {viewMode === "day" ? (
           <div
             className="timeline-header-timeline"
@@ -97,7 +93,7 @@ export const TimelineHeader = React.memo(
               const currentWeek = isCurrentWeek(
                 week.start,
                 week.end,
-                currentDate
+                currentDate,
               );
               const weekStartIsYearStart = isStartOfYear(week.start);
               const weekStartIsMonthStart = isStartOfMonth(week.start);
@@ -140,7 +136,7 @@ export const TimelineHeader = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 TimelineHeader.displayName = "TimelineHeader";

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { FlatItem, BarDimensions, ViewMode } from "../types";
-import { RowHeader } from "./RowHeader";
 import { GanttBar } from "./GanttBar";
 
 interface TimelineRowProps {
@@ -39,22 +38,18 @@ export const TimelineRow = React.memo(
     onMouseMove,
     onMouseLeave,
   }: TimelineRowProps) => {
-    const handleToggleCollapse = useCallback(() => {
-      onToggleCollapse(item.id);
-    }, [item.id, onToggleCollapse]);
-
     const handleStatusMenuOpen = useCallback(
       (e: React.MouseEvent) => {
         onStatusMenuOpen(item.id, e);
       },
-      [item.id, onStatusMenuOpen]
+      [item.id, onStatusMenuOpen],
     );
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent) => {
         onMouseEnter(item.id, e);
       },
-      [item.id, onMouseEnter]
+      [item.id, onMouseEnter],
     );
 
     const isVisualLeaf = !item.hasSubJobs || isCollapsed;
@@ -64,13 +59,6 @@ export const TimelineRow = React.memo(
         className="timeline-row"
         style={{ height: dimensions.rowHeight + 2 }}
       >
-        <RowHeader
-          item={item}
-          isCollapsed={isCollapsed}
-          onToggleCollapse={handleToggleCollapse}
-          onStatusMenuOpen={handleStatusMenuOpen}
-        />
-
         <div className="timeline-row-chart" style={{ minWidth: timelineWidth }}>
           <div className="timeline-row-chart-content">
             <GanttBar
@@ -79,6 +67,7 @@ export const TimelineRow = React.memo(
               isVisualLeaf={isVisualLeaf}
               isHovered={isHovered}
               isMenuOpen={isMenuOpen}
+              onClick={onToggleCollapse}
               onMouseEnter={handleMouseEnter}
               onMouseMove={onMouseMove}
               onMouseLeave={onMouseLeave}
@@ -92,7 +81,7 @@ export const TimelineRow = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 TimelineRow.displayName = "TimelineRow";

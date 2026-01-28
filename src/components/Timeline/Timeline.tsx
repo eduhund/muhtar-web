@@ -18,6 +18,7 @@ import "./Timeline.scss";
 interface TimelineProps {
   data: any[];
   viewMode?: ViewMode;
+  defaultCollapsed?: boolean;
   onDataChange?: (data: any[]) => void;
 }
 
@@ -26,6 +27,7 @@ const DAY_WIDTH = 40;
 export function Timeline({
   data,
   viewMode = "week",
+  defaultCollapsed = false,
   onDataChange,
 }: TimelineProps) {
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -45,10 +47,31 @@ export function Timeline({
 
   const unitWidth = viewMode === "week" ? 100 : dayWidth;
 
+  // Initialize collapsed items based on `defaultCollapsed` prop.
+  // When true, collapse all parent items so only top-level rows are shown.
+  useEffect(() => {
+    if (!defaultCollapsed) return;
+
+    const parentIds = new Set<string>();
+
+    const collectParents = (items: any[]) => {
+      if (!items || items.length === 0) return;
+      items.forEach((it) => {
+        if (it.jobs && it.jobs.length > 0) {
+          parentIds.add(it.id);
+          collectParents(it.jobs);
+        }
+      });
+    };
+
+    collectParents(data);
+    setCollapsedItems(parentIds);
+  }, [data, defaultCollapsed]);
+
   // Flatten data
   const flatData = useMemo(
     () => flattenData(data, collapsedItems),
-    [data, collapsedItems]
+    [data, collapsedItems],
   );
 
   // Calculate timeline range
@@ -57,10 +80,10 @@ export function Timeline({
       return { minDate: new Date(), maxDate: new Date() };
     }
     const minDate = new Date(
-      Math.min(...flatData.map((item) => new Date(item.planStart).getTime()))
+      Math.min(...flatData.map((item) => new Date(item.planStart).getTime())),
     );
     const maxDate = new Date(
-      Math.max(...flatData.map((item) => new Date(item.planEnd).getTime()))
+      Math.max(...flatData.map((item) => new Date(item.planEnd).getTime())),
     );
     return { minDate, maxDate };
   }, [flatData]);
@@ -133,11 +156,11 @@ export function Timeline({
         width = Math.max(durationWeeks * unitWidth, unitWidth * 0.2);
       } else {
         const daysSinceStart = Math.floor(
-          (planStart.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
+          (planStart.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24),
         );
         const durationDays =
           Math.ceil(
-            (planEnd.getTime() - planStart.getTime()) / (1000 * 60 * 60 * 24)
+            (planEnd.getTime() - planStart.getTime()) / (1000 * 60 * 60 * 24),
           ) || 1;
 
         left = daysSinceStart * unitWidth;
@@ -150,7 +173,7 @@ export function Timeline({
         item.hasSubJobs,
         isCollapsed,
         maxDuration,
-        item.actualResources
+        item.actualResources,
       );
 
       return {
@@ -161,7 +184,7 @@ export function Timeline({
         actualBarHeight: heightResult.actualBarHeight,
       };
     },
-    [viewMode, timelineWeeks, minDate, unitWidth, collapsedItems, maxDuration]
+    [viewMode, timelineWeeks, minDate, unitWidth, collapsedItems, maxDuration],
   );
 
   // Current day indicator position
@@ -203,7 +226,7 @@ export function Timeline({
       setHoveredItemId(itemId);
       setTooltipPosition({ x: e.clientX, y: e.clientY });
     },
-    []
+    [],
   );
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -226,7 +249,7 @@ export function Timeline({
       setStatusMenuItemId(itemId);
       setStatusMenuPosition({ x: e.clientX, y: e.clientY });
     },
-    [statusMenuItemId]
+    [statusMenuItemId],
   );
 
   const handleStatusChange = useCallback(
@@ -242,7 +265,7 @@ export function Timeline({
             if (newStatus === "inProgress") {
               // 1.2 For inProgress: keep completed, set first backlog to inProgress
               const completedCount = item.jobs.filter(
-                (c) => c.status === "completed"
+                (c) => c.status === "completed",
               ).length;
 
               if (completedCount === item.jobs.length) {
@@ -358,7 +381,7 @@ export function Timeline({
       const updatedData = data.map((item) => updateItem(item));
       onDataChange(updatedData);
     },
-    [data, onDataChange]
+    [data, onDataChange],
   );
 
   // Close status menu when clicking outside
