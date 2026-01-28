@@ -19,10 +19,7 @@ const App = () => {
   const { isLoggedIn } = useLogin();
   console.log("App isLoggedIn:", isLoggedIn());
   return (
-    <ConfigProvider
-      locale={enUS}
-      theme={{ token: { colorPrimary: "#f04f23" } }}
-    >
+    <ConfigProvider locale={enUS} theme={{ token: { colorPrimary: "#000" } }}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route

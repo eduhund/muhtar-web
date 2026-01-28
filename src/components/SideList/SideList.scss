@@ -16,11 +16,11 @@
     transition: background-color 0.12s;
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: #f5f5f5;
     }
 
     &._selected {
-      background-color: #ffdcc9;
+      background-color: #f0f0f0;
     }
   }
 }
