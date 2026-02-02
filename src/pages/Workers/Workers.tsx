@@ -16,7 +16,7 @@ import SideList from "../../components/SideList/SideList";
 import { useState } from "react";
 import QuickSummaryItem from "./components/QuickSummaryItem/QuickSummaryItem";
 import WorkerPage from "./WorkerPage";
-import { ResourcesPlanner } from "../../components/ResourcesPlanner/ResourcesPlanner";
+import { ResourcesPlanner } from "../../components/OldResourcesPlanner/ResourcesPlanner";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -25,157 +25,6 @@ dayjs.extend(isSameOrBefore);
 const { Title, Paragraph } = Typography;
 
 type Period = "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth";
-
-/*
-const testData = [
-  {
-    id: "phase1",
-    name: "Acme Corporation",
-    tasks: ["task2"],
-    roles: ["designer", "analyst"],
-    status: "completed",
-    children: [
-      {
-        id: "job2",
-        name: "Design Documentation",
-        startDate: "2024-01-06",
-        dueDate: "2024-01-12",
-        status: "completed",
-        roles: [
-          {
-            key: "designer",
-            resources: [
-              { type: "time", value: 3600 }, // 60 hours
-              { type: "budget", value: 6600 },
-            ],
-          },
-          {
-            key: "analyst",
-            resources: [
-              { type: "time", value: 1800 }, // 30 hours
-              { type: "budget", value: 3000 },
-            ],
-          },
-        ],
-        assignments: [
-          { worker: "Emily Davis", role: "designer" },
-          { worker: "Sarah Johnson", role: "analyst" },
-        ],
-        // Actual data: finished earlier with fewer hours (ahead of schedule)
-        actualStartDate: "2024-01-06",
-        actualDueDate: "2024-01-10",
-        actualRoles: [
-          {
-            key: "designer",
-            resources: [
-              { type: "time", value: 3300 }, // 55 hours (under budget)
-              { type: "budget", value: 6050 },
-            ],
-          },
-          {
-            key: "analyst",
-            resources: [
-              { type: "time", value: 1500 }, // 25 hours (under budget)
-              { type: "budget", value: 2500 },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "phase2",
-    name: "TechStart Inc",
-    tasks: ["task3", "task4"],
-    roles: ["backend-dev", "qa"],
-    status: "inProgress",
-    children: [
-      {
-        id: "job3",
-        name: "Backend Development",
-        startDate: "2024-01-13",
-        dueDate: "2024-01-20",
-        status: "completed",
-        roles: [
-          {
-            key: "backend-dev",
-            resources: [
-              { type: "time", value: 4800 }, // 80 hours
-              { type: "budget", value: 9600 },
-            ],
-          },
-        ],
-        assignments: [{ worker: "Alex Rodriguez", role: "backend-dev" }],
-        // Actual data: started on time, finished late (delayed)
-        actualStartDate: "2024-01-13",
-        actualDueDate: "2024-01-23",
-        actualRoles: [
-          {
-            key: "backend-dev",
-            resources: [
-              { type: "time", value: 7800 }, // 130 hours (50 hours overrun)
-              { type: "budget", value: 15600 },
-            ],
-          },
-        ],
-      },
-      {
-        id: "job6",
-        name: "Testing",
-        startDate: "2024-01-28",
-        dueDate: "2024-02-03",
-        status: "inProgress",
-        roles: [
-          {
-            key: "qa",
-            resources: [
-              { type: "time", value: 3600 }, // 60 hours
-              { type: "budget", value: 5400 },
-            ],
-          },
-          {
-            key: "backend-dev",
-            resources: [
-              { type: "time", value: 1200 }, // 20 hours
-              { type: "budget", value: 2400 },
-            ],
-          },
-        ],
-        assignments: [
-          { worker: "Tom Zhang", role: "qa" },
-          { worker: "David Kim", role: "backend-dev" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "phase3",
-    name: "Global Solutions Ltd",
-    tasks: ["task5"],
-    roles: ["fullstack-dev"],
-    status: "backlog",
-    children: [
-      {
-        id: "job7",
-        name: "Production Deploy",
-        startDate: "2024-02-04",
-        dueDate: "2024-02-06",
-        status: "backlog",
-        roles: [
-          {
-            key: "fullstack-dev",
-            resources: [
-              { type: "time", value: 1200 }, // 20 hours
-              { type: "budget", value: 2400 },
-            ],
-          },
-        ],
-        assignments: [{ worker: "Lisa Wang", role: "fullstack-dev" }],
-      },
-    ],
-  },
-];
-*/
 
 function filterByPeriod(entries: Resource[], period: Period): Resource[] {
   const today = dayjs();
@@ -288,7 +137,7 @@ export function Workers() {
   });
 
   const sortedMemberships = filteredMemberships?.sort((a, b) =>
-    a.name.localeCompare(b.name)
+    a.name.localeCompare(b.name),
   );
 
   return (
