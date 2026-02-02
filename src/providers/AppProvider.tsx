@@ -7,6 +7,7 @@ import {
   Resources,
   AppContext,
   Task,
+  BookedResources,
 } from "../context/AppContext";
 import { membershipStorage, userStorage } from "../utils/storage";
 import { membershipAPI, userAPI } from "../api";
@@ -26,6 +27,8 @@ type AppState = {
   projectsLoading: boolean;
   resources: Resources | null;
   resourcesLoading: boolean;
+  bookedResources?: BookedResources | null;
+  bookedResourcesLoading?: boolean;
   tasks?: Task[] | null;
   tasksLoading?: boolean;
 };
@@ -46,6 +49,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     projectsLoading: false,
     resources: null,
     resourcesLoading: false,
+    bookedResources: null,
+    bookedResourcesLoading: false,
     tasks: null,
     tasksLoading: false,
   });
@@ -62,6 +67,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       timetable: null,
       teams: null,
       memberships: null,
+      bookedResources: null,
     }));
   }
 
@@ -128,6 +134,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
+  async function initBookedResources() {
+    setState((prev) => ({ ...prev, bookedResourcesLoading: true }));
+    const { data } = await membershipAPI.getBookedResources({});
+    setState((prev) => ({
+      ...prev,
+      bookedResources: (data as BookedResources) || null,
+      bookedResourcesLoading: false,
+    }));
+  }
+
   async function initProvider() {
     if (!userStorage.hasAccessToken()) {
       logOut();
@@ -140,6 +156,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     initUserData();
     initResources();
     initTasks();
+    initBookedResources();
   }
 
   useEffect(() => {
