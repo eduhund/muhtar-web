@@ -82,6 +82,7 @@ export interface Team {
   name: string;
   connections: ConnectionList;
   isDeleted: boolean;
+  membership?: Membership;
 }
 
 export type ProjectPlanResource = {
@@ -178,6 +179,8 @@ export interface AppContext {
   userLoading?: boolean;
   membership?: Membership | null;
   membershipLoading?: boolean;
+  teams?: Team[] | null;
+  teamsLoading?: boolean;
   team?: Team | null;
   teamLoading?: boolean;
   memberships?: Membership[] | null;

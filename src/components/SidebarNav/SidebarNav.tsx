@@ -6,7 +6,7 @@ import { AddTimeWidget } from "./components/SidebarWidget/variants/AddTimeWidget
 
 import { useMembership } from "../../hooks/useMembership";
 import { WorkersWidget } from "./components/SidebarWidget/variants/WorkersWidget/WorkersWidget";
-import { useTeam } from "../../hooks/useTeam";
+//import { useTeam } from "../../hooks/useTeam";
 import { Link } from "react-router-dom";
 import { ProjectsWidget } from "./components/SidebarWidget/variants/ProjectsWidget/ProjectsWidget";
 import { useSidebarExpanded } from "./hooks/useSidebarExpanded";
@@ -15,6 +15,7 @@ import { ProjectsButton } from "./components/SidebarButton/variants/ProjectsButt
 import "./SidebarNav.scss";
 import { WorkersButton } from "./components/SidebarButton/variants/WorkersButton/WorkersButton";
 import { useProjects } from "../../hooks/useProjects";
+import TeamSelector from "../TeamSelector/TeamSelector";
 
 const { Title, Text } = Typography;
 
@@ -66,10 +67,10 @@ function ExpandedSidebar() {
   const { user } = useUser();
   const { membership } = useMembership();
   const { projects } = useProjects();
-  const { team } = useTeam();
+  //const { team } = useTeam();
   const isAdmin = membership?.accessRole === "admin";
   const hasAdminProjects = projects?.some((p) =>
-    p.memberships.some((m) => m.accessRole === "admin")
+    p.memberships.some((m) => m.accessRole === "admin"),
   );
 
   function Widgets() {
@@ -84,19 +85,18 @@ function ExpandedSidebar() {
 
   return (
     <>
-      <Link to="/" className="SidebarNav-header">
-        <img
-          src="/assets/img/muhtar-logo_round.png"
-          width={40}
-          height={40}
-          alt="Muhtar Logo"
-          className="SidebarNav-logo"
-        />
-        <div className="SidebarNav-header-divider"></div>
-        <Title className="SidebarNav-title" level={4} style={{ margin: 0 }}>
-          {team?.name || "Unnamed team"}
-        </Title>
-      </Link>
+      <div className="SidebarNav-header">
+        <Link to="/">
+          <img
+            src="/assets/img/muhtar-logo_round.png"
+            width={40}
+            height={40}
+            alt="Muhtar Logo"
+            className="SidebarNav-logo"
+          />
+        </Link>
+        <TeamSelector />
+      </div>
       <div className="SidebarNav-contentWrapper">
         <div className="SidebarNav-widgets">
           <Widgets />
