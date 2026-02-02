@@ -48,42 +48,33 @@ export function useBookedResources() {
     projectId: string;
     date: string;
     type: string;
-    resource: { type: "worker" | "role"; id: string };
-    target: { type: "time"; value: number } | null;
+    resource: { type: "time"; value: number };
+    target: { type: "worker" | "role"; id: string };
     comment?: string;
   }) {
     const { data } = await membershipAPI.bookResource(entry);
-    if (data && bookedResources) {
-      const newResources = insertIntoResources(bookedResources, data);
-      updateState({ bookedResources: newResources });
+    if (data) {
+      // Always refresh from server after mutation
+      const fresh = await membershipAPI.getBookedResources({});
+      updateState({ bookedResources: fresh?.data || [] });
     }
     return data;
   }
 
   async function rebookResource(entry: { id: string; value: number }) {
     const { OK } = await membershipAPI.rebookResource(entry);
-    if (OK && bookedResources) {
-      const entryRecord = bookedResources.find((item) => item.id === entry.id);
-      if (entryRecord) {
-        const newResources = updateResourceTable(bookedResources, {
-          ...entryRecord,
-          ...entry,
-        });
-        updateState({ bookedResources: newResources });
-      }
+    if (OK) {
+      const fresh = await membershipAPI.getBookedResources({});
+      updateState({ bookedResources: fresh?.data || [] });
     }
     return OK;
   }
 
   async function unbookResource(entry: { id: string }) {
     const { OK } = await membershipAPI.unbookResource(entry);
-    if (OK && bookedResources) {
-      const entryRecord = bookedResources.find((item) => item.id === entry.id);
-      if (entryRecord) {
-        entryRecord.isDeleted = true;
-        const newResources = updateResourceTable(bookedResources, entryRecord);
-        updateState({ bookedResources: newResources });
-      }
+    if (OK) {
+      const fresh = await membershipAPI.getBookedResources({});
+      updateState({ bookedResources: fresh?.data || [] });
     }
     return OK;
   }

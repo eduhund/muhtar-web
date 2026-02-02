@@ -16,7 +16,7 @@ import SideList from "../../components/SideList/SideList";
 import { useState } from "react";
 import QuickSummaryItem from "./components/QuickSummaryItem/QuickSummaryItem";
 import WorkerPage from "./WorkerPage";
-import { ResourcesPlanner } from "../../components/OldResourcesPlanner/ResourcesPlanner";
+import ResourcesPlanner from "../../components/ResourcePlanner/ResourcePlanner";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
