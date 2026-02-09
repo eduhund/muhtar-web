@@ -32,7 +32,10 @@ export default function ResourcePlanner() {
   const [week, setWeek] = useState<Dayjs>(dayjs().startOf("isoWeek"));
 
   // Local state for input values (before committing to API)
-  const [localValues, setLocalValues] = useState<{ [key: string]: number }>({});
+  // null represents empty field (user cleared it)
+  const [localValues, setLocalValues] = useState<{
+    [key: string]: number | null;
+  }>({});
 
   // Track pending operations to prevent duplicate requests
   const pendingOperations = useRef<Set<string>>(new Set());
@@ -152,7 +155,7 @@ export default function ResourcePlanner() {
       projectId: string,
       membershipId: string,
       date: string,
-      newHours: number,
+      newHours: number | null,
     ) => {
       const operationKey = `${projectId}-${membershipId}-${date}`;
       setLocalValues((prev) => ({
@@ -207,12 +210,13 @@ export default function ResourcePlanner() {
           const operationKey = `${project.id}-${membershipId}-${selectedDate}`;
 
           // Use local value if exists, otherwise use server value
+          // Show empty field (undefined) when there's no value
           const displayValue =
             operationKey in localValues
               ? localValues[operationKey]
               : dayValue
                 ? dayValue / 60
-                : 0;
+                : undefined;
 
           return (
             <div
@@ -232,7 +236,8 @@ export default function ResourcePlanner() {
                 precision={0}
                 value={displayValue}
                 onChange={(val) => {
-                  const newHours = val || 0;
+                  // Allow null/undefined for empty field, otherwise use the value
+                  const newHours = val ?? null;
                   handleLocalChange(
                     project.id,
                     membershipId,
@@ -243,7 +248,7 @@ export default function ResourcePlanner() {
                 onBlur={() => {
                   const currentValue = localValues[operationKey];
                   if (currentValue !== undefined) {
-                    const newMinutes = Math.round(currentValue * 60);
+                    const newMinutes = Math.round((currentValue ?? 0) * 60);
                     handleCommitValue(
                       project.id,
                       membershipId,
@@ -256,7 +261,7 @@ export default function ResourcePlanner() {
                 onPressEnter={(e) => {
                   const currentValue = localValues[operationKey];
                   if (currentValue !== undefined) {
-                    const newMinutes = Math.round(currentValue * 60);
+                    const newMinutes = Math.round((currentValue ?? 0) * 60);
                     handleCommitValue(
                       project.id,
                       membershipId,
