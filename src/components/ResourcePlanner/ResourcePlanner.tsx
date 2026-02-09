@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useRef } from "react";
 import {
   Table,
   DatePicker,
@@ -30,6 +30,9 @@ export default function ResourcePlanner() {
   } = useBookedResources();
 
   const [week, setWeek] = useState<Dayjs>(dayjs().startOf("isoWeek"));
+
+  // Track pending operations to prevent duplicate requests
+  const pendingOperations = useRef<Set<string>>(new Set());
 
   const weekDates = useMemo(() => {
     const start = week.startOf("isoWeek");
@@ -74,14 +77,83 @@ export default function ResourcePlanner() {
   }, [bookedResources, memberships, activeProjects, weekDates]);
 
   // Find single-day entry for exact selected date (week start) per membership+project
-  const entryFor = (projectId: string, membershipId: string, date: string) =>
-    bookedResources?.find(
-      (e: any) =>
-        !e.isDeleted &&
-        e.projectId === projectId &&
-        e.date === date &&
-        getMembershipIdFromEntry(e) === membershipId,
-    );
+  const entryFor = useCallback(
+    (projectId: string, membershipId: string, date: string) =>
+      bookedResources?.find(
+        (e: any) =>
+          !e.isDeleted &&
+          e.projectId === projectId &&
+          e.date === date &&
+          getMembershipIdFromEntry(e) === membershipId,
+      ),
+    [bookedResources],
+  );
+
+  // Stable handlers with duplicate request prevention
+  const handleUpdateValue = useCallback(
+    async (
+      projectId: string,
+      membershipId: string,
+      date: string,
+      newMinutes: number,
+      entry: any,
+    ) => {
+      const operationKey = `${projectId}-${membershipId}-${date}`;
+
+      // Prevent duplicate requests
+      if (pendingOperations.current.has(operationKey)) {
+        return;
+      }
+
+      pendingOperations.current.add(operationKey);
+
+      try {
+        if (entry && entry.id) {
+          // Update or delete existing entry
+          if (newMinutes === 0) {
+            await resetBookedResource({ id: entry.id });
+          } else if (newMinutes !== getTimeValueFromEntry(entry)) {
+            await updateBookedResource({
+              id: entry.id,
+              value: newMinutes,
+            });
+          }
+        } else {
+          // Create new entry
+          if (newMinutes > 0) {
+            await bookResource({
+              projectId,
+              date,
+              period: "week",
+              resource: { type: "time", value: newMinutes },
+              target: { type: "worker", id: membershipId },
+            });
+          }
+        }
+      } finally {
+        pendingOperations.current.delete(operationKey);
+      }
+    },
+    [bookResource, updateBookedResource, resetBookedResource],
+  );
+
+  const handleDeleteEntry = useCallback(
+    async (entryId: string, operationKey: string) => {
+      // Prevent duplicate requests
+      if (pendingOperations.current.has(operationKey)) {
+        return;
+      }
+
+      pendingOperations.current.add(operationKey);
+
+      try {
+        await resetBookedResource({ id: entryId });
+      } finally {
+        pendingOperations.current.delete(operationKey);
+      }
+    },
+    [resetBookedResource],
+  );
 
   // Table columns
   const columns = useMemo(() => {
@@ -106,6 +178,8 @@ export default function ResourcePlanner() {
           const selectedDate = week.format("YYYY-MM-DD");
           const entry = entryFor(project.id, membershipId, selectedDate);
           const dayValue = getTimeValueFromEntry(entry);
+          const operationKey = `${project.id}-${membershipId}-${selectedDate}`;
+
           return (
             <div
               style={{
@@ -123,38 +197,27 @@ export default function ResourcePlanner() {
                 step={1}
                 precision={0}
                 value={dayValue ? dayValue / 60 : 0}
-                onChange={async (val) => {
-                  const newHours = val || 0; // hours (decimal)
+                onChange={(val) => {
+                  const newHours = val || 0;
                   const newMinutes = Math.round(newHours * 60);
-                  if (entry && entry.id) {
-                    if (newMinutes === 0) {
-                      await resetBookedResource({ id: entry.id });
-                    } else if (newMinutes !== getTimeValueFromEntry(entry)) {
-                      await updateBookedResource({
-                        id: entry.id,
-                        value: newMinutes,
-                      });
-                    }
-                  } else {
-                    if (newMinutes > 0) {
-                      await bookResource({
-                        projectId: project.id,
-                        date: selectedDate,
-                        period: "week",
-                        resource: { type: "time", value: newMinutes },
-                        target: { type: "worker", id: membershipId },
-                      });
-                    }
-                  }
+                  handleUpdateValue(
+                    project.id,
+                    membershipId,
+                    selectedDate,
+                    newMinutes,
+                    entry,
+                  );
                 }}
               />
               {entry && (
                 <Button
                   size="small"
                   type="text"
-                  onClick={async () =>
-                    entry.id && (await resetBookedResource({ id: entry.id }))
-                  }
+                  onClick={() => {
+                    if (entry.id) {
+                      handleDeleteEntry(entry.id, operationKey);
+                    }
+                  }}
                 >
                   <DeleteOutlined />
                 </Button>
@@ -183,7 +246,14 @@ export default function ResourcePlanner() {
     });
 
     return cols;
-  }, [activeProjects, weeklySums, week]);
+  }, [
+    activeProjects,
+    weeklySums,
+    week,
+    handleUpdateValue,
+    handleDeleteEntry,
+    entryFor,
+  ]);
 
   // Table data (rows per membership plus totals row)
   const dataSource = useMemo(() => {

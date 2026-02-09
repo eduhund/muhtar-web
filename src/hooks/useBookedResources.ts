@@ -52,31 +52,109 @@ export function useBookedResources() {
     target: { type: "worker" | "role"; id: string };
     comment?: string;
   }) {
-    const { data } = await membershipAPI.bookResource(entry);
-    if (data) {
-      // Always refresh from server after mutation
-      const fresh = await membershipAPI.getBookedResources({});
-      updateState({ bookedResources: fresh?.data || [] });
+    // Optimistic update: add temporary entry to local state
+    const tempId = `temp-${Date.now()}`;
+    const optimisticEntry: BookedResource = {
+      id: tempId,
+      projectId: entry.projectId,
+      date: entry.date,
+      type: "time",
+      resource: entry.resource,
+      target: entry.target,
+      comment: entry.comment || "",
+      isDeleted: false,
+    };
+
+    const currentResources = bookedResources || [];
+    updateState({
+      bookedResources: insertIntoResources(currentResources, optimisticEntry),
+    });
+
+    try {
+      // API expects inverted structure: resource is worker/role, target is time
+      const { data } = await membershipAPI.bookResource({
+        projectId: entry.projectId,
+        date: entry.date,
+        period: entry.period,
+        resource: { type: entry.target.type, id: entry.target.id },
+        target: { type: entry.resource.type, value: entry.resource.value },
+        comment: entry.comment,
+      });
+
+      if (data) {
+        // Replace temp entry with real one from server
+        const fresh = await membershipAPI.getBookedResources({});
+        updateState({
+          bookedResources: (fresh?.data as BookedResources) || [],
+        });
+      }
+      return data;
+    } catch (error) {
+      // Rollback on error
+      updateState({ bookedResources: currentResources });
+      throw error;
     }
-    return data;
   }
 
   async function updateBookedResource(entry: { id: string; value: number }) {
-    const { OK } = await membershipAPI.updateBookedResource(entry);
-    if (OK) {
-      const fresh = await membershipAPI.getBookedResources({});
-      updateState({ bookedResources: fresh?.data || [] });
+    const currentResources = bookedResources || [];
+    const targetEntry = currentResources.find((e) => e.id === entry.id);
+
+    if (!targetEntry) return false;
+
+    // Optimistic update: update value in local state
+    const optimisticEntry = {
+      ...targetEntry,
+      resource: { ...targetEntry.resource, value: entry.value },
+    };
+
+    updateState({
+      bookedResources: updateResourceTable(currentResources, optimisticEntry),
+    });
+
+    try {
+      const { OK } = await membershipAPI.updateBookedResource(entry);
+      if (OK) {
+        const fresh = await membershipAPI.getBookedResources({});
+        updateState({
+          bookedResources: (fresh?.data as BookedResources) || [],
+        });
+      }
+      return OK;
+    } catch (error) {
+      // Rollback on error
+      updateState({ bookedResources: currentResources });
+      throw error;
     }
-    return OK;
   }
 
   async function resetBookedResource(entry: { id: string }) {
-    const { OK } = await membershipAPI.resetBookedResource(entry);
-    if (OK) {
-      const fresh = await membershipAPI.getBookedResources({});
-      updateState({ bookedResources: fresh?.data || [] });
+    const currentResources = bookedResources || [];
+    const targetEntry = currentResources.find((e) => e.id === entry.id);
+
+    if (!targetEntry) return false;
+
+    // Optimistic update: mark as deleted in local state
+    const optimisticEntry = { ...targetEntry, isDeleted: true };
+
+    updateState({
+      bookedResources: updateResourceTable(currentResources, optimisticEntry),
+    });
+
+    try {
+      const { OK } = await membershipAPI.resetBookedResource(entry);
+      if (OK) {
+        const fresh = await membershipAPI.getBookedResources({});
+        updateState({
+          bookedResources: (fresh?.data as BookedResources) || [],
+        });
+      }
+      return OK;
+    } catch (error) {
+      // Rollback on error
+      updateState({ bookedResources: currentResources });
+      throw error;
     }
-    return OK;
   }
 
   return {
