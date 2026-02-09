@@ -354,7 +354,7 @@ export default function ResourcePlanner() {
             const weekNum = value.isoWeek();
             const start = value.startOf("isoWeek");
             const end = value.endOf("isoWeek");
-            return `W${weekNum} (${start.format("MMM D")} – ${end.format("MMM D")})`;
+            return `W${weekNum + 1} (${start.format("MMM D")} – ${end.format("MMM D")})`;
           }}
         />
       </Space>
