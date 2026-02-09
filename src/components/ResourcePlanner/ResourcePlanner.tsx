@@ -349,7 +349,7 @@ export default function ResourcePlanner() {
         <DatePicker
           picker="week"
           value={week}
-          onChange={(d) => d && setWeek(d.startOf("isoWeek"))}
+          onChange={(d) => d && setWeek(d)}
         />
       </Space>
       <Table
