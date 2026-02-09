@@ -14,6 +14,7 @@ import { useMemberships } from "../../hooks/useMemberships";
 import { useBookedResources } from "../../hooks/useBookedResources";
 import { formatDuration } from "../Timeline/utils";
 import { DeleteOutlined } from "@ant-design/icons";
+import Title from "antd/lib/typography/Title";
 
 dayjs.extend(isoWeek);
 
@@ -333,7 +334,18 @@ export default function ResourcePlanner() {
 
   return (
     <>
-      <Space style={{ marginBottom: 12 }}>
+      <Space
+        style={{
+          marginBottom: 12,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <Title level={2} style={{ margin: 0 }}>
+          Planner
+        </Title>
         <DatePicker
           picker="week"
           value={week}
