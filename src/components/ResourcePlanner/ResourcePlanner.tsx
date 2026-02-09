@@ -357,6 +357,12 @@ export default function ResourcePlanner() {
           picker="week"
           value={week}
           onChange={(d) => d && setWeek(d)}
+          format={(value) => {
+            const weekNum = value.isoWeek();
+            const start = value.startOf("isoWeek");
+            const end = value.endOf("isoWeek");
+            return `W${weekNum} (${start.format("MMM D")} – ${end.format("MMM D")})`;
+          }}
         />
       </Space>
       <Table
