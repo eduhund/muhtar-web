@@ -366,14 +366,13 @@ export default function ResourcePlanner() {
         />
       </Space>
       <Table
-        style={{ overflow: "auto" }}
         columns={columns}
         dataSource={dataSource}
         pagination={false}
         rowKey={(r) => r.key}
         bordered
         size="small"
-        sticky
+        scroll={{ x: true, y: 400 }}
       />
     </>
   );
