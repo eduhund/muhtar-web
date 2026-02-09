@@ -25,8 +25,8 @@ export default function ResourcePlanner() {
   const {
     bookedResources = [],
     bookResource,
-    rebookResource,
-    unbookResource,
+    updateBookedResource,
+    resetBookedResource,
   } = useBookedResources();
 
   const [week, setWeek] = useState<Dayjs>(dayjs().startOf("isoWeek"));
@@ -54,12 +54,12 @@ export default function ResourcePlanner() {
   const weeklySums = useMemo(() => {
     const map: { [key: string]: { [key: string]: number } } = {};
     // initialize
-    memberships.forEach((m) => {
+    memberships?.forEach((m) => {
       map[m.id] = {};
       activeProjects.forEach((p) => (map[m.id][p.id] = 0));
     });
 
-    bookedResources.forEach((entry: any) => {
+    bookedResources?.forEach((entry: any) => {
       if (!entry || entry.isDeleted) return;
       if (!weekDates.includes(entry.date)) return;
       const membershipId = getMembershipIdFromEntry(entry);
@@ -75,7 +75,7 @@ export default function ResourcePlanner() {
 
   // Find single-day entry for exact selected date (week start) per membership+project
   const entryFor = (projectId: string, membershipId: string, date: string) =>
-    bookedResources.find(
+    bookedResources?.find(
       (e: any) =>
         !e.isDeleted &&
         e.projectId === projectId &&
@@ -103,7 +103,6 @@ export default function ResourcePlanner() {
         width: 200,
         render: (_: any, record: any) => {
           const membershipId = record.key;
-          const weeklyTotal = weeklySums[membershipId]?.[project.id] || 0;
           const selectedDate = week.format("YYYY-MM-DD");
           const entry = entryFor(project.id, membershipId, selectedDate);
           const dayValue = getTimeValueFromEntry(entry);
@@ -129,9 +128,9 @@ export default function ResourcePlanner() {
                   const newMinutes = Math.round(newHours * 60);
                   if (entry && entry.id) {
                     if (newMinutes === 0) {
-                      await unbookResource({ id: entry.id });
+                      await resetBookedResource({ id: entry.id });
                     } else if (newMinutes !== getTimeValueFromEntry(entry)) {
-                      await rebookResource({
+                      await updateBookedResource({
                         id: entry.id,
                         value: newMinutes,
                       });
@@ -141,7 +140,7 @@ export default function ResourcePlanner() {
                       await bookResource({
                         projectId: project.id,
                         date: selectedDate,
-                        type: "time",
+                        period: "week",
                         resource: { type: "time", value: newMinutes },
                         target: { type: "worker", id: membershipId },
                       });
@@ -154,7 +153,7 @@ export default function ResourcePlanner() {
                   size="small"
                   type="text"
                   onClick={async () =>
-                    entry.id && (await unbookResource({ id: entry.id }))
+                    entry.id && (await resetBookedResource({ id: entry.id }))
                   }
                 >
                   <DeleteOutlined />
@@ -188,9 +187,10 @@ export default function ResourcePlanner() {
 
   // Table data (rows per membership plus totals row)
   const dataSource = useMemo(() => {
-    const rows = memberships
-      ?.filter((m) => m.status === "active")
-      .map((m: any) => ({ key: m.id, name: m.name }));
+    const rows =
+      memberships
+        ?.filter((m) => m.status === "active")
+        .map((m: any) => ({ key: m.id, name: m.name })) || [];
     // totals row
     const totalRow: any = { key: "__totals__", name: "Total" };
     activeProjects.forEach((p) => {

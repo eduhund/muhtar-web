@@ -295,7 +295,7 @@ class MembershipAPI extends privateAPI {
   bookResource(entry: {
     projectId: string;
     date: string;
-    type: string;
+    period: string;
     resource: { type: "worker" | "role"; id: string };
     target: { type: "time"; value: number } | null;
     comment?: string;
@@ -310,7 +310,7 @@ class MembershipAPI extends privateAPI {
     );
   }
 
-  rebookResource(entry: {
+  updateBookedResource(entry: {
     id: string;
     value: number;
   }): Promise<ApiResponse<{ OK: boolean }>> {
@@ -318,18 +318,20 @@ class MembershipAPI extends privateAPI {
       throw new Error("Token is not set");
     }
     return this.controller.post(
-      `${this.prefix}/rebookResource`,
+      `${this.prefix}/updateBookedResource`,
       this.token,
       entry,
     );
   }
 
-  unbookResource(entry: { id: string }): Promise<ApiResponse<{ OK: boolean }>> {
+  resetBookedResource(entry: {
+    id: string;
+  }): Promise<ApiResponse<{ OK: boolean }>> {
     if (!this.token) {
       throw new Error("Token is not set");
     }
     return this.controller.post(
-      `${this.prefix}/unbookResource`,
+      `${this.prefix}/resetBookedResource`,
       this.token,
       entry,
     );

@@ -47,7 +47,7 @@ export function useBookedResources() {
   async function bookResource(entry: {
     projectId: string;
     date: string;
-    type: string;
+    period: string;
     resource: { type: "time"; value: number };
     target: { type: "worker" | "role"; id: string };
     comment?: string;
@@ -61,8 +61,8 @@ export function useBookedResources() {
     return data;
   }
 
-  async function rebookResource(entry: { id: string; value: number }) {
-    const { OK } = await membershipAPI.rebookResource(entry);
+  async function updateBookedResource(entry: { id: string; value: number }) {
+    const { OK } = await membershipAPI.updateBookedResource(entry);
     if (OK) {
       const fresh = await membershipAPI.getBookedResources({});
       updateState({ bookedResources: fresh?.data || [] });
@@ -70,8 +70,8 @@ export function useBookedResources() {
     return OK;
   }
 
-  async function unbookResource(entry: { id: string }) {
-    const { OK } = await membershipAPI.unbookResource(entry);
+  async function resetBookedResource(entry: { id: string }) {
+    const { OK } = await membershipAPI.resetBookedResource(entry);
     if (OK) {
       const fresh = await membershipAPI.getBookedResources({});
       updateState({ bookedResources: fresh?.data || [] });
@@ -84,7 +84,7 @@ export function useBookedResources() {
     isLoading: bookedResourcesLoading,
     getBookedResources,
     bookResource,
-    rebookResource,
-    unbookResource,
+    updateBookedResource,
+    resetBookedResource,
   };
 }
