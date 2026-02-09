@@ -204,13 +204,6 @@ export default function ResourcePlanner() {
         width: 100,
         render: (_: any, record: any) => {
           const membershipId = record.key;
-
-          // Special handling for totals row
-          if (membershipId === "__totals__") {
-            const totalValue = record[project.id] || 0;
-            return <Text strong>{formatDuration(totalValue)}</Text>;
-          }
-
           const selectedDate = week.format("YYYY-MM-DD");
           const entry = entryFor(project.id, membershipId, selectedDate);
           const dayValue = getTimeValueFromEntry(entry);
@@ -329,26 +322,14 @@ export default function ResourcePlanner() {
     entryFor,
   ]);
 
-  // Table data (rows per membership plus totals row)
+  // Table data (rows per membership only, totals moved to summary)
   const dataSource = useMemo(() => {
     const rows =
       memberships
         ?.filter((m) => m.status === "active")
         .map((m: any) => ({ key: m.id, name: m.name })) || [];
-    // totals row
-    const totalRow: any = { key: "__totals__", name: "Total" };
-    activeProjects.forEach((p) => {
-      const sum = memberships
-        ?.filter((m) => m.status === "active")
-        .reduce(
-          (acc: number, m: any) => acc + (weeklySums[m.id]?.[p.id] || 0),
-          0,
-        );
-      totalRow[p.id] = sum;
-    });
-    rows.push(totalRow);
     return rows;
-  }, [memberships, activeProjects, weeklySums]);
+  }, [memberships]);
 
   return (
     <>
@@ -373,6 +354,44 @@ export default function ResourcePlanner() {
         bordered
         size="small"
         scroll={{ x: true, y: 400 }}
+        summary={() => (
+          <Table.Summary fixed="bottom">
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0}>
+                <Text strong>Total</Text>
+              </Table.Summary.Cell>
+              {activeProjects.map((project, idx) => {
+                const sum = memberships
+                  ?.filter((m) => m.status === "active")
+                  .reduce(
+                    (acc: number, m: any) =>
+                      acc + (weeklySums[m.id]?.[project.id] || 0),
+                    0,
+                  );
+                return (
+                  <Table.Summary.Cell key={project.id} index={idx + 1}>
+                    <Text strong>{formatDuration(sum || 0)}</Text>
+                  </Table.Summary.Cell>
+                );
+              })}
+              <Table.Summary.Cell index={activeProjects.length + 1}>
+                <Text strong>
+                  {formatDuration(
+                    memberships
+                      ?.filter((m) => m.status === "active")
+                      .reduce((total: number, m: any) => {
+                        const memberTotal = activeProjects.reduce(
+                          (acc, p) => acc + (weeklySums[m.id]?.[p.id] || 0),
+                          0,
+                        );
+                        return total + memberTotal;
+                      }, 0) || 0,
+                  )}
+                </Text>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </Table.Summary>
+        )}
       />
     </>
   );
