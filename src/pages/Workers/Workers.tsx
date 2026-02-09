@@ -177,10 +177,10 @@ export function Workers() {
           {selectedMembership ? (
             <WorkerPage membership={selectedMembership} />
           ) : (
-            <div>
+            <>
               <Title level={2}>Select a worker</Title>
               <ResourcesPlanner />
-            </div>
+            </>
           )}
         </div>
       </div>

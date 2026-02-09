@@ -198,7 +198,7 @@ export default function ResourcePlanner() {
         title: project.name,
         dataIndex: project.id,
         key: project.id,
-        width: 200,
+        width: 100,
         render: (_: any, record: any) => {
           const membershipId = record.key;
           const selectedDate = week.format("YYYY-MM-DD");
@@ -294,7 +294,7 @@ export default function ResourcePlanner() {
       dataIndex: "__rowTotal__",
       key: "__rowTotal__",
       fixed: "right",
-      width: 120,
+      width: 100,
       render: (_: any, record: any) => {
         const membershipId = record.key;
         const total = activeProjects.reduce(
@@ -339,7 +339,7 @@ export default function ResourcePlanner() {
   }, [memberships, activeProjects, weeklySums]);
 
   return (
-    <div>
+    <>
       <Space style={{ marginBottom: 12 }}>
         <DatePicker
           picker="week"
@@ -348,13 +348,15 @@ export default function ResourcePlanner() {
         />
       </Space>
       <Table
+        style={{ overflow: "auto" }}
         columns={columns}
         dataSource={dataSource}
         pagination={false}
         rowKey={(r) => r.key}
         bordered
         size="small"
+        sticky
       />
-    </div>
+    </>
   );
 }
