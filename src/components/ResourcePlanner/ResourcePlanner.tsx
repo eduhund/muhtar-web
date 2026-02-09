@@ -204,6 +204,13 @@ export default function ResourcePlanner() {
         width: 100,
         render: (_: any, record: any) => {
           const membershipId = record.key;
+
+          // Special handling for totals row
+          if (membershipId === "__totals__") {
+            const totalValue = record[project.id] || 0;
+            return <Text strong>{formatDuration(totalValue)}</Text>;
+          }
+
           const selectedDate = week.format("YYYY-MM-DD");
           const entry = entryFor(project.id, membershipId, selectedDate);
           const dayValue = getTimeValueFromEntry(entry);
