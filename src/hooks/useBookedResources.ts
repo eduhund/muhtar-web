@@ -76,8 +76,8 @@ export function useBookedResources() {
         projectId: entry.projectId,
         date: entry.date,
         period: entry.period,
-        resource: { type: entry.target.type, id: entry.target.id },
-        target: { type: entry.resource.type, value: entry.resource.value },
+        resource: { type: entry.resource.type, value: entry.resource.value },
+        target: { type: entry.target.type, id: entry.target.id },
         comment: entry.comment,
       });
 

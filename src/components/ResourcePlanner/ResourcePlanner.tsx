@@ -31,6 +31,9 @@ export default function ResourcePlanner() {
 
   const [week, setWeek] = useState<Dayjs>(dayjs().startOf("isoWeek"));
 
+  // Local state for input values (before committing to API)
+  const [localValues, setLocalValues] = useState<{ [key: string]: number }>({});
+
   // Track pending operations to prevent duplicate requests
   const pendingOperations = useRef<Set<string>>(new Set());
 
@@ -90,7 +93,7 @@ export default function ResourcePlanner() {
   );
 
   // Stable handlers with duplicate request prevention
-  const handleUpdateValue = useCallback(
+  const handleCommitValue = useCallback(
     async (
       projectId: string,
       membershipId: string,
@@ -99,6 +102,13 @@ export default function ResourcePlanner() {
       entry: any,
     ) => {
       const operationKey = `${projectId}-${membershipId}-${date}`;
+
+      // Clear local value since we're committing
+      setLocalValues((prev) => {
+        const next = { ...prev };
+        delete next[operationKey];
+        return next;
+      });
 
       // Prevent duplicate requests
       if (pendingOperations.current.has(operationKey)) {
@@ -135,6 +145,22 @@ export default function ResourcePlanner() {
       }
     },
     [bookResource, updateBookedResource, resetBookedResource],
+  );
+
+  const handleLocalChange = useCallback(
+    (
+      projectId: string,
+      membershipId: string,
+      date: string,
+      newHours: number,
+    ) => {
+      const operationKey = `${projectId}-${membershipId}-${date}`;
+      setLocalValues((prev) => ({
+        ...prev,
+        [operationKey]: newHours,
+      }));
+    },
+    [],
   );
 
   const handleDeleteEntry = useCallback(
@@ -180,6 +206,14 @@ export default function ResourcePlanner() {
           const dayValue = getTimeValueFromEntry(entry);
           const operationKey = `${project.id}-${membershipId}-${selectedDate}`;
 
+          // Use local value if exists, otherwise use server value
+          const displayValue =
+            operationKey in localValues
+              ? localValues[operationKey]
+              : dayValue
+                ? dayValue / 60
+                : 0;
+
           return (
             <div
               style={{
@@ -196,17 +230,43 @@ export default function ResourcePlanner() {
                 min={0}
                 step={1}
                 precision={0}
-                value={dayValue ? dayValue / 60 : 0}
+                value={displayValue}
                 onChange={(val) => {
                   const newHours = val || 0;
-                  const newMinutes = Math.round(newHours * 60);
-                  handleUpdateValue(
+                  handleLocalChange(
                     project.id,
                     membershipId,
                     selectedDate,
-                    newMinutes,
-                    entry,
+                    newHours,
                   );
+                }}
+                onBlur={() => {
+                  const currentValue = localValues[operationKey];
+                  if (currentValue !== undefined) {
+                    const newMinutes = Math.round(currentValue * 60);
+                    handleCommitValue(
+                      project.id,
+                      membershipId,
+                      selectedDate,
+                      newMinutes,
+                      entry,
+                    );
+                  }
+                }}
+                onPressEnter={(e) => {
+                  const currentValue = localValues[operationKey];
+                  if (currentValue !== undefined) {
+                    const newMinutes = Math.round(currentValue * 60);
+                    handleCommitValue(
+                      project.id,
+                      membershipId,
+                      selectedDate,
+                      newMinutes,
+                      entry,
+                    );
+                  }
+                  // Blur the input to remove focus
+                  (e.target as HTMLInputElement).blur();
                 }}
               />
               {entry && (
@@ -250,7 +310,9 @@ export default function ResourcePlanner() {
     activeProjects,
     weeklySums,
     week,
-    handleUpdateValue,
+    localValues,
+    handleLocalChange,
+    handleCommitValue,
     handleDeleteEntry,
     entryFor,
   ]);

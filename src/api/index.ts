@@ -296,8 +296,8 @@ class MembershipAPI extends privateAPI {
     projectId: string;
     date: string;
     period: string;
-    resource: { type: "worker" | "role"; id: string };
-    target: { type: "time"; value: number } | null;
+    resource: { type: "time"; value: number };
+    target: { type: "worker" | "role"; id: string } | null;
     comment?: string;
   }): Promise<ApiResponse<BookedResource>> {
     if (!this.token) {
