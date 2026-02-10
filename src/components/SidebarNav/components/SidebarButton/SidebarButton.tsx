@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Typography } from "antd";
 
 import "./SidebarButton.scss";
@@ -16,9 +16,31 @@ export default function SidebarButton({
   icon,
   title,
 }: IconItemButtonProps) {
-  const isActive = window.location.pathname.startsWith(link);
+  const location = useLocation();
+  const normalizePath = (path: string) => {
+    const normalized = path.toLowerCase().replace(/\/+$/, "");
+    return normalized === "" ? "/" : normalized;
+  };
+
+  const currentPath = normalizePath(location.pathname);
+  const linkPath = normalizePath(link);
+  const isActive =
+    linkPath === "/"
+      ? currentPath === "/"
+      : currentPath === linkPath || currentPath.startsWith(`${linkPath}/`);
+  const className = "SidebarButton" + (isActive ? " _active" : "");
+
+  if (isActive) {
+    return (
+      <span className={className} aria-disabled="true">
+        <div className="SidebarButton-icon">{icon}</div>
+        <Text className="SidebarButton-title">{title}</Text>
+      </span>
+    );
+  }
+
   return (
-    <Link className={"SidebarButton" + (isActive ? " _active" : "")} to={link}>
+    <Link className={className} to={link}>
       <div className="SidebarButton-icon">{icon}</div>
       <Text className="SidebarButton-title">{title}</Text>
     </Link>
