@@ -84,6 +84,25 @@ function ProjectRow({
   );
 }
 
+function OverviewRow({
+  isSelected,
+  onClick,
+}: {
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={"SideList-item ProjectRow" + (isSelected ? " _selected" : "")}
+      onClick={onClick}
+    >
+      <div className="ProjectRow-headline">
+        <Title level={5}>Overview</Title>
+      </div>
+    </div>
+  );
+}
+
 export function Projects() {
   const { projectId } = useParams<{ projectId?: string }>();
   const navigate = useNavigate();
@@ -108,6 +127,10 @@ export function Projects() {
     <Page title="Projects">
       <div className="Projects">
         <SideList>
+          <OverviewRow
+            isSelected={!selectedProject}
+            onClick={() => navigate("/projects")}
+          />
           {activeProjects && (
             <div className="Projects-group">
               <div className="Projects-list">
