@@ -7,8 +7,10 @@ import {
   Space,
   Typography,
 } from "antd";
+import enGB from "antd/es/date-picker/locale/en_GB";
 import dayjs, { Dayjs } from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
+import "dayjs/locale/en-gb";
 import { useProjects } from "../../hooks/useProjects";
 import { useMemberships } from "../../hooks/useMemberships";
 import { useBookedResources } from "../../hooks/useBookedResources";
@@ -17,6 +19,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 
 dayjs.extend(isoWeek);
+dayjs.locale("en-gb");
 
 const { Text } = Typography;
 
@@ -349,12 +352,13 @@ export default function ResourcePlanner() {
         <DatePicker
           picker="week"
           value={week}
+          locale={enGB}
           onChange={(d) => d && setWeek(d)}
           format={(value) => {
             const weekNum = value.isoWeek();
             const start = value.startOf("isoWeek");
             const end = value.endOf("isoWeek");
-            return `W${weekNum + 1} (${start.format("MMM D")} – ${end.format("MMM D")})`;
+            return `W${weekNum} (${start.format("MMM D")} – ${end.format("MMM D")})`;
           }}
         />
       </Space>
