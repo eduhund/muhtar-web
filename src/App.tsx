@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 
 import { ConfigProvider } from "antd";
-import enUS from "antd/lib/locale/en_US";
+import enGB from "antd/locale/en_GB";
+import dayjs from "dayjs";
+import "dayjs/locale/en-gb";
 
 import Login from "./pages/Login/Login";
 
@@ -16,10 +18,11 @@ import Home from "./promo/pages/Home/Home";
 import { useLogin } from "./hooks/useLogin";
 
 const App = () => {
+  dayjs.locale("en-gb");
   const { isLoggedIn } = useLogin();
   console.log("App isLoggedIn:", isLoggedIn());
   return (
-    <ConfigProvider locale={enUS} theme={{ token: { colorPrimary: "#000" } }}>
+    <ConfigProvider locale={enGB} theme={{ token: { colorPrimary: "#000" } }}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
