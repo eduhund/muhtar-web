@@ -208,7 +208,7 @@ export default function ResourcePlanner() {
         width: 100,
         render: (_: any, record: any) => {
           const membershipId = record.key;
-          const selectedDate = week.format("YYYY-MM-DD");
+          const selectedDate = week.startOf("isoWeek").format("YYYY-MM-DD");
           const entry = entryFor(project.id, membershipId, selectedDate);
           const dayValue = getTimeValueFromEntry(entry);
           const operationKey = `${project.id}-${membershipId}-${selectedDate}`;
