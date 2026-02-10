@@ -6,7 +6,7 @@ export function ProjectsButton() {
     <SidebarButton
       title="Projects"
       icon={<ReconciliationOutlined />}
-      link="/Projects"
+      link="/projects"
     ></SidebarButton>
   );
 }

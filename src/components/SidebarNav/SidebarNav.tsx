@@ -21,19 +21,14 @@ const { Title, Text } = Typography;
 
 function CollapsedSidebar() {
   const { user } = useUser();
-  const { membership } = useMembership();
-  const isAdmin = membership?.accessRole === "admin";
 
   function Buttons() {
-    if (isAdmin) {
-      return (
-        <>
-          <ProjectsButton />
-          <WorkersButton />
-        </>
-      );
-    }
-    return null;
+    return (
+      <>
+        <ProjectsButton />
+        <WorkersButton />
+      </>
+    );
   }
 
   return (

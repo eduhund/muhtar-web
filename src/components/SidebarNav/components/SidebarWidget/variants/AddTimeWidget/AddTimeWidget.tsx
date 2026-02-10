@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { SidebarWidget } from "../../SidebarWidget";
 import { dateFormat } from "../../../../../../utils/date";
 import { useProjects } from "../../../../../../hooks/useProjects";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useResources } from "../../../../../../hooks/useResources";
 import { useMembership } from "../../../../../../hooks/useMembership";
 import ProjectDropdown from "../../../../../ProjectDropdown/ProjectDropdown";
@@ -23,9 +23,10 @@ type FieldType = {
 const { TextArea } = Input;
 
 export function AddTimeWidget() {
+  const [form] = Form.useForm<FieldType>();
   const [isAddingTime, setIsAddingTime] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
+    null,
   );
   const { membership } = useMembership();
   const { activeProjects, isLoading } = useProjects();
@@ -36,11 +37,25 @@ export function AddTimeWidget() {
     if (!activeProjects) return null;
 
     const selectedProject = activeProjects.find(
-      (project) => project.id === selectedProjectId
+      (project) => project.id === selectedProjectId,
     );
     if (!selectedProject?.activePlan) return [];
     return selectedProject.activePlan.jobs;
   }, [activeProjects, selectedProjectId]);
+
+  const inProgressJobId = useMemo(() => {
+    if (!selectedProjectId || !projectJobs) return null;
+    return projectJobs.find((job) => job.status === "inProgress")?.id ?? null;
+  }, [projectJobs, selectedProjectId]);
+
+  useEffect(() => {
+    if (!selectedProjectId) {
+      form.setFieldValue("target", undefined);
+      return;
+    }
+
+    form.setFieldValue("target", inProgressJobId ?? undefined);
+  }, [form, inProgressJobId, selectedProjectId]);
 
   async function onFinish(values: FieldType) {
     setIsAddingTime(true);
@@ -70,6 +85,7 @@ export function AddTimeWidget() {
         layout="vertical"
         onFinish={onFinish}
         requiredMark={false}
+        form={form}
       >
         <Form.Item<FieldType>
           name="date"
@@ -107,12 +123,10 @@ export function AddTimeWidget() {
               !selectedProjectId ? "Select project first" : "Select..."
             }
             options={projectJobs || []}
-            value={{}}
             fieldNames={{ label: "name", value: "id" }}
             prefix="Job"
             allowClear={false}
             style={{ width: "100%" }}
-            onChange={() => {}}
             disabled={!selectedProjectId}
           />
         </Form.Item>
