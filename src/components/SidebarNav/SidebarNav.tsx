@@ -21,8 +21,6 @@ const { Title, Text } = Typography;
 
 function CollapsedSidebar() {
   const { user } = useUser();
-  const { membership } = useMembership();
-  const isAdmin = membership?.accessRole === "admin";
 
   function Buttons() {
     return (
