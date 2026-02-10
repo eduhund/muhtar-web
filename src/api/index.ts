@@ -1,4 +1,4 @@
-import { Resources, Resource } from "../context/AppContext";
+import { Resources, Resource, BookedResource } from "../context/AppContext";
 import APIController, { ApiResponse } from "./controller";
 
 const BASE_URI = import.meta.env.VITE_BASE_URI || "http://localhost:3000/api";
@@ -52,7 +52,7 @@ class AuthAPI {
 
   async login(
     email: string,
-    password: string
+    password: string,
   ): Promise<ApiResponse<LoginResponseDataType>> {
     return this.controller.post<LoginResponseDataType>(
       `${this.prefix}/login`,
@@ -60,7 +60,7 @@ class AuthAPI {
       {
         email,
         password,
-      }
+      },
     );
   }
 }
@@ -110,7 +110,7 @@ class MembershipAPI extends privateAPI {
     return this.controller.get(
       `${this.prefix}/getResources`,
       this.token,
-      query
+      query,
     );
   }
 
@@ -121,12 +121,12 @@ class MembershipAPI extends privateAPI {
     return this.controller.post(
       `${this.prefix}/spendResource`,
       this.token,
-      entry
+      entry,
     );
   }
 
   async updateResource(
-    entry: UpdateResourceEntry
+    entry: UpdateResourceEntry,
   ): Promise<ApiResponse<Resource>> {
     if (!this.token) {
       throw new Error("Token is not set");
@@ -134,7 +134,7 @@ class MembershipAPI extends privateAPI {
     return this.controller.post(
       `${this.prefix}/updateResource`,
       this.token,
-      entry
+      entry,
     );
   }
 
@@ -174,7 +174,7 @@ class MembershipAPI extends privateAPI {
     return this.controller.get(
       `${this.prefix}/getMemberships`,
       this.token,
-      query
+      query,
     );
   }
 
@@ -185,7 +185,7 @@ class MembershipAPI extends privateAPI {
       accessRole: string;
       workRole: string;
       multiplier: number;
-    }
+    },
   ) {
     if (!this.token) {
       throw new Error("Token is not set");
@@ -196,7 +196,7 @@ class MembershipAPI extends privateAPI {
       {
         projectId,
         ...projectMembership,
-      }
+      },
     );
   }
 
@@ -207,7 +207,7 @@ class MembershipAPI extends privateAPI {
       accessRole?: string;
       workRole?: string;
       multiplier?: number;
-    }
+    },
   ) {
     if (!this.token) {
       throw new Error("Token is not set");
@@ -218,7 +218,7 @@ class MembershipAPI extends privateAPI {
       {
         projectId,
         ...projectMembership,
-      }
+      },
     );
   }
 
@@ -238,7 +238,7 @@ class MembershipAPI extends privateAPI {
       {
         projectId,
         membershipId,
-      }
+      },
     );
   }
 
@@ -279,6 +279,62 @@ class MembershipAPI extends privateAPI {
     return this.controller.post(`${this.prefix}/restoreTask`, this.token, {
       id: taskId,
     });
+  }
+
+  getBookedResources(query: { [key: string]: string }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.get(
+      `${this.prefix}/getBookedResources`,
+      this.token,
+      query,
+    );
+  }
+
+  bookResource(entry: {
+    projectId: string;
+    date: string;
+    period: string;
+    resource: { type: "time"; value: number };
+    target: { type: "worker" | "role"; id: string } | null;
+    comment?: string;
+  }): Promise<ApiResponse<BookedResource>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/bookResource`,
+      this.token,
+      entry,
+    );
+  }
+
+  updateBookedResource(entry: {
+    id: string;
+    value: number;
+  }): Promise<ApiResponse<{ OK: boolean }>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/updateBookedResource`,
+      this.token,
+      entry,
+    );
+  }
+
+  resetBookedResource(entry: {
+    id: string;
+  }): Promise<ApiResponse<{ OK: boolean }>> {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(
+      `${this.prefix}/resetBookedResource`,
+      this.token,
+      entry,
+    );
   }
 }
 

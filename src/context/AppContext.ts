@@ -174,6 +174,31 @@ export interface Resource {
 
 export type Resources = Resource[];
 
+export interface BookedResource {
+  id: string;
+  projectId: string;
+  date: string; // YYYY-MM-DD
+  type: string;
+  target: { type: "worker" | "role"; id: string };
+  resource: {
+    type: "time";
+    value: number;
+  };
+  comment?: string;
+  isDeleted: boolean;
+}
+
+export interface NewBookedResource {
+  projectId: string;
+  date: string;
+  type: string;
+  resource: { type: "worker" | "role"; id: string };
+  target: { type: "time"; value: number } | null;
+  comment?: string;
+}
+
+export type BookedResources = BookedResource[];
+
 export interface AppContext {
   user: User | null;
   userLoading?: boolean;
@@ -189,6 +214,8 @@ export interface AppContext {
   projectsLoading?: boolean;
   resources?: Resources | null;
   resourcesLoading?: boolean;
+  bookedResources?: BookedResources | null;
+  bookedResourcesLoading?: boolean;
   tasks?: Task[] | null;
   tasksLoading?: boolean;
   updateState: (state: Partial<AppContext>) => void;

@@ -7,7 +7,7 @@ import { useMemberships } from "../../hooks/useMemberships";
 import { Membership, Resource } from "../../context/AppContext";
 import { useResources } from "../../hooks/useResources";
 import { useMembership } from "../../hooks/useMembership";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import "./Workers.scss";
 //import { useProjects } from "../../hooks/useProjects";
@@ -16,6 +16,7 @@ import SideList from "../../components/SideList/SideList";
 import { useState } from "react";
 import QuickSummaryItem from "./components/QuickSummaryItem/QuickSummaryItem";
 import WorkerPage from "./WorkerPage";
+import ResourcesPlanner from "../../components/ResourcePlanner/ResourcePlanner";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -94,9 +95,29 @@ function WorkerRow({
   );
 }
 
+function PlannerRow({
+  isSelected,
+  onClick,
+}: {
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={"SideList-item WorkerRow" + (isSelected ? " _selected" : "")}
+      onClick={onClick}
+    >
+      <div className="WorkerRow-headline">
+        <Title level={5}>Planner</Title>
+      </div>
+    </div>
+  );
+}
+
 export function Workers() {
   const [selectedMembership, setSelectedMembership] =
     useState<Membership | null>(null);
+  const navigate = useNavigate();
   const [contractType, setContractType] = useState("all");
   const [showActiveOnly, setShowActiveOnly] = useState(true);
 
@@ -136,13 +157,20 @@ export function Workers() {
   });
 
   const sortedMemberships = filteredMemberships?.sort((a, b) =>
-    a.name.localeCompare(b.name)
+    a.name.localeCompare(b.name),
   );
 
   return (
     <Page title="Workers">
       <div className="Workers">
         <SideList>
+          <PlannerRow
+            isSelected={!selectedMembership}
+            onClick={() => {
+              setSelectedMembership(null);
+              navigate("/workers");
+            }}
+          />
           <div className="Workers-filters">
             <Select
               defaultValue="all"
@@ -176,13 +204,7 @@ export function Workers() {
           {selectedMembership ? (
             <WorkerPage membership={selectedMembership} />
           ) : (
-            <div>
-              <Title level={2}>Select a worker</Title>
-              <Paragraph>
-                Please select a worker from the list to view detailed
-                statistics.
-              </Paragraph>
-            </div>
+            <ResourcesPlanner />
           )}
         </div>
       </div>
