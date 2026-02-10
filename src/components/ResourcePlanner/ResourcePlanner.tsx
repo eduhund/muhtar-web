@@ -7,7 +7,6 @@ import {
   Space,
   Typography,
 } from "antd";
-import enGB from "antd/es/date-picker/locale/en_GB";
 import dayjs, { Dayjs } from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import "dayjs/locale/en-gb";
@@ -352,7 +351,6 @@ export default function ResourcePlanner() {
         <DatePicker
           picker="week"
           value={week}
-          locale={enGB}
           onChange={(d) => d && setWeek(d)}
           format={(value) => {
             const weekNum = value.isoWeek();
