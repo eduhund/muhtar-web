@@ -7,7 +7,7 @@ import { useMemberships } from "../../hooks/useMemberships";
 import { Membership, Resource } from "../../context/AppContext";
 import { useResources } from "../../hooks/useResources";
 import { useMembership } from "../../hooks/useMembership";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import "./Workers.scss";
 //import { useProjects } from "../../hooks/useProjects";
@@ -95,9 +95,29 @@ function WorkerRow({
   );
 }
 
+function PlannerRow({
+  isSelected,
+  onClick,
+}: {
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={"SideList-item WorkerRow" + (isSelected ? " _selected" : "")}
+      onClick={onClick}
+    >
+      <div className="WorkerRow-headline">
+        <Title level={5}>Planner</Title>
+      </div>
+    </div>
+  );
+}
+
 export function Workers() {
   const [selectedMembership, setSelectedMembership] =
     useState<Membership | null>(null);
+  const navigate = useNavigate();
   const [contractType, setContractType] = useState("all");
   const [showActiveOnly, setShowActiveOnly] = useState(true);
 
@@ -144,6 +164,13 @@ export function Workers() {
     <Page title="Workers">
       <div className="Workers">
         <SideList>
+          <PlannerRow
+            isSelected={!selectedMembership}
+            onClick={() => {
+              setSelectedMembership(null);
+              navigate("/workers");
+            }}
+          />
           <div className="Workers-filters">
             <Select
               defaultValue="all"
