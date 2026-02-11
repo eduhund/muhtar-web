@@ -86,6 +86,15 @@ class UserAPI extends privateAPI {
       teamId,
     });
   }
+
+  async createTeam({ name }: { name: string }) {
+    if (!this.token) {
+      throw new Error("Token is not set");
+    }
+    return this.controller.post(`${this.prefix}/createTeam`, this.token, {
+      name,
+    });
+  }
 }
 
 class MembershipAPI extends privateAPI {
