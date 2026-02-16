@@ -72,7 +72,7 @@ function ExpandedSidebar() {
     return (
       <>
         {(isAdmin || hasAdminProjects) && <ProjectsWidget />}
-        {isAdmin && <WorkersWidget />}
+        {(isAdmin || hasAdminProjects) && <WorkersWidget />}
         <AddTimeWidget />
       </>
     );
