@@ -6,8 +6,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { useMemberships } from "../../hooks/useMemberships";
 import { Membership, Resource } from "../../context/AppContext";
 import { useResources } from "../../hooks/useResources";
-import { useMembership } from "../../hooks/useMembership";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "./Workers.scss";
 //import { useProjects } from "../../hooks/useProjects";
@@ -129,12 +128,7 @@ export function Workers() {
     setContractType(value);
   }
 
-  const { membership } = useMembership();
   const { memberships } = useMemberships();
-
-  if (membership?.accessRole !== "admin") {
-    return <Navigate to="/" replace />;
-  }
 
   const filteredMemberships = memberships?.filter((m) => {
     const lastContract =
