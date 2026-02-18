@@ -7,6 +7,7 @@ import { userAPI } from "../../api";
 
 import "./TeamSelector.scss";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import { membershipStorage } from "../../utils/storage";
 
 export default function TeamSelector() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,8 +54,12 @@ export default function TeamSelector() {
 
     try {
       setIsChanging(true);
-      await userAPI.changeTeam(teamId);
-      window.location.reload();
+      const { data } = await userAPI.changeTeam(teamId);
+      console.log("Team change response:", { data });
+      if (data?.tokens?.membership?.accessToken) {
+        membershipStorage.setAccessToken(data.tokens.membership.accessToken);
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Failed to change team", error);
     } finally {
