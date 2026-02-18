@@ -84,7 +84,7 @@ class UserAPI extends privateAPI {
     }
     return this.controller.post(`${this.prefix}/changeTeam`, this.token, {
       teamId,
-    });
+    }) as any;
   }
 
   async createTeam({ name }: { name: string }) {
