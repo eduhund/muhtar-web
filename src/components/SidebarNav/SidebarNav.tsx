@@ -105,9 +105,11 @@ function ExpandedSidebar() {
               <Title
                 className="SidebarNav-user-name"
                 level={5}
-                title={`${user.firstName} ${user.lastName}`}
+                title={membership?.name}
                 style={{ margin: 0 }}
-              >{`${user.firstName} ${user.lastName}`}</Title>
+              >
+                {membership?.name}
+              </Title>
               <Text className="SidebarNav-user-email" type="secondary">
                 {user.email}
               </Text>
