@@ -55,7 +55,6 @@ export default function TeamSelector() {
     try {
       setIsChanging(true);
       const { data } = await userAPI.changeTeam(teamId);
-      console.log("Team change response:", { data });
       if (data?.tokens?.membership?.accessToken) {
         membershipStorage.setAccessToken(data.tokens.membership.accessToken);
         window.location.reload();
